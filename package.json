@@ -1,0 +1,43 @@
+{
+  "name": "@3driseai/3drise-core",
+  "version": "1.0.1",
+  "private": false,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --build --force && node add-js-extensions.mjs",
+    "dev": "tsc --build --watch",
+    "clean": "rimraf dist",
+    "bump": "npm version patch",
+    "pub": "npm run build && npm publish --access public"
+  },
+  "dependencies": {
+    "@3driseai/3drise-common": "^1.0.1",
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.6.1",
+    "@react-three/rapier": "^2.2.0",
+    "gsap": "^3.12.0",
+    "lodash": "^4.17.21",
+    "maath": "^0.10.8"
+  },
+  "peerDependencies": {
+    "three": "^0.170"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.0",
+    "@types/react": "^19.0.0",
+    "react": "^19.0.0",
+    "three": "^0.170.0",
+    "typescript": "^5.9.3"
+  }
+}
