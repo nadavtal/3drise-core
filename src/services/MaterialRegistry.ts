@@ -6,7 +6,7 @@ import type { Material } from 'three';
 import { uniformConverter } from './UniformConverter';
 import { settingsToProps } from '../utils/materialUtils';
 import { compileShaders } from '../utils/utils';
-import materials from '..//data/allMaterials';
+import materials from '../data/allMaterials';
 import type { UniformDefinition } from "../types/types";
 import { MaterialType } from "../types";
 export interface ShaderSource {
@@ -398,6 +398,107 @@ export const MaterialRegistryAPI = {
      */
     getUserShaderVariants() {
         return Object.keys(MaterialRegistry.shaders.variants);
+    },
+    // =========================================================================
+    // DATABASE-BACKED SHADERS
+    // =========================================================================
+    /**
+     * Register (or update) a material type bucket from the `material_types` table.
+     * Types whose variants are implemented in code keep the variants they already
+     * have — only the metadata is refreshed.
+     */
+    registerMaterialType(type) {
+        const slug = type.slug;
+        if (!slug) {
+            console.warn('[MaterialRegistry] Cannot register material type without a slug.');
+            return;
+        }
+        const existing = MaterialRegistry[slug];
+        MaterialRegistry[slug] = {
+            name: type.name || existing?.name || slug,
+            description: type.description || existing?.description || '',
+            defaultVariant: type.defaultVariant || existing?.defaultVariant || '',
+            useCases: type.useCases || existing?.useCases || [],
+            variants: existing?.variants || {},
+        };
+    },
+    /**
+     * Register a shader row from the `shaders` table as a variant of its material type.
+     *
+     * `chunks` are the resolved `shader_chunks` rows the shader includes; their code
+     * is prepended to the matching stage in the order the server returned them.
+     * The material type bucket is created on demand, so a shader can be registered
+     * before its type metadata arrives.
+     *
+     * Neither the shader source nor the chunks contain `uniform ...;` declarations —
+     * those are generated from `uniforms` by compileShaders() when the material is
+     * built, exactly as for a shader authored in MaterialCreator. Final stage source
+     * is therefore: generated declarations, then chunk functions, then the body.
+     */
+    registerDbShader(shader, chunks = []) {
+        if (!shader?.name || !shader.vertex || !shader.fragment) {
+            console.warn(`[MaterialRegistry] Cannot register shader "${shader?.name}" — missing name, vertex, or fragment.`);
+            return;
+        }
+        const typeSlug = shader.materialTypeSlug;
+        if (!typeSlug) {
+            console.warn(`[MaterialRegistry] Shader "${shader.name}" has no materialTypeSlug.`);
+            return;
+        }
+        if (!MaterialRegistry[typeSlug]) {
+            MaterialRegistry[typeSlug] = {
+                name: typeSlug,
+                description: '',
+                defaultVariant: shader.name,
+                variants: {},
+            };
+        }
+        // Prepend chunk code to the stage it belongs to.
+        let vertex = shader.vertex;
+        let fragment = shader.fragment;
+        for (const chunk of chunks) {
+            if (!chunk?.code)
+                continue;
+            if (chunk.stage === 'vertex' || chunk.stage === 'both') {
+                vertex = chunk.code + '\n' + vertex;
+            }
+            if (chunk.stage === 'fragment' || chunk.stage === 'both') {
+                fragment = chunk.code + '\n' + fragment;
+            }
+        }
+        const uniformDefs = shader.uniforms || [];
+        const defaultSettings = shader.defaultSettings && Object.keys(shader.defaultSettings).length > 0
+            ? { ...shader.defaultSettings }
+            : uniformDefs.reduce((acc, u) => {
+                acc[u.name] = u.defaultValue;
+                return acc;
+            }, {});
+        MaterialRegistry[typeSlug].variants[shader.name] = {
+            name: shader.name,
+            description: shader.description || '',
+            materialClass: null,
+            defaultSettings,
+            useCases: shader.useCases || [],
+            textureProperties: uniformDefs
+                .filter((u) => u.type === 'sampler2D' || u.type === 'samplerCube')
+                .map((u) => u.name),
+            _shaderSource: {
+                vertex,
+                fragment,
+                uniforms: uniformDefs,
+            },
+        };
+        if (!MaterialRegistry[typeSlug].defaultVariant) {
+            MaterialRegistry[typeSlug].defaultVariant = shader.name;
+        }
+        console.log(`[MaterialRegistry] Registered DB shader "${shader.name}" under type "${typeSlug}"`);
+    },
+    /**
+     * True when a variant for this shader name is already registered.
+     * Lets the client skip a source fetch it has already made.
+     */
+    hasVariant(variantName) {
+        return this.getTypeFromVariantName(variantName) !== null;
     },
 };
 // Export the registry for direct access if needed

@@ -44,6 +44,18 @@ export interface MyGridConfig {
     bgColor: string;
     bgOpacity: number;
     followMouse: boolean;
+    /**
+     * 0..1 assemble amount. The build boundary sweeps outward from the focus
+     * point with a bright leading edge. Defaults to 1 (fully built); animate it
+     * down to 0 to dissolve.
+     */
+    reveal?: number;
+    /**
+     * Seconds to travel the full 0..1 reveal range. Defaults to 0, which
+     * applies `reveal` immediately — a grid does not animate itself in unless
+     * asked. Set ~1.2 for a build-in on mount.
+     */
+    revealDuration?: number;
 }
 
 

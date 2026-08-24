@@ -30,6 +30,12 @@ export interface MyGridMaterialUniforms {
     u_mouse: THREE.Vector2;
     /** vertex displacement amount along the plane normal (needs a segmented plane) */
     u_displace: number;
+    /**
+     * 0..1 assemble/dissolve. The build boundary sweeps outward from u_focus
+     * with a bright leading edge; 1 is fully built, 0 is gone. Animate it
+     * downward to dissolve.
+     */
+    u_reveal: number;
 }
 
 declare module '@react-three/fiber' {
@@ -60,6 +66,7 @@ export const myGridMaterialDefaults: MyGridMaterialUniforms = {
     u_focus: new THREE.Vector2(0, 0),
     u_mouse: new THREE.Vector2(0, 0),
     u_displace: 0.0,
+    u_reveal: 1.0,
 };
 const vertex = /*glsl*/ `
   uniform float u_time;
@@ -107,6 +114,7 @@ const fragment = /*glsl*/ `
   uniform float u_fadeDistance;
   uniform float u_fadeStrength;
   uniform vec2  u_focus;
+  uniform float u_reveal;
 
   varying vec2 vGridPos;
 
@@ -183,6 +191,22 @@ const fragment = /*glsl*/ `
     col *= fade;
     a   *= fade;
 
+    // ---- reveal ----------------------------------------------------------
+    // The build boundary sweeps outward from the focus point. Its leading band
+    // mostly brightens whatever is already there rather than painting a solid
+    // disc, so the grid reads as assembling itself rather than fading in.
+    if (u_reveal < 0.999){
+      float rd = length(vGridPos - u_focus) / max(u_fadeDistance, 1e-4);
+      // 1.1, not 1.25: the boundary has to clear the fade radius by just the
+      // width of its own soft edge. Overshooting further finishes the build
+      // before reveal reaches 1 and leaves the tail of the range doing nothing.
+      float edge = u_reveal * 1.1;
+      float mask = 1.0 - smoothstep(edge - 0.05, edge, rd);
+      float front = mask * smoothstep(edge - 0.22, edge - 0.05, rd);
+      col = col * mask + u_glowColor * front * (a * 1.8 + 0.08);
+      a   = max(a * mask, front * 0.10);
+    }
+
     if (a < 0.002) discard;
     gl_FragColor = vec4(col, a);
   }
@@ -209,5 +233,6 @@ export const MyGridMaterial = shaderMaterial({
     u_focus: myGridMaterialDefaults.u_focus.clone(),
     u_mouse: myGridMaterialDefaults.u_mouse.clone(),
     u_displace: myGridMaterialDefaults.u_displace,
+    u_reveal: myGridMaterialDefaults.u_reveal,
 }, vertex, fragment);
 extend({ MyGridMaterial });
