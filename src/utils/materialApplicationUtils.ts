@@ -20,12 +20,21 @@ export const MATERIAL_INSTANCE_KEY = '_3driseMaterialInstance';
 export const EDGES_GROUP_KEY = '__isEdgesGroup';
 export const GEREATIVE_EFFECTS_KEY = '__isGenerativeEffectsGroup';
 /**
+ * Set by a renderer that builds and owns its object's material itself — today the
+ * points renderers, while shader effects are active. Two writers on one
+ * `.material` is the bug this prevents: whichever loses keeps animating a
+ * material that is no longer on the mesh, and the object renders as whatever the
+ * winner left behind.
+ */
+export const SELF_OWNED_MATERIAL_KEY = '__ownsItsMaterial';
+/**
  * Traverses obj and its descendants, skipping subtrees whose root is marked
- * with EDGES_GROUP_KEY or GEREATIVE_EFFECTS_KEY — unless obj itself carries that mark (so an edges group
- * or generative effects group can still apply its own material via useMaterialApplication).
+ * with EDGES_GROUP_KEY, GEREATIVE_EFFECTS_KEY or SELF_OWNED_MATERIAL_KEY — unless obj itself
+ * carries that mark (so an edges group or generative effects group can still
+ * apply its own material via useMaterialApplication).
  */
 export function traverseSkippingEdgesAndEffects(obj: Object3D, isRoot: boolean, callback: (node: Object3D) => void): void {
-    if (!isRoot && (obj.userData[EDGES_GROUP_KEY] || obj.userData[GEREATIVE_EFFECTS_KEY]))
+    if (!isRoot && (obj.userData[EDGES_GROUP_KEY] || obj.userData[GEREATIVE_EFFECTS_KEY] || obj.userData[SELF_OWNED_MATERIAL_KEY]))
         return;
     callback(obj);
     for (const child of obj.children) {

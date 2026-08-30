@@ -1,4 +1,4 @@
-import { BufferAttribute, BufferGeometry, EdgesGeometry, Matrix4, Mesh, Vector3 } from "three";
+import { BufferAttribute, BufferGeometry, EdgesGeometry, Float32BufferAttribute, Matrix4, Mesh, Vector3 } from "three";
 import type { Object3D } from 'three';
 import { EDGES_GROUP_KEY } from "./materialApplicationUtils";
 export interface MeshEntry {
@@ -140,5 +140,75 @@ export function buildSubdividedEdgeGeometry(object: Object3D, subdivisions: numb
     geo.setAttribute("aEdgePhase", new BufferAttribute(aEdgePhase, 1));
     geo.setAttribute("aEdgeFreq", new BufferAttribute(aEdgeFreq, 1));
     geo.setIndex(indices);
+    return geo;
+}
+
+// =============================================================================
+// SEGMENT QUADS
+// =============================================================================
+//
+// Turn a list of line segments into a ribbon of camera-agnostic quads — two
+// triangles per segment, with UVs running (0,0)-(1,1) along and across it.
+//
+// This is what makes edges materialisable: the result is an ordinary Mesh with
+// real UVs, so every registry material (the `line` shader family included)
+// applies to it exactly as it would to any other mesh. Line primitives cannot
+// do that — Line2 needs its own LineMaterial and carries no UVs — which is why
+// both the edges builder and the `lines` display modes go through here instead.
+//
+// `source` is a flat sequence of vertex positions, two consecutive vertices per
+// segment: either a BufferAttribute (e.g. EdgesGeometry.attributes.position) or
+// an array of [x, y, z] triples.
+//
+export function buildSegmentQuadGeometry(source: BufferAttribute | ArrayLike<[number, number, number]>, thickness: number = 0.008): BufferGeometry {
+    const isAttribute = typeof (source as BufferAttribute).getX === 'function';
+    const attr = source as BufferAttribute;
+    const list = source as ArrayLike<[number, number, number]>;
+    const vertexCount = isAttribute ? attr.count : list.length;
+    const segCount = Math.floor(vertexCount / 2);
+    const readVertex = (i: number, out: Vector3): Vector3 => (isAttribute
+        ? out.fromBufferAttribute(attr, i)
+        : out.set(list[i][0], list[i][1], list[i][2]));
+    const positions: number[] = [];
+    const uvs: number[] = [];
+    const indices: number[] = [];
+    const start = new Vector3();
+    const end = new Vector3();
+    const dir = new Vector3();
+    const up = new Vector3(0, 1, 0);
+    const right = new Vector3();
+    for (let i = 0; i < segCount; i++) {
+        readVertex(i * 2, start);
+        readVertex(i * 2 + 1, end);
+        dir.subVectors(end, start).normalize();
+        // Perpendicular axis — fallback to X if the segment is vertical
+        right.crossVectors(dir, up).normalize();
+        if (right.lengthSq() < 0.0001) {
+            right.set(1, 0, 0);
+        }
+        const rx = right.x * thickness;
+        const ry = right.y * thickness;
+        const rz = right.z * thickness;
+        const base = i * 4;
+        // v0  start-bottom   uv(0,0)
+        positions.push(start.x - rx, start.y - ry, start.z - rz);
+        uvs.push(0, 0);
+        // v1  end-bottom     uv(1,0)
+        positions.push(end.x - rx, end.y - ry, end.z - rz);
+        uvs.push(1, 0);
+        // v2  start-top      uv(0,1)
+        positions.push(start.x + rx, start.y + ry, start.z + rz);
+        uvs.push(0, 1);
+        // v3  end-top        uv(1,1)
+        positions.push(end.x + rx, end.y + ry, end.z + rz);
+        uvs.push(1, 1);
+        indices.push(base, base + 1, base + 2);
+        indices.push(base + 1, base + 3, base + 2);
+    }
+    const geo = new BufferGeometry();
+    geo.setAttribute('position', new Float32BufferAttribute(positions, 3));
+    geo.setAttribute('uv', new Float32BufferAttribute(uvs, 2));
+    geo.setIndex(indices);
+    geo.computeVertexNormals();
     return geo;
 }

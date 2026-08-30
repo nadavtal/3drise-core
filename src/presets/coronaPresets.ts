@@ -44,7 +44,8 @@ export const coronaPresets: CoronaPreset[] = [
             u_pulseAmount: 0.45,
             u_shellScale: 1.30,
             u_innerColor: [1.0, 0.18, 0.02],
-            u_outerColor: [1.0, 0.85, 0.40]
+            u_outerColor: [1.0, 0.85, 0.40],
+            side: BackSide
         }
     },
     {
@@ -62,7 +63,8 @@ export const coronaPresets: CoronaPreset[] = [
             u_pulseAmount: 0.15,
             u_shellScale: 1.35,
             u_innerColor: [0.95, 0.85, 0.65],
-            u_outerColor: [1.0, 0.95, 0.80]
+            u_outerColor: [1.0, 0.95, 0.80],
+            side: BackSide
         }
     },
     {
@@ -80,7 +82,8 @@ export const coronaPresets: CoronaPreset[] = [
             u_pulseAmount: 0.2,
             u_shellScale: 1.28,
             u_innerColor: [0.10, 0.30, 0.85],
-            u_outerColor: [0.75, 0.92, 1.0]
+            u_outerColor: [0.75, 0.92, 1.0],
+            side: BackSide
         }
     },
     {
@@ -98,7 +101,8 @@ export const coronaPresets: CoronaPreset[] = [
             u_pulseAmount: 0.40,
             u_shellScale: 1.22,
             u_innerColor: [0.55, 0.02, 0.0],
-            u_outerColor: [1.0, 0.22, 0.08]
+            u_outerColor: [1.0, 0.22, 0.08],
+            side: BackSide
         }
     },
     {
@@ -116,7 +120,8 @@ export const coronaPresets: CoronaPreset[] = [
             u_pulseAmount: 0.50,
             u_shellScale: 1.30,
             u_innerColor: [0.40, 0.08, 0.80],
-            u_outerColor: [1.0, 0.35, 0.95]
+            u_outerColor: [1.0, 0.35, 0.95],
+            side: BackSide
         }
     },
     {
@@ -134,7 +139,8 @@ export const coronaPresets: CoronaPreset[] = [
             u_pulseAmount: 0.30,
             u_shellScale: 1.35,
             u_innerColor: [0.10, 0.55, 0.40],
-            u_outerColor: [0.65, 1.0, 0.75]
+            u_outerColor: [0.65, 1.0, 0.75],
+            side: BackSide
         }
     },
     {
@@ -152,7 +158,8 @@ export const coronaPresets: CoronaPreset[] = [
             u_pulseAmount: 0.15,
             u_shellScale: 1.25,
             u_innerColor: [0.20, 0.45, 0.85],
-            u_outerColor: [0.92, 0.97, 1.0]
+            u_outerColor: [0.92, 0.97, 1.0],
+            side: BackSide
         }
     }
 ];

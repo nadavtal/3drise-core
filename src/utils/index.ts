@@ -16,6 +16,7 @@ export * from './positionsCreatorUtils';
 export * from './sunUtils';
 export * from './utils';
 export * from './edgeUtils';
+export * from './surfaceUtils';
 export * from './objectTreeUtils';
 export * from './handleTransformEffects';
 export * from './handleEdgesAnimations';

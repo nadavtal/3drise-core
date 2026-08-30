@@ -782,12 +782,12 @@ const materials: Record<MaterialType, MaterialDefinition> = {
             }
         }
     },
-    shaders: {
-        name: 'User Shaders',
-        description: 'Custom shader materials created by the user',
-        defaultVariant: '',
-        variants: {}
-    },
+    // shaders: {
+    //     name: 'User Shaders',
+    //     description: 'Custom shader materials created by the user',
+    //     defaultVariant: '',
+    //     variants: {}
+    // },
     line: {
         name: 'Line Effects',
         description: 'Animated edge effects rendered as dense point clouds along object geometry edges',
