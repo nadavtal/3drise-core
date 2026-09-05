@@ -165,7 +165,7 @@ export type ObjectEdges = {
     materialSettings: MaterialSettings;
 };
 
-export type CreatedObjectType = 'mesh' | 'model' | 'text' | 'group' | 'custom_primitive' | 'particles' | 'grid' | 'path' | 'gallery' | 'effect' | 'light' | 'clouds' | 'rain' | 'fog' | 'stars' | 'water' | 'solarSystem' | 'shootingStars' | 'earth';
+export type CreatedObjectType = 'mesh' | 'model' | 'text' | 'group' | 'custom_primitive' | 'particles' | 'grid' | 'path' | 'gallery' | 'effect' | 'light' | 'clouds' | 'rain' | 'fog' | 'stars' | 'water' | 'ocean' | 'landscape' | 'solarSystem' | 'shootingStars' | 'earth';
 
 export type ShapeName = 'heart' | 'box' | 'star' | 'polygon' | 'gear' | 'flower' | 'spade' | 'club' | 'diamond' | 'droplet' | 'lightning' | 'sparkle' | 'shield' | 'pawPrint' | 'superformula' | 'sphere' | 'cylinder' | 'cone' | 'torus' | 'plane' | 'ring' | 'arcPlane' | 'bentPlane' | 'bentPlaneInverse' | 'capsule' | 'icosahedron' | 'octahedron' | 'tetrahedron' | 'dodecahedron' | 'text' | 'point' | 'custom' | 'infinity';
 

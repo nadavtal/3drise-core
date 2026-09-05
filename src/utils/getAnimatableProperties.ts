@@ -67,8 +67,29 @@ const LIGHT_SPOT_EXTRA = [
     { value: 'angle', label: 'Angle' },
     { value: 'penumbra', label: 'Penumbra' },
 ];
+// Volumetric cloud deck properties. Only scalars that can be interpolated per
+// frame without rebuilding the density field: altitudes and feature sizes are
+// deliberately absent, because the vertical profile is measured as a fraction of
+// base-to-top, so animating an altitude restretches the whole field and the deck
+// appears to pump rather than move.
 const CLOUDS_PROPS = [
-    { value: 'speed', label: 'Speed' },
+    { value: 'coverage', label: 'Coverage' },
+    { value: 'density', label: 'Density' },
+    { value: 'profile', label: 'Vertical profile' },
+    { value: 'detailStrength', label: 'Detail erosion' },
+    { value: 'curlStrength', label: 'Curl warp' },
+    { value: 'shear', label: 'Wind shear' },
+    { value: 'anvil', label: 'Anvil spread' },
+    { value: 'precipitation', label: 'Precipitation' },
+    { value: 'windBearing', label: 'Wind bearing' },
+    { value: 'windSpeed', label: 'Wind speed' },
+    { value: 'rise', label: 'Convective rise' },
+    { value: 'churn', label: 'Detail churn' },
+    { value: 'evolution', label: 'Formation / decay' },
+    { value: 'extinction', label: 'Extinction' },
+    { value: 'powder', label: 'Powder' },
+    { value: 'silverLining', label: 'Silver lining' },
+    { value: 'ambient', label: 'Ambient' },
 ];
 const RAIN_PROPS = [
     { value: 'color', label: 'Color' },
