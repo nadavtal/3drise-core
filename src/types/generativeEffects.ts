@@ -47,6 +47,9 @@ export interface DataStreamConfig extends BaseGenerativeEffectConfig {
     streamRadius: number;
     inward: boolean;
     particleSize: number;
+    coldColor: string;
+    midColor: string;
+    hotColor: string;
 }
 
 export interface ConstellationConfig extends BaseGenerativeEffectConfig {
@@ -126,6 +129,18 @@ export interface NeuralNetworkConfig extends BaseGenerativeEffectConfig {
     nodeColor: string;
     pulseColor: string;
     orbitSpeed: number;
+    /** Point-sprite size multiplier for traveling electrical signals. */
+    pulseSize?: number;
+    /** Number of independently launched signals per second. */
+    pulseRate?: number;
+    /** Length of the fading dot trail, as a fraction of an edge. */
+    trailLength?: number;
+    /** Likelihood that an arriving signal branches to a neighboring node. */
+    branchChance?: number;
+    /** Brightness and scale response when a node receives a signal. */
+    nodeActivation?: number;
+    /** Number of spontaneous network-wide activation waves per second. */
+    activationRate?: number;
 }
 
 export interface BlackHoleConfig extends BaseGenerativeEffectConfig {
