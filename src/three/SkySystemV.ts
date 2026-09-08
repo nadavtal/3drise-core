@@ -91,15 +91,17 @@ export class SkySystemV {
         const { timeSettings, onTimeOfDayChange } = this.config;
         if (!timeSettings.enabled)
             return;
-        if (timeSettings.autoAnimate) {
-            skySystemManager.tick(delta);
-            const current = skySystemManager.getTimeOfDay();
-            if (this.previousTimeOfDay !== null && this.previousTimeOfDay !== current) {
-                const state = skySystemManager.getState();
-                onTimeOfDayChange?.(current, state.elapsedTime);
-            }
-            this.previousTimeOfDay = current;
+        // Ticked whenever time is enabled, not only while it animates: the
+        // manager's `delta` and `elapsedTime` come out of here and drive every
+        // consumer's colour smoothing. Advancing the hour is the manager's own
+        // decision. Kept in step with the R3F SkySystem deliberately.
+        skySystemManager.tick(delta);
+        const current = skySystemManager.getTimeOfDay();
+        if (this.previousTimeOfDay !== null && this.previousTimeOfDay !== current) {
+            const state = skySystemManager.getState();
+            onTimeOfDayChange?.(current, state.elapsedTime);
         }
+        this.previousTimeOfDay = current;
         this.skybox?.update(_elapsed, delta);
         this.lensflare?.update(_elapsed, delta);
         this.sunLight?.update(_elapsed, delta);
