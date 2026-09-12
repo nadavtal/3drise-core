@@ -19,6 +19,7 @@ export const MATERIAL_INSTANCE_KEY = '_3driseMaterialInstance';
 // Key placed on edges group userData to prevent material bleed-through
 export const EDGES_GROUP_KEY = '__isEdgesGroup';
 export const GEREATIVE_EFFECTS_KEY = '__isGenerativeEffectsGroup';
+export const IMAGE_KEY = '__isImage';
 /**
  * Set by a renderer that builds and owns its object's material itself — today the
  * points renderers, while shader effects are active. Two writers on one
@@ -34,7 +35,7 @@ export const SELF_OWNED_MATERIAL_KEY = '__ownsItsMaterial';
  * apply its own material via useMaterialApplication).
  */
 export function traverseSkippingEdgesAndEffects(obj: Object3D, isRoot: boolean, callback: (node: Object3D) => void): void {
-    if (!isRoot && (obj.userData[EDGES_GROUP_KEY] || obj.userData[GEREATIVE_EFFECTS_KEY] || obj.userData[SELF_OWNED_MATERIAL_KEY]))
+    if (!isRoot && (obj.userData[EDGES_GROUP_KEY] || obj.userData[GEREATIVE_EFFECTS_KEY] || obj.userData[SELF_OWNED_MATERIAL_KEY] || obj.userData[IMAGE_KEY]) )
         return;
     callback(obj);
     for (const child of obj.children) {

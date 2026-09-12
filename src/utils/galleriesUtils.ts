@@ -69,7 +69,7 @@ export const updateCurrentLayoutSettings = (currentSettings: GalleryLayoutSettin
         layoutSettings: GalleryLayoutSettings;
     } => {
     console.log('Updating layout settings for gallery:', currentSettings);
-    const galleryState = {
+    const galleryState: GalleryLayoutSettings = {
         geometryType: newSettings?.geometryType ?? currentSettings.geometryType,
         columns: newSettings?.columns ?? currentSettings.columns ?? 3,
         width: newSettings?.width ?? currentSettings.width ?? 1,
@@ -95,7 +95,7 @@ export const updateCurrentLayoutSettings = (currentSettings: GalleryLayoutSettin
         ? currentSettings.imageUrls
         : createNumberOfDefaultImages(galleryState.numImages ?? 20), galleryState);
     const layoutSettings = getLayoutSettings(currentSettings.layout, galleryState);
-    return { frames, layoutSettings };
+    return { frames, layoutSettings: galleryState };
 };
 // =============================================================================
 // DEFAULT STATE
