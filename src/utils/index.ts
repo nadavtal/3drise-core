@@ -8,6 +8,7 @@ export * from './GalleryLayouts';
 export * from './gridUtils';
 export * from './idUtils';
 export * from './loadingManager';
+export * from './modelCache';
 export * from './materialApplicationUtils';
 export * from './materialUtils';
 export * from './meshUtils';

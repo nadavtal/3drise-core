@@ -1,6 +1,6 @@
 import { Box3, Vector3 } from "three";
 import type { Object3D } from 'three';
-import { loadModelGLTF } from "./loadingManager";
+import { cloneModelAsset, loadModelAsset, preloadModels } from "./modelCache";
 import ObjectManager from "../services/ObjectManager";
 import type { ModelData } from "../types/mesh";
 import type { CreatedRef } from "../types/scene3d";
@@ -35,8 +35,10 @@ export const calculateAutoScale = (model: Object3D, maxSize: number = 5): number
 export const createModelFromUrl = async (model: ModelData): Promise<CreatedRef | null> => {
     try {
         console.log(`Loading model from model: `, model);
-        const loadedModel = await loadModelGLTF(model.url);
-        // console.log("Model loaded from URL:", loadedModel);
+        // One fetch per URL for the life of the page; this is a per-instance clone of the
+        // cached master, so geometry is shared and materials are this object's own.
+        const asset = await loadModelAsset(model.url).promise;
+        const { object: loadedModel } = cloneModelAsset(asset);
         if (loadedModel) {
             loadedModel.name = model.name || `model_${Date.now()}`;
             loadedModel.scale.set(...(model.scale || [1, 1, 1]));
@@ -119,6 +121,14 @@ export const dontAnimate = (key: string): boolean => {
     return key.toLowerCase().includes('texture') ||
         key.toLowerCase().includes('noise');
 };
+/**
+ * Preload a project's models and register one instance per scene object id.
+ *
+ * This is an optimisation, not a precondition: a model leaf that mounts without this
+ * having run loads itself through the same cache under Suspense (see
+ * `useModelObject` in the viewer package). Keep calling it so a scene reveals whole
+ * instead of popping in model by model.
+ */
 export const loadAssets = async (models: ModelData[]): Promise<CreatedRef[]> => {
     console.log(`[loadAssets] Starting to load ${models.length} models`);
     if (models.length === 0) {
@@ -137,6 +147,10 @@ export const loadAssets = async (models: ModelData[]): Promise<CreatedRef[]> => 
         return true;
     });
     console.log(`[loadAssets] Loading ${cleanedModels.length} valid models (filtered ${models.length - cleanedModels.length})`);
+    // Warm the cache for every URL in parallel first — loadModels then walks the list
+    // sequentially, but each step is a clone of an already-resolved master rather than a
+    // fresh download. Repeated URLs cost one fetch, not one per scene object.
+    await preloadModels(cleanedModels.map(model => model.url));
     const createdObjects = await loadModels(cleanedModels);
     console.log(`[loadAssets] Completed. Loaded ${createdObjects.length}/${cleanedModels.length} models`);
     return createdObjects;
