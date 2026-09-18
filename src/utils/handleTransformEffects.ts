@@ -94,9 +94,11 @@ export function handleTransformAnimations(ctx: TransformAnimationContext, animat
         const targetsToAnimate = [];
         if (objectIds && objectIds.length > 0) {
             // Animate specific children by name
-            objectIds.forEach((name) => {
-                const child = object.getObjectByName(name);
-                if (child) {
+            // Every match, not getObjectByName's first: a model repeated by
+            // meshSettings.layout has the same part name once per copy.
+            const names = new Set(objectIds);
+            object.traverse((child) => {
+                if (child.name && names.has(child.name)) {
                     targetsToAnimate.push(child);
                 }
             });

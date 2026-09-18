@@ -1,4 +1,5 @@
 import type { AnchorSettings, threeJsVector, GeometryType, Vector3Array } from "./scene3d";
+import type { ObjectLayoutSettings } from "./gallery";
 export interface AnimatedTransform {
     position: [number, number, number];
     scale: [number, number, number];
@@ -19,6 +20,8 @@ export type MeshSettings = TransformSettings & {
     visible: boolean;
     id: string;
     name: string;
+    /** Repeat the object across a gallery layout (mesh, model, effect, light). */
+    layout?: ObjectLayoutSettings;
 };
 
 export type BaseMeshOptions = MeshSettings & {

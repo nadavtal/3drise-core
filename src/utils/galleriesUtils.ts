@@ -50,6 +50,7 @@ export const getInitialLayoutSettings = (layout: GalleryLayout): GalleryLayoutSe
         startX: 0,
         startY: 0,
         radius: 5,
+        size: 5,
         rotations: 2,
         heightIncrement: 0.5,
         arcAngle: Math.PI,
@@ -68,7 +69,6 @@ export const updateCurrentLayoutSettings = (currentSettings: GalleryLayoutSettin
         frames: FrameData[];
         layoutSettings: GalleryLayoutSettings;
     } => {
-    console.log('Updating layout settings for gallery:', currentSettings);
     const galleryState: GalleryLayoutSettings = {
         geometryType: newSettings?.geometryType ?? currentSettings.geometryType,
         columns: newSettings?.columns ?? currentSettings.columns ?? 3,
@@ -78,6 +78,8 @@ export const updateCurrentLayoutSettings = (currentSettings: GalleryLayoutSettin
         startX: newSettings?.startX ?? currentSettings.startX ?? 0,
         startY: newSettings?.startY ?? currentSettings.startY ?? 0,
         radius: newSettings?.radius ?? currentSettings.radius ?? 5,
+        size: newSettings?.size ?? currentSettings.size ?? 5,
+        seed: newSettings?.seed ?? currentSettings.seed ?? 1,
         rotations: newSettings?.rotations ?? currentSettings.rotations ?? 2,
         heightIncrement: newSettings?.heightIncrement ?? currentSettings.heightIncrement ?? 0.5,
         arcAngle: newSettings?.arcAngle ?? currentSettings.arcAngle ?? Math.PI,
@@ -94,7 +96,6 @@ export const updateCurrentLayoutSettings = (currentSettings: GalleryLayoutSettin
     const frames = GalleryCreator.generateGallery(currentSettings.imageUrls && currentSettings.imageUrls.length > 0
         ? currentSettings.imageUrls
         : createNumberOfDefaultImages(galleryState.numImages ?? 20), galleryState);
-    const layoutSettings = getLayoutSettings(currentSettings.layout, galleryState);
     return { frames, layoutSettings: galleryState };
 };
 // =============================================================================

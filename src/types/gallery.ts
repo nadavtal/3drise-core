@@ -6,6 +6,15 @@ export interface FrameData {
     rotation?: [number, number, number];
     videoSrc?: string | null;
     shapeType?: string;
+    /** Per-slot scale some layouts emit (tunnel). Absent means [1, 1, 1]. */
+    scale?: [number, number, number];
+}
+
+/** One placement produced by the layout math. */
+export interface LayoutSlot {
+    position: [number, number, number];
+    rotation?: [number, number, number];
+    scale?: [number, number, number];
 }
 
 export type GalleryLayout = 'scattered' | 'tiles' | 'horizontal' | 'vertical' | 'circular' | 'spiral' | 'arc' | 'pyramid' | 'helix' | 'box' | 'sphere' | 'fan' | 'wave' | 'tunnel' | 'tunnelPyramid' | 'tunnelWave' | 'random';
@@ -34,6 +43,24 @@ export interface GalleryLayoutSettings {
     numImages?: number;
     imageUrls?: string[];
     side?: number;
+    /** Seed for the 'random' layout, so it keeps its shape across re-renders. */
+    seed?: number;
+}
+
+/** The layout-math fields — what GalleryCreator/LayoutCreator read, minus frame styling. */
+export type LayoutParams = Pick<GalleryLayoutSettings,
+    'columns' | 'spacing' | 'startX' | 'startY' | 'radius' | 'size' | 'rotations' |
+    'heightIncrement' | 'arcAngle' | 'amplitude' | 'frequency' | 'layers' | 'depth' |
+    'scaleFactor' | 'bounds' | 'seed'>;
+
+/**
+ * `meshSettings.layout` — repeat a mesh / model / effect / light across a gallery layout.
+ * Lives in meshSettings (a JSON column) so it persists with no data-center change.
+ */
+export interface ObjectLayoutSettings extends LayoutParams {
+    enabled: boolean;
+    layout: GalleryLayout;
+    count: number;
 }
 
 export interface GalleryLayoutConfig {

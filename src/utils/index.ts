@@ -4,6 +4,7 @@ export * from './frameAnimations';
 export * from './particleAnimations';
 export * from './galleriesUtils';
 export * from './GalleryCreator';
+export * from './LayoutCreator';
 export * from './GalleryLayouts';
 export * from './gridUtils';
 export * from './idUtils';
