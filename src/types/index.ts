@@ -6,6 +6,8 @@ export type * from './gallery';
 
 export type * from './generativeEffects';
 
+export type * from './generativeParticles';
+
 export type * from './handlerSettings';
 
 export type * from './lights';

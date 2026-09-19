@@ -3,6 +3,7 @@ import type { MaterialSettings } from "./materials";
 import type { ShaderEffect } from "./shaderEffects";
 import type { OperationTypes } from "./actions";
 import type { ColorEffectType, EffectTriggerMode, TransformEffectType } from "./effects";
+import { GenerativeEffectSettings } from "./generativeEffects";
 export type PositionEffectType = Extract<TransformEffectType, 'wave' | 'float' | 'shake' | 'bounce'>;
 
 export type RotationEffectType = Extract<TransformEffectType, 'rotate3d' | 'spin' | 'sway' | 'flip'>;
@@ -94,7 +95,7 @@ export interface ObjectAnimations {
     /** Rain domain: rain-specific config properties. Only populated on RainSettings. */
     rain?: RainEffects;
     /** Generative domain: additive geometry effects (aura, molecules, portal...) */
-    effects?: import('./generativeEffects').GenerativeEffectSettings;
+    effects?: GenerativeEffectSettings;
 }
 
 export interface PropertyMutation {

@@ -256,7 +256,7 @@ export type GeneralObjectSettings = {
     /** Click / hover action interactions */
     actions?: Interaction[];
     /** Continuous mouse-move property tracking (per-domain shape). The legacy flat
-     *  MouseMoveInteraction shape is read transparently by the runtime hook for
+     *  MouseMoveInteraction shape is read transparently by the runtime hook for    
      *  back-compat with persisted projects. */
     mouseMove?: MouseMoveInteractions | MouseMoveInteraction;
 };

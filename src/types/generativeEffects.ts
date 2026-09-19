@@ -36,7 +36,7 @@ export interface ShockwaveConfig extends BaseGenerativeEffectConfig {
     intervalSeconds: number;
     rimColor: string;
     /** Ground ring (0) or spherical shell for mid-air blasts (1), 0..1. */
-    shape?: number;
+    shapeNum?: number;
     /** How the front slows: 0 constant speed, 1 true Sedov–Taylor (fast burst, long coast), 0..1. */
     deceleration?: number;
     /** Slow lobes that grow on the front as the shell thins (Vishniac instability), 0..1. */
