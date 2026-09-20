@@ -1,5 +1,6 @@
 import type { MouseMoveInteraction, MouseMoveInteractions, ObjectAnimations } from "../types/objectSettings";
-export type AnimatableDomain = 'transform' | 'material' | 'edges' | 'light' | 'clouds' | 'rain';
+import { getGenerativeAnimatable, isGenerativeFamilyConfig } from "./generativeAnimatable";
+export type AnimatableDomain = 'transform' | 'material' | 'edges' | 'light' | 'clouds' | 'rain' | 'particles';
 
 export interface AnimatableProperty {
     value: string;
@@ -179,6 +180,10 @@ export function getAnimatableProperties(settings: AnimatableTarget, domain: Anim
             return isCloudsConfig(settings.config) ? getCloudsProperties() : [];
         case 'rain':
             return isRainConfig(settings.config) ? getRainProperties() : [];
+        // Generative families read their knobs from the generated registry, so the
+        // panel always matches what the renderer can actually drive per frame.
+        case 'particles':
+            return getGenerativeAnimatable('particles', settings.config);
         default:
             return [];
     }

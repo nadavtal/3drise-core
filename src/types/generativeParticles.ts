@@ -4,7 +4,7 @@
 // trail types (trailMode, plus 'none'); see the 3drise-particles skill.
 // =============================================================================
 
-import type { AnimationOptions } from "./scene3d";
+import type { ObjectAnimations } from "./objectSettings";
 
 export type GenerativeParticlesType = 'tidalStream' | 'brownianDust' | 'bioluminescentWake' | 'electronOrbitals' | 'grinderSparks';
 
@@ -262,7 +262,9 @@ export type GenerativeParticlesConfig = ({
 } & GrinderSparksParticlesConfig);
 
 export interface GenerativeParticlesSettings {
+    /** Scene object id (the controller's live-edit path finds the object by it). */
+    id?: string;
     config: GenerativeParticlesConfig;
-    /** Keyframe animations targeting config properties (intensity, pointerStrength, trailOpacity, ...) */
-    animations?: AnimationOptions[];
+    /** Per-domain animations; the `particles` domain drives config knobs (intensity, pointerStrength, trailOpacity, ...). */
+    animations?: ObjectAnimations;
 }

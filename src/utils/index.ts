@@ -24,6 +24,7 @@ export * from './handleTransformEffects';
 export * from './handleEdgesAnimations';
 export * from './handleLightAnimations';
 export * from './handleMaterialEffects';
+export * from './generativeAnimatable';
 export * from './getAnimatableProperties';
 export * from './mouseMoveUtils';
 export * from './handleTransformMouseMove';

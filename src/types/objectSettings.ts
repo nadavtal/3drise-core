@@ -75,6 +75,11 @@ export interface CloudsEffects {
     animations?: AnimationOptions[];
 }
 
+export interface ParticlesEffects {
+    /** Keyframe animations for a generative particle object's config properties */
+    animations?: AnimationOptions[];
+}
+
 export interface RainEffects {
     /** Keyframe animations for rain config properties */
     animations?: AnimationOptions[];
@@ -94,6 +99,8 @@ export interface ObjectAnimations {
     clouds?: CloudsEffects;
     /** Rain domain: rain-specific config properties. Only populated on RainSettings. */
     rain?: RainEffects;
+    /** Particles domain: a generative particle object's own config knobs (type 'particles'). */
+    particles?: ParticlesEffects;
     /** Generative domain: additive geometry effects (aura, molecules, portal...) */
     effects?: GenerativeEffectSettings;
 }
@@ -156,6 +163,8 @@ export interface MouseMoveInteractions {
     light?: MouseMoveDomain;
     clouds?: MouseMoveDomain;
     rain?: MouseMoveDomain;
+    /** Particles domain: a generative particle object's own config knobs. */
+    particles?: MouseMoveDomain;
 }
 
 
