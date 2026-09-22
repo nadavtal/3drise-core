@@ -1,6 +1,6 @@
 {
   "name": "@3driseai/3drise-core",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "private": false,
   "type": "module",
   "main": "./dist/index.js",
