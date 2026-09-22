@@ -35,3 +35,4 @@ export * from './sceneQuery';
 export * from './shootingStarHelpers';
 export * from './environmentUtils';
 export * from './MaterialCompiler';
+export * from './nodeOverrides';

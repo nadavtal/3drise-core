@@ -243,7 +243,7 @@ export interface ModeConfig {
     lineWidth: number;
 }
 
-export type CreatedObjectConfig = GridConfig | TextConfig | PathConfig | ParticledConfig | GenerativeEffectConfig | GalleryLayoutSettings | LightObjectConfig | CloudsConfig | GeometryShapeConfig | RainConfig | WaterConfig | BubblesConfig | GlyphsConfig | SparklesBurstConfig | MoonSettings;
+export type CreatedObjectConfig = Record<string, any>;
 
 export type GeneralObjectSettings = {
     meshSettings: ModelData | BaseMeshOptions | MeshSettings;
@@ -260,6 +260,51 @@ export type GeneralObjectSettings = {
      *  back-compat with persisted projects. */
     mouseMove?: MouseMoveInteractions | MouseMoveInteraction;
 };
+
+/**
+ * Tweak applied on top of a model mesh's current material (the GLB material, or the
+ * model-level material when `materialSettings.apply` is on). Textures are kept.
+ */
+export interface NodeMaterialTweak {
+    color?: string;
+    opacity?: number;
+    roughness?: number;
+    metalness?: number;
+    emissive?: string;
+    emissiveIntensity?: number;
+}
+
+export interface NodeMaterialOverride {
+    /** 'tweak' edits the mesh's own material; 'replace' swaps in a full 3drise material. */
+    mode: 'tweak' | 'replace';
+    tweak?: NodeMaterialTweak;
+    settings?: MaterialSettings;
+}
+
+/** Per-mesh override for a `type: 'model'` object. Only fields that differ from the GLB. */
+export interface NodeOverride {
+    visible?: boolean;
+    /** Local-space transform of the mesh (relative to its parent inside the model). */
+    position?: Vector3Array;
+    rotation?: Vector3Array;
+    scale?: Vector3Array;
+    material?: NodeMaterialOverride;
+}
+
+/**
+ * Keyed by node name (GLB names are unique per file), or by child-index path from the
+ * model root ("/0/3/1") for unnamed nodes. Applied to every layout copy.
+ */
+export type NodeOverrides = Record<string, NodeOverride>;
+
+/**
+ * `config` of a `type: 'model'` object. Kept in config (an existing JSON column) so
+ * model-only data needs no schema change.
+ */
+export interface ModelObjectConfig {
+    nodeOverrides?: NodeOverrides;
+    [key: string]: any;
+}
 
 export type CreatedObjectSettings = GeneralObjectSettings & {
     id: string;

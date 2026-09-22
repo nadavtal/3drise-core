@@ -6,7 +6,7 @@
 
 import type { ObjectAnimations } from "./objectSettings";
 
-export type GenerativeParticlesType = 'tidalStream' | 'brownianDust' | 'bioluminescentWake' | 'electronOrbitals' | 'grinderSparks';
+export type GenerativeParticlesType = 'tidalStream' | 'brownianDust' | 'bioluminescentWake' | 'electronOrbitals' | 'grinderSparks' | 'chladniSand' | 'faradayPowder' | 'neonRain';
 
 /** Shared by every particle object: 'none' turns trails off. */
 export type ParticleTrailMode = 'none' | 'streak' | 'comet' | 'echo';
@@ -249,6 +249,136 @@ export interface GrinderSparksParticlesConfig extends BaseGenerativeParticlesCon
     trailShare?: number;
 }
 
+/** Chladni Sand — Sand on an invisible vibrating plate: resonant plate modes throw grains onto the nodal lines, drawing Chladni figures that form and re-form; the cursor bows, touches or taps the plate. Use for science, sound and abstract scenes. */
+export interface ChladniSandParticlesConfig extends BaseGenerativeParticlesConfig {
+    /** Sand grains (CPU simulated), 4000..60000. */
+    particleCount?: number;
+    /** Drive frequency (mode number): each value rings a different figure, 1.5..10. */
+    frequency?: number;
+    /** Slow glide of the drive frequency through neighbouring resonances (octaves; 0 = hold), 0..1. */
+    sweep?: number;
+    /** Resonance width: low = sharp, pure figures; high = blended figures, 0.01..0.3. */
+    damping?: number;
+    /** Drive strength: thinner or thicker nodal lines, livelier hops, 0..3. */
+    amplitude?: number;
+    /** Colour of grains in flight, catching the light. */
+    hopColor?: string;
+    /** Elevation of the raking light in degrees: low = strong relief, 5..70. */
+    lightAngle?: number;
+    /** Grain sprite size, 0.3..3. */
+    grainSize?: number;
+    /** Layout seed: a different arrangement with the same character, 1..999. */
+    seed?: number;
+    /** Detail level: scales particle counts and trail caps. */
+    quality?: 'low' | 'medium' | 'high';
+    /** What the cursor does: off, bows the plate edge, touches it with a finger, or taps it. */
+    pointerMode?: 'none' | 'bow' | 'finger' | 'tap';
+    /** Bow pressure / finger pressure / tap force (0 = no interaction), 0..3. */
+    pointerStrength?: number;
+    /** Bow width / fingertip size / tap size, 0.2..3. */
+    pointerRadius?: number;
+    /** Rosin dust colour. */
+    pointerColor?: string;
+    /** Long exposure, migration paths or dust haze. */
+    trailMode?: 'none' | 'streak' | 'comet' | 'echo';
+    /** Trail duration in seconds, 0.2..6. */
+    trailLength?: number;
+    /** Trail brightness, 0..1. */
+    trailOpacity?: number;
+    /** Colour trails cool toward. */
+    trailColor?: string;
+    /** Fraction of grains that leave trails, 0.02..1. */
+    trailShare?: number;
+}
+
+/** Faraday Powder — Glowing powder on an invisible vibrating plate: acoustic streaming gathers it into swirling heaps at the antinodes, hotter where the plate moves most; the cursor bows, touches or taps the plate. Use for abstract, sound and fire-like scenes. */
+export interface FaradayPowderParticlesConfig extends BaseGenerativeParticlesConfig {
+    /** Powder particles (CPU simulated), 2000..40000. */
+    particleCount?: number;
+    /** Drive frequency (mode number): each value rings a different figure, 1.5..10. */
+    frequency?: number;
+    /** Slow glide of the drive frequency through neighbouring resonances (octaves; 0 = hold), 0..1. */
+    sweep?: number;
+    /** Resonance width: low = sharp, pure figures; high = blended figures, 0.01..0.3. */
+    damping?: number;
+    /** Drive strength: how hard the plate shakes the powder, 0..3. */
+    amplitude?: number;
+    /** Colour of powder churning in the strongest antinodes. */
+    glowColor?: string;
+    /** How high the heaps float above the plate, 0..3. */
+    hover?: number;
+    /** Spin of the heaps (acoustic streaming cells), 0..3. */
+    swirl?: number;
+    /** Powder puff size, 0.3..3. */
+    puffSize?: number;
+    /** Layout seed: a different arrangement with the same character, 1..999. */
+    seed?: number;
+    /** Detail level: scales particle counts and trail caps. */
+    quality?: 'low' | 'medium' | 'high';
+    /** What the cursor does: off, bows the plate edge, touches it with a finger, or taps it. */
+    pointerMode?: 'none' | 'bow' | 'finger' | 'tap';
+    /** Bow pressure / finger pressure / tap force (0 = no interaction), 0..3. */
+    pointerStrength?: number;
+    /** Bow width / fingertip size / tap size, 0.2..3. */
+    pointerRadius?: number;
+    /** Rosin dust colour. */
+    pointerColor?: string;
+    /** Long exposure, swirl threads or smoke haze. */
+    trailMode?: 'none' | 'streak' | 'comet' | 'echo';
+    /** Trail duration in seconds, 0.2..6. */
+    trailLength?: number;
+    /** Trail brightness, 0..1. */
+    trailOpacity?: number;
+    /** Colour trails cool toward. */
+    trailColor?: string;
+    /** Fraction of powder that leaves trails, 0.02..1. */
+    trailShare?: number;
+}
+
+/** Neon Rain — Night rain lit by neon: Marshall–Palmer drops at terminal velocity, gusting sheets, splash crowns and rim drips, each drop lit like a tiny lens; the cursor is an umbrella, a gust or a headlight. Use for city, noir and cinematic scenes. */
+export interface NeonRainParticlesConfig extends BaseGenerativeParticlesConfig {
+    /** Raindrop pool (CPU simulated; splash droplets come on top), 1000..20000. */
+    particleCount?: number;
+    /** Rain rate in mm/h: more drops, and bigger ones, 1..80. */
+    rainRate?: number;
+    /** Breeze across the street in m/s (negative = from the other side), -6..6. */
+    windSpeed?: number;
+    /** Strength of the gust fronts that sweep sheets of rain through, 0..2. */
+    gustiness?: number;
+    /** Second neon light colour. */
+    neonColor2?: string;
+    /** Sodium streetlamp light from above. */
+    lampColor?: string;
+    /** Strength of the neon light falling on the rain (the lights themselves stay off-screen), 0..2. */
+    neonLight?: number;
+    /** Lens aperture: out-of-focus drops become bokeh discs (0 = pinhole), 0..2. */
+    aperture?: number;
+    /** Drop sprite size, 0.3..3. */
+    dropSize?: number;
+    /** Layout seed: a different arrangement with the same character, 1..999. */
+    seed?: number;
+    /** Detail level: scales particle counts and trail caps. */
+    quality?: 'low' | 'medium' | 'high';
+    /** What the cursor is: off, an umbrella, a gust of wind, or an oncoming headlight. */
+    pointerMode?: 'none' | 'umbrella' | 'gust' | 'headlight';
+    /** Umbrella size / gust force / headlight power (0 = no interaction), 0..3. */
+    pointerStrength?: number;
+    /** Umbrella radius / gust size / beam width, 0.2..3. */
+    pointerRadius?: number;
+    /** Headlight colour, and the tint of canopy splashes. */
+    pointerColor?: string;
+    /** Shutter streaks, wet threads or splash afterglow. */
+    trailMode?: 'none' | 'streak' | 'comet' | 'echo';
+    /** Shutter: length of the streaks, 0.2..6. */
+    trailLength?: number;
+    /** Trail brightness, 0..1. */
+    trailOpacity?: number;
+    /** Colour trails cool toward. */
+    trailColor?: string;
+    /** Fraction of drops that leave trails, 0.02..1. */
+    trailShare?: number;
+}
+
 export type GenerativeParticlesConfig = ({
     type: 'tidalStream';
 } & TidalStreamParticlesConfig) | ({
@@ -259,7 +389,13 @@ export type GenerativeParticlesConfig = ({
     type: 'electronOrbitals';
 } & ElectronOrbitalsParticlesConfig) | ({
     type: 'grinderSparks';
-} & GrinderSparksParticlesConfig);
+} & GrinderSparksParticlesConfig) | ({
+    type: 'chladniSand';
+} & ChladniSandParticlesConfig) | ({
+    type: 'faradayPowder';
+} & FaradayPowderParticlesConfig) | ({
+    type: 'neonRain';
+} & NeonRainParticlesConfig);
 
 export interface GenerativeParticlesSettings {
     /** Scene object id (the controller's live-edit path finds the object by it). */
