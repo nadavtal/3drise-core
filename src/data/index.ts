@@ -5,6 +5,8 @@ export * from './particlesSettings';
 export * from './paths';
 export * from './effectsDefaults';
 export * from './particlesDefaults';
+export * from './lightsDefaults';
+export * from './shadowDefaults';
 export * from './defaults';
 export * from './shaders';
 export { shapeConfig } from './shapeConfig';

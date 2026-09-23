@@ -1,4 +1,5 @@
 import { GENERATIVE_PARTICLES_ANIMATABLE } from "../data/particlesDefaults";
+import { LIGHTS_ANIMATABLE } from "../data/lightsDefaults";
 
 // =============================================================================
 // GENERATIVE ANIMATABLE REGISTRY — which config knobs may be driven per frame
@@ -21,10 +22,13 @@ export interface AnimatableConfigProperty {
     label: string;
 }
 
-export type GenerativeFamily = 'particles';
+export type GenerativeFamily = 'particles' | 'lights';
 
 const FAMILIES: Record<GenerativeFamily, Record<string, AnimatableConfigProperty[]>> = {
     particles: GENERATIVE_PARTICLES_ANIMATABLE,
+    // Lights are not generative, but they store their knobs in `config` and drive
+    // them through one applyLightConfig per frame, so they use the same registry.
+    lights: LIGHTS_ANIMATABLE,
 };
 
 /** The animatable knobs of one generative object, by family and config.type. */

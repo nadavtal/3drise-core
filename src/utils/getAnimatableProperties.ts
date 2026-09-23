@@ -39,7 +39,7 @@ export interface AnimatableTarget {
 //   - transform: hardcoded ['position', 'rotation', 'scale']
 //   - material : keys of settings.materialSettings minus an excluded list
 //   - edges    : geometry props by edgesSettings.type + filtered material keys
-//   - light    : per-light-type allowlist driven by settings.config.type
+//   - light    : the generated LIGHTS_ANIMATABLE registry, by settings.config.type
 //   - clouds   : ['speed'] when settings.config.type === 'clouds'
 //
 // =============================================================================
@@ -55,19 +55,6 @@ const EXCLUDED_MATERIAL_KEYS = new Set([
     'u_time', 'u_mouse',
     'apply', 'visible', 'map', 'uHasTexture',
 ]);
-const LIGHT_COMMON = [
-    { value: 'intensity', label: 'Intensity' },
-    { value: 'color', label: 'Color' },
-];
-const LIGHT_POINT_EXTRA = [
-    { value: 'distance', label: 'Distance' },
-    { value: 'decay', label: 'Decay' },
-];
-const LIGHT_SPOT_EXTRA = [
-    ...LIGHT_POINT_EXTRA,
-    { value: 'angle', label: 'Angle' },
-    { value: 'penumbra', label: 'Penumbra' },
-];
 // Volumetric cloud deck properties. Only scalars that can be interpolated per
 // frame without rebuilding the density field: altitudes and feature sizes are
 // deliberately absent, because the vertical profile is measured as a fraction of
@@ -135,27 +122,11 @@ function getEdgesProperties(edgesSettings) {
     }
     return props;
 }
-function getLightProperties(config) {
-    switch (config?.type) {
-        case 'point':
-            return [...LIGHT_COMMON, ...LIGHT_POINT_EXTRA];
-        case 'spot':
-            return [...LIGHT_COMMON, ...LIGHT_SPOT_EXTRA];
-        case 'ambient':
-        case 'directional':
-        default:
-            return [...LIGHT_COMMON];
-    }
-}
 function getCloudsProperties() {
     return [...CLOUDS_PROPS];
 }
 function getRainProperties() {
     return [...RAIN_PROPS];
-}
-function isLightConfig(config) {
-    const t = config?.type;
-    return t === 'ambient' || t === 'directional' || t === 'point' || t === 'spot';
 }
 function isCloudsConfig(config) {
     return config?.type === 'clouds';
@@ -174,8 +145,10 @@ export function getAnimatableProperties(settings: AnimatableTarget, domain: Anim
             return getMaterialProperties(settings.materialSettings);
         case 'edges':
             return getEdgesProperties(settings.edgesSettings);
+        // Lights read the same generated registry as the generative families, so a
+        // new light type's knobs show up without touching this file.
         case 'light':
-            return isLightConfig(settings.config) ? getLightProperties(settings.config) : [];
+            return getGenerativeAnimatable('lights', settings.config);
         case 'clouds':
             return isCloudsConfig(settings.config) ? getCloudsProperties() : [];
         case 'rain':
@@ -201,10 +174,8 @@ export function detectAnimatableDomain(settings: AnimatableTarget, propertyName:
     const edges = getEdgesProperties(settings.edgesSettings).map(p => p.value);
     if (edges.includes(propertyName))
         return 'edges';
-    if (isLightConfig(settings.config)) {
-        if (getLightProperties(settings.config).some(p => p.value === propertyName))
-            return 'light';
-    }
+    if (getGenerativeAnimatable('lights', settings.config).some(p => p.value === propertyName))
+        return 'light';
     if (isCloudsConfig(settings.config)) {
         if (getCloudsProperties().some(p => p.value === propertyName))
             return 'clouds';
