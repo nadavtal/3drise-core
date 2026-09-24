@@ -21,6 +21,7 @@ export const LIGHT_LABELS: Record<LightType, string> = {
     spotBeam: 'Spot Beam',
     ledArray: 'LED Array',
     fluorescentTube: 'Fluorescent Tube',
+    candle: 'Candle',
 };
 
 /** Config defaults per light type — what the renderer falls back to, and what Reset restores. */
@@ -59,6 +60,16 @@ export const DEFAULT_LIGHTS: Record<LightType, Record<string, unknown>> = {
         tubes: 1, tubeSpacing: 0.14, length: 1.2, diameter: 0.026, emitter: 'tubes',
         greenShift: 0.35, startup: 'stutter', warmup: 1.2, hum: 0.3, age: 0.15,
         shadowStrength: 0.4, flicker: 0, halo: 1,
+    },
+    candle: {
+        type: 'candle', enabled: true, intensity: 1, color: '#ffb46b', distance: 0, decay: 2,
+        on: true, colorMode: 'temperature', temperature: 1850,
+        flameMode: 'volumetric', flameHeight: 0.055, flameWidth: 1,
+        flicker: 0.5, movement: 1, flickerHz: 11, draught: 0.08,
+        blue: 0.7, blueBasePercentage: 16, soot: 0.25, flameSteps: 24, flameGain: 5, flameWhite: 3.5,
+        ignite: 1.6, smoke: true, halo: 1,
+        body: 'pillar', waxColor: '#f3e7d2', height: 0.14, radius: 0.028,
+        melt: 0.45, waxGlow: 0.3,
     },
 };
 
@@ -134,6 +145,22 @@ export const LIGHTS_ANIMATABLE: Record<LightType, AnimatableLightProperty[]> = {
         { value: 'flicker', label: 'Flicker' },
         { value: 'halo', label: 'Halo' },
         { value: 'warmup', label: 'Warm-up' },
+    ],
+    // The wax, the flame's size and the flame mode all rebuild; everything the
+    // flame does per frame is drivable, including the air moving past it.
+    candle: [
+        ...COMMON, ...FALLOFF,
+        { value: 'temperature', label: 'Temperature' },
+        { value: 'flicker', label: 'Flicker' },
+        { value: 'movement', label: 'Movement' },
+        { value: 'flickerHz', label: 'Flicker Rate' },
+        { value: 'draught', label: 'Draught' },
+        { value: 'blue', label: 'Blue Base' },
+        { value: 'blueBasePercentage', label: 'Blue Base Height' },
+        { value: 'soot', label: 'Soot' },
+        { value: 'halo', label: 'Halo' },
+        { value: 'waxGlow', label: 'Wax Glow' },
+        { value: 'ignite', label: 'Ignition' },
     ],
 };
 

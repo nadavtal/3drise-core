@@ -1,6 +1,6 @@
 import type { Vector3Array } from "./common";
 import { AnimationOptions, MouseMoveInteraction } from ".";
-export type LightType = 'ambient' | 'directional' | 'point' | 'spot' | 'lightBulb' | 'spotBeam' | 'ledArray' | 'fluorescentTube';
+export type LightType = 'ambient' | 'directional' | 'point' | 'spot' | 'lightBulb' | 'spotBeam' | 'ledArray' | 'fluorescentTube' | 'candle';
 
 export type BaseLightConfig = {
     enabled: boolean;
@@ -195,7 +195,81 @@ export type FluorescentTubeConfig = Omit<BaseLightConfig, 'type'> & {
     halo?: number;
     shadow?: PointShadowSettings;
 };
-export type LightObjectConfig = BaseLightConfig | SpotLightConfig | PointLightConfig | LightBulbConfig | SpotBeamConfig | LedArrayConfig | FluorescentTubeConfig;
+export type CandleBody = 'pillar' | 'taper' | 'tealight' | 'none';
+export type FlameMode = 'volumetric' | 'billboard';
+/**
+ * A candle: a raymarched flame with a real point light at its luminous centroid,
+ * standing on wax.
+ *
+ * The flame's motion is modelled rather than randomised — a buoyancy oscillation
+ * around 10-12 Hz (nearly independent of candle size), a pink-noise wander for
+ * room air, guttering under draught, and an ignition when it is switched on.
+ * The light moves with the flame, so the shadows sway instead of only dimming.
+ */
+export type CandleConfig = Omit<PointLightConfig, 'type'> & {
+    type: 'candle';
+
+    // --- flame ---
+    /** 'billboard' is the same field on one quad, for scenes full of candles. Default 'volumetric'. */
+    flameMode?: FlameMode;
+    /** Flame height in world units. A real one is 0.03-0.06. Default 0.055. */
+    flameHeight?: number;
+    /** Width multiplier, 0.15-2. Default 1. */
+    flameWidth?: number;
+    /** Depth of the brightness dip, 0-1. Light output only, not shape. Default 0.5. */
+    flicker?: number;
+    /**
+     * How much the flame moves at all, 0-1. 0 freezes its shape into a still
+     * teardrop that can still flicker in brightness. Default 1.
+     */
+    movement?: number;
+    /** Pulse rate in Hz. Real candles sit near 11 whatever their size. Default 11. */
+    flickerHz?: number;
+    /** Air movement, 0-1: lean, stretch, turbulence and eventually guttering. Each
+     *  candle picks its own wind direction and lets it drift. Default 0.08. */
+    draught?: number;
+    /** Strength of the blue base, 0-1. Default 0.7. */
+    blue?: number;
+    /** How much of the flame's height reads blue, 0-100. Default 16. */
+    blueBasePercentage?: number;
+    /** How much the soot absorbs, 0-1: the flame's body rather than a ghost. Default 0.25. */
+    soot?: number;
+    /** Raymarch steps, 8-40. Volumetric only. Default 24. */
+    flameSteps?: number;
+    /** Emission scale. Raise for a hotter, whiter flame. Default 5. */
+    flameGain?: number;
+    /** White point of the flame's own knee, 1.5-10. Lower blows the core out sooner. Default 3.5. */
+    flameWhite?: number;
+    /** Seconds for the wick to catch and the flame to establish. Default 1.6. */
+    ignite?: number;
+    /** A thread of smoke after it is snuffed. Default true. */
+    smoke?: boolean;
+    /** Strength of the wash around the flame, 0-2. Default 1. */
+    halo?: number;
+
+    // --- colour ---
+    /** Default 'temperature'. */
+    colorMode?: 'temperature' | 'color';
+    /** Colour temperature in Kelvin. A candle is about 1850. Default 1850. */
+    temperature?: number;
+    /** Lit. Switching it on runs the ignition; off snuffs it. Default true. */
+    on?: boolean;
+
+    // --- wax ---
+    /** 'none' leaves the flame and the light alone. Default 'pillar'. */
+    body?: CandleBody;
+    /** Wax colour. Default '#f3e7d2'. */
+    waxColor?: string;
+    /** Candle height in world units, before the body style's proportions. Default 0.14. */
+    height?: number;
+    /** Candle radius. Default 0.028. */
+    radius?: number;
+    /** How far the wax has melted down, 0-1: the depth of the well. Default 0.45. */
+    melt?: number;
+    /** How much the wax glows from inside, 0-1. Default 0.3. */
+    waxGlow?: number;
+};
+export type LightObjectConfig = BaseLightConfig | SpotLightConfig | PointLightConfig | LightBulbConfig | SpotBeamConfig | LedArrayConfig | FluorescentTubeConfig | CandleConfig;
 
 export type ShadowSettings = {
     enabled?: boolean;
