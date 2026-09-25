@@ -254,7 +254,7 @@ export interface CopyProjectPayload {
     copyDependencies?: boolean;
 }
 
-export type ProjectDataType = 'sceneObjects' | 'environments' | 'lights' | 'camera' | 'project' | 'postProcessing' | 'sceneSettings' | 'animationSequences';
+export type ProjectDataType = 'sceneObjects' | 'environments' | 'lights' | 'camera' | 'project' | 'postProcessing' | 'sceneSettings' | 'animationSequences' | 'actionSequences';
 
 export interface CreateDataItem {
     data: Record<string, any>;

@@ -124,6 +124,10 @@ export interface Interaction {
     targetMode?: 'replace' | 'add';
     /** Animation sequence IDs to trigger */
     animationIds?: string[];
+    /** Action sequence IDs to apply (instant). With the 'toggle' operation, every second trigger reverts them. */
+    actionIds?: string[];
+    /** Narrows a `model` target in targetIds to specific mesh names, keyed by that model's object id */
+    targetMeshNames?: Record<string, string[]>;
 }
 
 export interface ClickInteraction {

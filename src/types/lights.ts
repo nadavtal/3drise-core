@@ -6,6 +6,17 @@ export type BaseLightConfig = {
     enabled: boolean;
     name: string;
     type: LightType;
+    /**
+     * Scene objects ('mesh' / 'model') this light drives, by id. The light does
+     * not own them — it only pushes its live state onto them, which is how a
+     * lampshade glows from the bulb inside it. Empty or absent = drives nothing.
+     */
+    targetIds?: string[];
+    /**
+     * For a 'model' target, the mesh names inside it to drive, keyed by the
+     * model's object id. Absent for a model means the whole model.
+     */
+    targetMeshes?: Record<string, string[]>;
     position?: Vector3Array;
     color: string;
     intensity: number;

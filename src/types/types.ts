@@ -7,6 +7,7 @@ import type { HtmlElement } from "./uiController";
 import type { Action } from "./actions";
 import type { SceneLightConfig } from "./lights";
 import type { AnimationSequence } from "./animations";
+import type { ActionSequence } from "./actions";
 import type { CursorModuleConfig } from "./cursor";
 import { type ThreeEvent } from "@react-three/fiber";
 export type AnimationType = 'tween' | 'keyframe';
@@ -74,6 +75,7 @@ export interface ProjectData {
     uiSettings: any;
     actions?: Action[];
     animationSequences?: AnimationSequence[];
+    actionSequences?: ActionSequence[];
     cursor?: CursorModuleConfig;
 }
 

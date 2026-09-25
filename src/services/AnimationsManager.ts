@@ -417,6 +417,10 @@ class AnimationsManager {
      * @returns Eased progress value from 0 to 1
      */
     getProgressFromTime(startTime: number, duration: number, ease: string = 'linear'): number {
+        // Zero-length steps (actions) are complete immediately. Without this, elapsed/0 is
+        // NaN on the first frame (elapsed 0) and every lerp downstream goes NaN.
+        if (!(duration > 0))
+            return 1;
         const elapsed = (performance.now() - startTime) / 1000; // Convert ms to seconds
         const linearProgress = Math.min(Math.max(elapsed / duration, 0), 1);
         // Convert GSAP ease string to easing function name if needed

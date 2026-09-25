@@ -29,4 +29,37 @@ export type ActionsSet = {
     description?: string;
     actions: Action[];
 };
+/**
+ * One element an action changes: `state` addresses it (a scene object id, or one of
+ * 'camera' | 'sky' | 'ocean' | 'clouds'), and `patch` is a deep partial of that
+ * element's own settings — `{ materialSettings: { materialVariant: 'Glass' } }`,
+ * `{ config: { intensity: 4 } }`, `{ meshSettings: { position: [0, 2, 0] } }`.
+ */
+export interface ActionTarget {
+    state: string;
+    patch: Record<string, any>;
+}
+
+/**
+ * ActionSequence — an instant, multi-element scene change, applied at runtime only.
+ *
+ * Executed by `SceneActions.applyAction` / `revertAction` / `toggleAction`, which lay
+ * the patches over the authored settings; revert removes them. Never written into the
+ * authored settings and never persisted as scene state — only the action definition is saved.
+ */
+export interface ActionSequence {
+    id: string;
+    name: string;
+    /**
+     * Stable, code-facing name — what the component API addresses
+     * (`scene.actions.toggle('open-door')`). Derived from the name once at creation,
+     * unique per project, survives renames and project copies. See utils/actionKeys.
+     */
+    key?: string;
+    description?: string;
+    targets: ActionTarget[];
+    assetId?: string | null;
+    /** Runtime only */
+    isDirty?: boolean;
+}
 export {};

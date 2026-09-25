@@ -20,3 +20,5 @@ export { UniformConverter, UniformProcessor, uniformConverter } from './UniformC
 export { SkySystemManager, skySystemManager } from './SkySystemManager';
 export { CubeCameraManager, cubeCameraManager } from './CubeCameraManager';
 export { default as SceneStore } from './SceneStore';
+export { default as SceneActions } from './SceneActions';
+export type { SceneActionsEvent } from './SceneActions';
