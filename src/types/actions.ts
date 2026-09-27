@@ -1,3 +1,4 @@
+import type { OperationEffect } from './objectSettings';
 /**
  * Action Types
  * Defines the structure for UI actions that can trigger animations, toggle elements, or load projects
@@ -31,7 +32,7 @@ export type ActionsSet = {
 };
 /**
  * One element an action changes: `state` addresses it (a scene object id, or one of
- * 'camera' | 'sky' | 'ocean' | 'clouds'), and `patch` is a deep partial of that
+ * 'camera' | 'sky' | 'ocean' | 'clouds' | 'terrain'), and `patch` is a deep partial of that
  * element's own settings — `{ materialSettings: { materialVariant: 'Glass' } }`,
  * `{ config: { intensity: 4 } }`, `{ meshSettings: { position: [0, 2, 0] } }`.
  */
@@ -58,6 +59,12 @@ export interface ActionSequence {
     key?: string;
     description?: string;
     targets: ActionTarget[];
+    /**
+     * Operations run when the action is applied, undone when it is reverted
+     * (glow, fade, zoom to…). Patches change what elements ARE; effects are what
+     * HAPPENS to objects. Patches are applied first.
+     */
+    effects?: OperationEffect[];
     assetId?: string | null;
     /** Runtime only */
     isDirty?: boolean;

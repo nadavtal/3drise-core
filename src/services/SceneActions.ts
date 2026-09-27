@@ -9,7 +9,7 @@
 //       -> per-frame overrides (animations, mouse-move, sequences, live drags)
 //
 // An action is a list of targets, each a `state` key (object id, or 'camera' |
-// 'sky' | 'ocean' | 'clouds') and a patch — a deep partial of that element's
+// 'sky' | 'ocean' | 'clouds' | 'terrain') and a patch — a deep partial of that element's
 // settings. Applying pushes the patches; reverting removes them. Because a patch
 // goes through the element's normal settings path, structural changes (material
 // variant, display mode, light shape, particle count) work exactly as an edit in
@@ -19,6 +19,12 @@
 // `subscribe(state)` (viewer's useRuntimeSettings wraps both), so only the
 // elements an action touches re-render.
 //
+// An action may also carry `effects` (operations: glow, zoom to…). This store does
+// not run them — it has no scene — but its events say when to: the viewer's
+// operations runtime applies them on `applied` (not on a re-apply, and not when
+// `runEffects` is false — the editor's patch preview) and undoes them on
+// `reverted` / `reset`.
+//
 // Nothing here is persisted. `reset()` on project load.
 //
 import type { ActionSequence } from '../types/actions';
@@ -27,9 +33,16 @@ import { composeSettingsPatches, type SettingsPatch } from '../utils/settingsPat
 type Listener = () => void;
 
 export type SceneActionsEvent =
-    | { type: 'applied'; actionId: string }
-    | { type: 'reverted'; actionId: string }
-    | { type: 'reset' };
+    /** `reapplied`: it was already applied (patches moved to the top). `runEffects`: false for a patch-only preview. */
+    | { type: 'applied'; actionId: string; action: ActionSequence; reapplied: boolean; runEffects: boolean }
+    | { type: 'reverted'; actionId: string; action: ActionSequence }
+    /** `actions`: those that were applied until now. */
+    | { type: 'reset'; actions: ActionSequence[] };
+
+export interface ApplyActionOptions {
+    /** Run the action's effects (default true). The editor previews patches only. */
+    effects?: boolean;
+}
 
 interface StackEntry {
     actionId: string;
@@ -39,13 +52,15 @@ interface StackEntry {
 class SceneActions {
     private stacks = new Map<string, StackEntry[]>();
     private merged = new Map<string, SettingsPatch | undefined>();
-    private applied = new Set<string>();
+    /** Applied actions, by id — the definition as it was applied (for revert events). */
+    private applied = new Map<string, ActionSequence>();
     private stateListeners = new Map<string, Set<Listener>>();
     private eventListeners = new Set<(event: SceneActionsEvent) => void>();
     private version = 0;
 
     /** Apply an action. Re-applying moves its patches to the top of each stack. */
-    applyAction(action: ActionSequence): void {
+    applyAction(action: ActionSequence, options: ApplyActionOptions = {}): void {
+        const reapplied = this.applied.has(action.id);
         const touched = this.removeEntries(action.id);
         for (const target of action.targets ?? []) {
             if (!target?.state || !target.patch || Object.keys(target.patch).length === 0) continue;
@@ -54,17 +69,18 @@ class SceneActions {
             this.stacks.set(target.state, stack);
             touched.add(target.state);
         }
-        this.applied.add(action.id);
-        this.commit(touched, { type: 'applied', actionId: action.id });
+        this.applied.set(action.id, action);
+        this.commit(touched, { type: 'applied', actionId: action.id, action, reapplied, runEffects: options.effects !== false });
     }
 
     /** Remove an action's patches from every element it touched. */
     revertAction(actionOrId: ActionSequence | string): void {
         const actionId = typeof actionOrId === 'string' ? actionOrId : actionOrId.id;
-        if (!this.applied.has(actionId)) return;
+        const action = this.applied.get(actionId);
+        if (!action) return;
         const touched = this.removeEntries(actionId);
         this.applied.delete(actionId);
-        this.commit(touched, { type: 'reverted', actionId });
+        this.commit(touched, { type: 'reverted', actionId, action });
     }
 
     /** Apply when not applied, revert when applied. Returns true when it applied. */
@@ -82,15 +98,16 @@ class SceneActions {
     }
 
     getAppliedActionIds(): string[] {
-        return Array.from(this.applied);
+        return Array.from(this.applied.keys());
     }
 
     /** Drop every patch (project load, "reset" in the editor). */
     reset(): void {
         const touched = new Set(this.stacks.keys());
+        const actions = Array.from(this.applied.values());
         this.stacks.clear();
         this.applied.clear();
-        this.commit(touched, { type: 'reset' });
+        this.commit(touched, { type: 'reset', actions });
     }
 
     /** The merged patch for one element — stable identity until it changes. */

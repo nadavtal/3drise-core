@@ -1,7 +1,6 @@
 import type { AnimationOptions, Vector3 } from "./scene3d";
 import type { MaterialSettings } from "./materials";
 import type { ShaderEffect } from "./shaderEffects";
-import type { OperationTypes } from "./actions";
 import type { ColorEffectType, EffectTriggerMode, TransformEffectType } from "./effects";
 import { GenerativeEffectSettings } from "./generativeEffects";
 export type PositionEffectType = Extract<TransformEffectType, 'wave' | 'float' | 'shake' | 'bounce'>;
@@ -113,21 +112,70 @@ export interface PropertyMutation {
     to: any;
 }
 
+/**
+ * An object interaction: a trigger on this object and what it does — effects on
+ * objects, commands to animations, commands to actions. Stored in
+ * `CreatedObjectSettings.actions` (the object's interaction list).
+ */
+export type InteractionTrigger = 'click' | 'mouseEnter' | 'mouseLeave';
+
+/**
+ * What an effect does to its targets. zoom / focus / moveToFront take ONE target;
+ * glow / fade / visibility take many; displayImage is a gallery's own.
+ * See the viewer's INTERACTION_OPERATIONS catalogue.
+ */
+/**
+ * An operation's name. The built-ins are listed; the viewer's operations registry
+ * (packages/viewer/src/operations) is the source of truth and can grow.
+ */
+export type OperationName =
+    | 'zoom' | 'focus' | 'moveToFront' | 'glow' | 'fade' | 'visibility' | 'displayImage'
+    | (string & {});
+
+/** A value of an operation parameter (duration, distance, colour…). */
+export type OperationParamValue = number | string | boolean;
+
+/**
+ * One operation on its targets — shared by interactions and actions.
+ * Only regular scene objects (and their model nodes) are targets.
+ */
+export interface OperationEffect {
+    id: string;
+    operation: OperationName;
+    /** Scene object ids; interactions may also use 'self' (the object the interaction is on). */
+    targets: string[];
+    /** Narrows a `model` target to named nodes, keyed by that model's object id. */
+    meshNames?: Record<string, string[]>;
+    /** Overrides of the operation's parameter defaults. */
+    params?: Record<string, OperationParamValue>;
+}
+
+export type InteractionAnimationCommand = 'play' | 'pause' | 'stop' | 'toggle';
+
+export interface InteractionAnimation {
+    id: string;
+    kind: 'clip' | 'sequence';
+    /** Clip or sequence id. */
+    ref: string;
+    command: InteractionAnimationCommand;
+}
+
+/** toggle: apply, then revert, … */
+export type InteractionActionCommand = 'apply' | 'revert' | 'toggle';
+
+export interface InteractionAction {
+    id: string;
+    /** Action sequence id. */
+    ref: string;
+    command: InteractionActionCommand;
+}
+
 export interface Interaction {
-    mouseEvent: 'click' | 'mouseEnter' | 'mouseLeave';
+    mouseEvent: InteractionTrigger;
     enabled: boolean;
-    /** Operation types: 'zoom' | 'glow' | 'vanish' | 'focus' | ... */
-    operations?: OperationTypes[];
-    /** Target multiple objects (for cross-object interactions) */
-    targetIds?: string[];
-    /** How targets are affected: 'replace' = only targets, 'add' = clicked + targets */
-    targetMode?: 'replace' | 'add';
-    /** Animation sequence IDs to trigger */
-    animationIds?: string[];
-    /** Action sequence IDs to apply (instant). With the 'toggle' operation, every second trigger reverts them. */
-    actionIds?: string[];
-    /** Narrows a `model` target in targetIds to specific mesh names, keyed by that model's object id */
-    targetMeshNames?: Record<string, string[]>;
+    effects: OperationEffect[];
+    animations: InteractionAnimation[];
+    actions: InteractionAction[];
 }
 
 export interface ClickInteraction {

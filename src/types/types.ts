@@ -6,7 +6,6 @@ import { Object3D } from "three";
 import type { HtmlElement } from "./uiController";
 import type { Action } from "./actions";
 import type { SceneLightConfig } from "./lights";
-import type { AnimationSequence } from "./animations";
 import type { ActionSequence } from "./actions";
 import type { CursorModuleConfig } from "./cursor";
 import { type ThreeEvent } from "@react-three/fiber";
@@ -74,7 +73,9 @@ export interface ProjectData {
     sceneObjects: CreatedObjectSettings[];
     uiSettings: any;
     actions?: Action[];
-    animationSequences?: AnimationSequence[];
+    /** Animations V2 rows (normalised by the viewer: normalizeSequence / normalizeClip). */
+    animationSequences?: any[];
+    animationClips?: any[];
     actionSequences?: ActionSequence[];
     cursor?: CursorModuleConfig;
 }

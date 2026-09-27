@@ -3,7 +3,6 @@ export type { MaterialDefinition, MaterialInstance, MaterialVariant, ShaderSourc
 
 export type { FontInfo } from './FontManager';
 
-export type { AnimationEvent, AnimationEventType } from './AnimationsManager';
 
 export type { SkyTimeState, TimeOfDayLabel } from './SkySystemManager';
 
@@ -21,4 +20,4 @@ export { SkySystemManager, skySystemManager } from './SkySystemManager';
 export { CubeCameraManager, cubeCameraManager } from './CubeCameraManager';
 export { default as SceneStore } from './SceneStore';
 export { default as SceneActions } from './SceneActions';
-export type { SceneActionsEvent } from './SceneActions';
+export type { SceneActionsEvent, ApplyActionOptions } from './SceneActions';
