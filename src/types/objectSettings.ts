@@ -129,8 +129,20 @@ export type InteractionTrigger = 'click' | 'mouseEnter' | 'mouseLeave';
  * (packages/viewer/src/operations) is the source of truth and can grow.
  */
 export type OperationName =
-    | 'zoom' | 'focus' | 'moveToFront' | 'glow' | 'fade' | 'visibility' | 'displayImage'
+    | 'jelly' | 'flip' | 'spin' | 'swirl' | 'moveToFront'
+    | 'glow' | 'rimLight' | 'dissolve' | 'emberAsh' | 'particleSwarm' | 'hologram' | 'shatter'
+    | 'sandErosion' | 'teleport' | 'inkBloom' | 'flock' | 'metalize' | 'liquidMetal' | 'frost' | 'heatCracks' | 'petrify' | 'portal' | 'voxelize' | 'unweave' | 'petalPeel' | 'fade' | 'visibility' | 'displayImage'
+    | 'zoom' | 'frame' | 'focus' | 'orbit'
     | (string & {});
+
+/**
+ * What an operation acts on. An interaction holds at most one effect per channel,
+ * so effects in one card never fight over the same thing.
+ *   transform  the object's own position / rotation / scale
+ *   visual     how the object is drawn (material, shader, visibility) — never its transform
+ *   camera     the camera (zoom, look at)
+ */
+export type OperationChannel = 'transform' | 'visual' | 'camera';
 
 /** A value of an operation parameter (duration, distance, colour…). */
 export type OperationParamValue = number | string | boolean;
@@ -142,6 +154,8 @@ export type OperationParamValue = number | string | boolean;
 export interface OperationEffect {
     id: string;
     operation: OperationName;
+    /** The operation's channel (copied from its definition when the effect is made). */
+    channel: OperationChannel;
     /** Scene object ids; interactions may also use 'self' (the object the interaction is on). */
     targets: string[];
     /** Narrows a `model` target to named nodes, keyed by that model's object id. */
