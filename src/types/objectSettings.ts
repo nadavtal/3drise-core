@@ -2,7 +2,6 @@ import type { AnimationOptions, Vector3 } from "./scene3d";
 import type { MaterialSettings } from "./materials";
 import type { ShaderEffect } from "./shaderEffects";
 import type { ColorEffectType, EffectTriggerMode, TransformEffectType } from "./effects";
-import { GenerativeEffectSettings } from "./generativeEffects";
 export type PositionEffectType = Extract<TransformEffectType, 'wave' | 'float' | 'shake' | 'bounce'>;
 
 export type RotationEffectType = Extract<TransformEffectType, 'rotate3d' | 'spin' | 'sway' | 'flip'>;
@@ -79,6 +78,16 @@ export interface ParticlesEffects {
     animations?: AnimationOptions[];
 }
 
+export interface EffectConfigEffects {
+    /** Keyframe animations for a standalone effect object's config properties (type 'effect'). */
+    animations?: AnimationOptions[];
+}
+
+export interface GridConfigEffects {
+    /** Keyframe animations for a grid object's config properties (type 'grid'). */
+    animations?: AnimationOptions[];
+}
+
 export interface RainEffects {
     /** Keyframe animations for rain config properties */
     animations?: AnimationOptions[];
@@ -100,8 +109,10 @@ export interface ObjectAnimations {
     rain?: RainEffects;
     /** Particles domain: a generative particle object's own config knobs (type 'particles'). */
     particles?: ParticlesEffects;
-    /** Generative domain: additive geometry effects (aura, molecules, portal...) */
-    effects?: GenerativeEffectSettings;
+    /** Effect domain: a standalone effect object's own config knobs (type 'effect'). */
+    effect?: EffectConfigEffects;
+    /** Grid domain: a grid object's own config knobs (type 'grid'). */
+    grid?: GridConfigEffects;
 }
 
 export interface PropertyMutation {
@@ -231,6 +242,10 @@ export interface MouseMoveInteractions {
     rain?: MouseMoveDomain;
     /** Particles domain: a generative particle object's own config knobs. */
     particles?: MouseMoveDomain;
+    /** Effect domain: a standalone effect object's own config knobs. */
+    effect?: MouseMoveDomain;
+    /** Grid domain: a grid object's own config knobs. */
+    grid?: MouseMoveDomain;
 }
 
 

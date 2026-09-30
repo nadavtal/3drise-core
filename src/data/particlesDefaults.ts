@@ -1,4 +1,4 @@
-import type { GenerativeParticlesConfig, GenerativeParticlesType } from "../types";
+import type { GenerativeParticlesConfig, GenerativeParticlesType, ParticleShapeConfig, ParticleShapeType } from "../types";
 
 // =============================================================================
 // GENERATIVE PARTICLES — defaults (identical to packages/viewer/particles-defaults.json)
@@ -12,6 +12,9 @@ export const DEFAULT_GENERATIVE_PARTICLES: Record<GenerativeParticlesType, Gener
     chladniSand: { type: 'chladniSand', enabled: true, intensity: 1, speed: 1, opacity: 0.9, size: 1, color: '#f1e3c2', particleCount: 20000, frequency: 4.63, sweep: 0.4, damping: 0.025, amplitude: 1, hopColor: '#fff3d6', lightAngle: 22, grainSize: 1, seed: 1, quality: 'medium', pointerMode: 'bow', pointerStrength: 1, pointerRadius: 1, pointerColor: '#fff4dc', trailMode: 'streak', trailLength: 1.6, trailOpacity: 0.6, trailColor: '#ffcf8a', trailShare: 0.5 },
     faradayPowder: { type: 'faradayPowder', enabled: true, intensity: 1, speed: 1, opacity: 0.9, size: 1, color: '#ff8a2a', particleCount: 12000, frequency: 4.63, sweep: 0.3, damping: 0.025, amplitude: 1, glowColor: '#ffe7a6', hover: 1, swirl: 1, puffSize: 1, seed: 1, quality: 'medium', pointerMode: 'bow', pointerStrength: 1, pointerRadius: 1, pointerColor: '#fff4dc', trailMode: 'comet', trailLength: 1.6, trailOpacity: 0.6, trailColor: '#ff5a1e', trailShare: 0.6 },
     neonRain: { type: 'neonRain', enabled: true, intensity: 1, speed: 1, opacity: 0.9, size: 1, color: '#ff2f9a', particleCount: 10000, rainRate: 18, windSpeed: 0.8, gustiness: 0.6, neonColor2: '#22dcff', lampColor: '#ffae52', neonLight: 1, aperture: 0.5, dropSize: 1, seed: 1, quality: 'medium', pointerMode: 'umbrella', pointerStrength: 1, pointerRadius: 1, pointerColor: '#eaf2ff', trailMode: 'streak', trailLength: 1.2, trailOpacity: 0.7, trailColor: '#9fb8ff', trailShare: 0.6 },
+    magneticBottle: { type: 'magneticBottle', enabled: true, intensity: 1, speed: 1, opacity: 0.9, size: 1, color: '#5fd6ff', particleCount: 48, shape: { type: 'cone', radius: 0.5, height: 1, radialSegments: 32 }, windings: 0.6, pitchSpread: 0.3, lineLife: 6, lineDensity: 1, counterColor: '#ff6fb3', glow: 1, seed: 1, quality: 'medium', pointerMode: 'drift', pointerStrength: 1, pointerRadius: 1, pointerColor: '#fff0c8', trailMode: 'comet', trailLength: 0.8, trailOpacity: 0.8, trailColor: '#8f7bff', trailShare: 1 },
+    shapeBurst: { type: 'shapeBurst', enabled: true, intensity: 1, speed: 1, opacity: 0.9, size: 1, color: '#45d1ff', particleCount: 180, shape: { type: 'icosahedron', radius: 0.5, detail: 0 }, interval: 2.8, formSpeed: 2.4, fieldStrength: 1, holdTime: 1.2, dissolve: 0.3, counterColor: '#ff5aa8', heatColor: '#fff6e0', headSize: 1.4, seed: 1, quality: 'medium', pointerMode: 'detonate', pointerStrength: 1, pointerRadius: 1, pointerColor: '#ffffff', trailMode: 'comet', trailLength: 0.4, trailOpacity: 0.8, trailColor: '#6a5cff', trailShare: 0.5 },
+    shapeFlow: { type: 'shapeFlow', enabled: true, intensity: 1, speed: 1, opacity: 0.9, size: 1, color: '#3f7bff', particleCount: 2400, shape: { type: 'sphere', radius: 0.5, segments: 32, rings: 32 }, flowSpeed: 1, windPitch: 0, rake: 'sheet', lanes: 44, streamWidth: 0.85, turbulence: 0.9, fastColor: '#ff6a3d', headSize: 1, seed: 1, quality: 'medium', pointerMode: 'obstacle', pointerStrength: 1, pointerRadius: 1, pointerColor: '#ffffff', trailMode: 'comet', trailLength: 1.2, trailOpacity: 0.7, trailColor: '#1b2a6b', trailShare: 1 },
 };
 
 export const GENERATIVE_PARTICLES_LABELS: Record<GenerativeParticlesType, string> = {
@@ -23,6 +26,9 @@ export const GENERATIVE_PARTICLES_LABELS: Record<GenerativeParticlesType, string
     chladniSand: 'Chladni Sand',
     faradayPowder: 'Faraday Powder',
     neonRain: 'Neon Rain',
+    magneticBottle: 'Magnetic Bottle',
+    shapeBurst: 'Shape Burst',
+    shapeFlow: 'Shape Flow',
 };
 
 /** Knobs the animation / mouse-move systems may drive per frame (see GENERATIVE_ANIMATABLE). */
@@ -183,6 +189,80 @@ export const GENERATIVE_PARTICLES_ANIMATABLE: Record<GenerativeParticlesType, { 
     { value: 'trailOpacity', label: 'Trail Opacity' },
     { value: 'trailColor', label: 'Trail Color' },
   ],
+  magneticBottle: [
+    { value: 'intensity', label: 'Intensity' },
+    { value: 'speed', label: 'Speed' },
+    { value: 'opacity', label: 'Opacity' },
+    { value: 'color', label: 'Color' },
+    { value: 'windings', label: 'Windings' },
+    { value: 'pitchSpread', label: 'Pitch Spread' },
+    { value: 'lineLife', label: 'Line Life' },
+    { value: 'lineDensity', label: 'Line Density' },
+    { value: 'counterColor', label: 'Counter Color' },
+    { value: 'glow', label: 'Glow' },
+    { value: 'pointerStrength', label: 'Pointer Strength' },
+    { value: 'pointerRadius', label: 'Pointer Radius' },
+    { value: 'pointerColor', label: 'Pointer Color' },
+    { value: 'trailLength', label: 'Trail Length' },
+    { value: 'trailOpacity', label: 'Trail Opacity' },
+    { value: 'trailColor', label: 'Trail Color' },
+  ],
+  shapeBurst: [
+    { value: 'intensity', label: 'Intensity' },
+    { value: 'speed', label: 'Speed' },
+    { value: 'opacity', label: 'Opacity' },
+    { value: 'color', label: 'Color' },
+    { value: 'interval', label: 'Interval' },
+    { value: 'formSpeed', label: 'Form Speed' },
+    { value: 'fieldStrength', label: 'Field Strength' },
+    { value: 'holdTime', label: 'Hold Time' },
+    { value: 'dissolve', label: 'Dissolve' },
+    { value: 'counterColor', label: 'Counter Color' },
+    { value: 'heatColor', label: 'Heat Color' },
+    { value: 'headSize', label: 'Head Size' },
+    { value: 'pointerStrength', label: 'Pointer Strength' },
+    { value: 'pointerRadius', label: 'Pointer Radius' },
+    { value: 'pointerColor', label: 'Pointer Color' },
+    { value: 'trailLength', label: 'Trail Length' },
+    { value: 'trailOpacity', label: 'Trail Opacity' },
+    { value: 'trailColor', label: 'Trail Color' },
+  ],
+  shapeFlow: [
+    { value: 'intensity', label: 'Intensity' },
+    { value: 'speed', label: 'Speed' },
+    { value: 'opacity', label: 'Opacity' },
+    { value: 'color', label: 'Color' },
+    { value: 'flowSpeed', label: 'Flow Speed' },
+    { value: 'streamWidth', label: 'Stream Width' },
+    { value: 'turbulence', label: 'Turbulence' },
+    { value: 'fastColor', label: 'Fast Color' },
+    { value: 'headSize', label: 'Head Size' },
+    { value: 'pointerStrength', label: 'Pointer Strength' },
+    { value: 'pointerRadius', label: 'Pointer Radius' },
+    { value: 'pointerColor', label: 'Pointer Color' },
+    { value: 'trailLength', label: 'Trail Length' },
+    { value: 'trailOpacity', label: 'Trail Opacity' },
+    { value: 'trailColor', label: 'Trail Color' },
+  ],
+};
+
+// =============================================================================
+// PARTICLE SHAPES — the `shape` config of shape-driven particle objects (magneticBottle,
+// shapeBurst, shapeFlow). Defaults are the core mesh builders' own defaults.
+// =============================================================================
+export const PARTICLE_SHAPE_TYPES: readonly ParticleShapeType[] = ['cone', 'cylinder', 'sphere', 'capsule', 'torus', 'box', 'tetrahedron', 'octahedron', 'icosahedron', 'dodecahedron'];
+
+export const PARTICLE_SHAPE_DEFAULTS: Record<ParticleShapeType, ParticleShapeConfig> = {
+    cone: { type: 'cone', radius: 0.5, height: 1, radialSegments: 32 },
+    cylinder: { type: 'cylinder', radiusTop: 0.5, radiusBottom: 0.5, height: 1, radialSegments: 32 },
+    sphere: { type: 'sphere', radius: 0.5, segments: 32, rings: 32 },
+    capsule: { type: 'capsule', radius: 0.3, length: 1, capSegments: 4, radialSegments: 8 },
+    torus: { type: 'torus', radius: 0.5, tube: 0.2, radialSegments: 16, tubularSegments: 100 },
+    box: { type: 'box', size: [1, 1, 1] },
+    tetrahedron: { type: 'tetrahedron', radius: 0.5, detail: 0 },
+    octahedron: { type: 'octahedron', radius: 0.5, detail: 0 },
+    icosahedron: { type: 'icosahedron', radius: 0.5, detail: 0 },
+    dodecahedron: { type: 'dodecahedron', radius: 0.5, detail: 0 },
 };
 
 /** True when a particles object's config is a generative particle object (not the legacy shape particles). */

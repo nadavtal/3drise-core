@@ -6,10 +6,48 @@
 
 import type { ObjectAnimations } from "./objectSettings";
 
-export type GenerativeParticlesType = 'tidalStream' | 'brownianDust' | 'bioluminescentWake' | 'electronOrbitals' | 'grinderSparks' | 'chladniSand' | 'faradayPowder' | 'neonRain';
+export type GenerativeParticlesType = 'tidalStream' | 'brownianDust' | 'bioluminescentWake' | 'electronOrbitals' | 'grinderSparks' | 'chladniSand' | 'faradayPowder' | 'neonRain' | 'magneticBottle' | 'shapeBurst' | 'shapeFlow';
 
 /** Shared by every particle object: 'none' turns trails off. */
 export type ParticleTrailMode = 'none' | 'streak' | 'comet' | 'echo';
+
+/** Closed solids a shape-driven particle object can take (the core mesh builders make them). */
+export type ParticleShapeType = 'cone' | 'cylinder' | 'sphere' | 'capsule' | 'torus' | 'box' | 'tetrahedron' | 'octahedron' | 'icosahedron' | 'dodecahedron';
+
+/**
+ * The `shape` of a shape-driven particle object: a mesh-builder geometry config ({ type, ...params },
+ * the same object createMeshByType takes). Sizes are in mesh-builder units; the shape keeps its real size.
+ * Each type reads only its own parameters.
+ */
+export interface ParticleShapeConfig {
+    type: ParticleShapeType;
+    /** cone, sphere, capsule, torus, tetrahedron, octahedron, icosahedron, dodecahedron. */
+    radius?: number;
+    /** cone, cylinder. */
+    height?: number;
+    /** cylinder. */
+    radiusTop?: number;
+    /** cylinder. */
+    radiusBottom?: number;
+    /** capsule: length of the straight middle section. */
+    length?: number;
+    /** torus: tube radius. */
+    tube?: number;
+    /** box: [width, height, depth]. */
+    size?: [number, number, number];
+    /** cone, cylinder, capsule, torus. */
+    radialSegments?: number;
+    /** torus. */
+    tubularSegments?: number;
+    /** capsule. */
+    capSegments?: number;
+    /** sphere. */
+    segments?: number;
+    /** sphere. */
+    rings?: number;
+    /** polyhedra: subdivision level. */
+    detail?: number;
+}
 
 export interface BaseGenerativeParticlesConfig {
     enabled: boolean;
@@ -379,6 +417,140 @@ export interface NeonRainParticlesConfig extends BaseGenerativeParticlesConfig {
     trailShare?: number;
 }
 
+/** Magnetic Bottle — Charged particles woven over any mesh shape: counter-rotating constant-bearing spirals that tighten into glowing tips, in two exact family colours; the cursor pinches, drifts or heats the orbits. Use for sci-fi and tech scenes. */
+export interface MagneticBottleParticlesConfig extends BaseGenerativeParticlesConfig {
+    /** Particles on the surface (each draws one woven line), 4..200. */
+    particleCount?: number;
+    /** Mesh the orbits wind over (the mesh builder config: type + its parameters). */
+    shape?: ParticleShapeConfig;
+    /** Field strength: turns per unit climb (denser weave), 0.2..5. */
+    windings?: number;
+    /** Spread of pitch angles: how far up the shape the orbits reach before they mirror, 0..1. */
+    pitchSpread?: number;
+    /** Seconds a drawn line lingers, 0.5..20. */
+    lineLife?: number;
+    /** Points per unit of line, 0.3..3. */
+    lineDensity?: number;
+    /** Colour of the negative (counter-rotating) family. */
+    counterColor?: string;
+    /** Brightness of the mirror rings and heads, 0..3. */
+    glow?: number;
+    /** Layout seed: a different arrangement with the same character, 1..999. */
+    seed?: number;
+    /** Detail level: scales particle counts and trail caps. */
+    quality?: 'low' | 'medium' | 'high';
+    /** What the cursor is: off, a magnet (pinch), an electric field (drift) or an RF antenna (heat). */
+    pointerMode?: 'none' | 'pinch' | 'drift' | 'heat';
+    /** Field / drift / heating strength (0 = no interaction), 0..3. */
+    pointerStrength?: number;
+    /** Reach of the cursor, 0.2..3. */
+    pointerRadius?: number;
+    /** Colour of heated particles. */
+    pointerColor?: string;
+    /** Motion blur, gyro tails or afterglow. */
+    trailMode?: 'none' | 'streak' | 'comet' | 'echo';
+    /** Trail duration in seconds, 0.2..6. */
+    trailLength?: number;
+    /** Trail brightness, 0..1. */
+    trailOpacity?: number;
+    /** Colour the tails fade into, from the family colour at the head. */
+    trailColor?: string;
+    /** Fraction of particles that leave trails, 0.02..1. */
+    trailShare?: number;
+}
+
+/** Shape Burst — Bursts of charged particles that spiral out in a magnetic field and land exactly on a mesh shape, white-hot cooling to two family colours, then dissolve; the cursor detonates, curls or pulls them. Use for reveals, logos and impact moments. */
+export interface ShapeBurstParticlesConfig extends BaseGenerativeParticlesConfig {
+    /** Particles per burst, 60..3000. */
+    particleCount?: number;
+    /** Mesh the burst lands on (the mesh builder config: type + its parameters). */
+    shape?: ParticleShapeConfig;
+    /** Seconds between bursts, 0.6..8. */
+    interval?: number;
+    /** Drag rate: how fast the burst settles into the shape, 0.5..8. */
+    formSpeed?: number;
+    /** Magnetic field: how far the paths curl on the way out, 0..3. */
+    fieldStrength?: number;
+    /** Seconds the shape holds before it dissolves, 0..6. */
+    holdTime?: number;
+    /** Outward drift while the shape fades, 0..1. */
+    dissolve?: number;
+    /** Colour of the negative family once it has landed. */
+    counterColor?: string;
+    /** White-hot colour at launch. */
+    heatColor?: string;
+    /** Particle size, 0.2..3. */
+    headSize?: number;
+    /** Layout seed: a different arrangement with the same character, 1..999. */
+    seed?: number;
+    /** Detail level: scales particle counts and trail caps. */
+    quality?: 'low' | 'medium' | 'high';
+    /** What the cursor does: off, detonates bursts, curls them (magnet) or pulls them (gravity). */
+    pointerMode?: 'none' | 'detonate' | 'magnet' | 'gravity';
+    /** Burst size / field / pull (0 = no interaction), 0..3. */
+    pointerStrength?: number;
+    /** Size of cursor bursts / reach of the field or pull, 0.2..3. */
+    pointerRadius?: number;
+    /** Glow of particles the cursor is acting on. */
+    pointerColor?: string;
+    /** Motion blur, spiral tails or embers. */
+    trailMode?: 'none' | 'streak' | 'comet' | 'echo';
+    /** Tail duration in seconds, 0.2..6. */
+    trailLength?: number;
+    /** Tail brightness, 0..1. */
+    trailOpacity?: number;
+    /** Colour the tails fade into. */
+    trailColor?: string;
+    /** Fraction of particles that leave tails, 0.02..1. */
+    trailShare?: number;
+}
+
+/** Shape Flow — A wind tunnel of particle streams flowing round an invisible mesh shape: divergence-free flow, wake eddies, streaklines coloured by pressure; the cursor is a second obstacle, a jet or a vortex. Use for tech, aero and product scenes. */
+export interface ShapeFlowParticlesConfig extends BaseGenerativeParticlesConfig {
+    /** Tracer particles, 300..8000. */
+    particleCount?: number;
+    /** The invisible body in the wind (the mesh builder config: type + its parameters). */
+    shape?: ParticleShapeConfig;
+    /** Wind speed, 0..3. */
+    flowSpeed?: number;
+    /** Angle of the wind to the horizontal (degrees): the shape meets it tilted, -60..60. */
+    windPitch?: number;
+    /** Where the streams are released: a ring round the body, one vertical sheet, or a cross. */
+    rake?: 'tube' | 'sheet' | 'cross';
+    /** Number of stream lanes in the rake, 6..128. */
+    lanes?: number;
+    /** Size of the rake compared with the tunnel, 0.2..1. */
+    streamWidth?: number;
+    /** Strength of the wake eddies behind the shape, 0..2. */
+    turbulence?: number;
+    /** Colour of low pressure (fast flow round the sides). */
+    fastColor?: string;
+    /** Tracer size, 0.2..3. */
+    headSize?: number;
+    /** Layout seed: a different arrangement with the same character, 1..999. */
+    seed?: number;
+    /** Detail level: scales particle counts and trail caps. */
+    quality?: 'low' | 'medium' | 'high';
+    /** What the cursor is: off, a second obstacle, a jet or a vortex. */
+    pointerMode?: 'none' | 'obstacle' | 'jet' | 'vortex';
+    /** Obstacle size / jet force / vortex circulation (0 = no interaction), 0..3. */
+    pointerStrength?: number;
+    /** Reach of the cursor, 0.2..3. */
+    pointerRadius?: number;
+    /** Glow of tracers the cursor is acting on. */
+    pointerColor?: string;
+    /** Motion blur, streaklines or smoke. */
+    trailMode?: 'none' | 'streak' | 'comet' | 'echo';
+    /** Streakline length in seconds, 0.2..6. */
+    trailLength?: number;
+    /** Streakline brightness, 0..1. */
+    trailOpacity?: number;
+    /** Colour the streaklines fade into. */
+    trailColor?: string;
+    /** Fraction of tracers that leave streaklines, 0.02..1. */
+    trailShare?: number;
+}
+
 export type GenerativeParticlesConfig = ({
     type: 'tidalStream';
 } & TidalStreamParticlesConfig) | ({
@@ -395,7 +567,13 @@ export type GenerativeParticlesConfig = ({
     type: 'faradayPowder';
 } & FaradayPowderParticlesConfig) | ({
     type: 'neonRain';
-} & NeonRainParticlesConfig);
+} & NeonRainParticlesConfig) | ({
+    type: 'magneticBottle';
+} & MagneticBottleParticlesConfig) | ({
+    type: 'shapeBurst';
+} & ShapeBurstParticlesConfig) | ({
+    type: 'shapeFlow';
+} & ShapeFlowParticlesConfig);
 
 export interface GenerativeParticlesSettings {
     /** Scene object id (the controller's live-edit path finds the object by it). */

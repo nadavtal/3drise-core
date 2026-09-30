@@ -154,7 +154,12 @@ const vertex = /* glsl */ `
     return fract(p.x * p.y);
   }
 
-  
+  // Farris' recipe: a lattice-periodic motif m(q) summed over the coset
+  // representatives g of a wallpaper group, F(p) = sum_g m(g.q), q = B^-1 p.
+  // For any h in the group, {g h} runs over the same cosets, and m ignores
+  // lattice translations, so F(h.p) = F(p) exactly: the picture has precisely
+  // the group's mirrors, glides and rotation centres, and tiles seamlessly.
+  // Level sets of F are the lines; its value bands are the cells.
   uniform vec2  u_wave[6];
   uniform mat2  u_RA[12];
   uniform vec2  u_TA[12];

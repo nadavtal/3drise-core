@@ -1,6 +1,6 @@
 import type { MouseMoveInteraction, MouseMoveInteractions, ObjectAnimations } from "../types/objectSettings";
 import { getGenerativeAnimatable, isGenerativeFamilyConfig } from "./generativeAnimatable";
-export type AnimatableDomain = 'transform' | 'material' | 'edges' | 'light' | 'clouds' | 'rain' | 'particles';
+export type AnimatableDomain = 'transform' | 'material' | 'edges' | 'light' | 'clouds' | 'rain' | 'particles' | 'effect' | 'grid';
 
 export interface AnimatableProperty {
     value: string;
@@ -41,6 +41,8 @@ export interface AnimatableTarget {
 //   - edges    : geometry props by edgesSettings.type + filtered material keys
 //   - light    : the generated LIGHTS_ANIMATABLE registry, by settings.config.type
 //   - clouds   : ['speed'] when settings.config.type === 'clouds'
+//   - effect   : the EFFECTS_ANIMATABLE registry, by settings.config.type
+//   - grid     : the GRIDS_ANIMATABLE registry, by settings.config.type
 //
 // =============================================================================
 // CONSTANTS
@@ -157,6 +159,10 @@ export function getAnimatableProperties(settings: AnimatableTarget, domain: Anim
         // panel always matches what the renderer can actually drive per frame.
         case 'particles':
             return getGenerativeAnimatable('particles', settings.config);
+        case 'effect':
+            return getGenerativeAnimatable('effects', settings.config);
+        case 'grid':
+            return getGenerativeAnimatable('grids', settings.config);
         default:
             return [];
     }
@@ -176,6 +182,10 @@ export function detectAnimatableDomain(settings: AnimatableTarget, propertyName:
         return 'edges';
     if (getGenerativeAnimatable('lights', settings.config).some(p => p.value === propertyName))
         return 'light';
+    if (getGenerativeAnimatable('effects', settings.config).some(p => p.value === propertyName))
+        return 'effect';
+    if (getGenerativeAnimatable('grids', settings.config).some(p => p.value === propertyName))
+        return 'grid';
     if (isCloudsConfig(settings.config)) {
         if (getCloudsProperties().some(p => p.value === propertyName))
             return 'clouds';

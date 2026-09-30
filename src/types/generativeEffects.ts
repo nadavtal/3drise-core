@@ -3,7 +3,6 @@
 // (atoms, shockwaves, auras, portals, etc.)
 // =============================================================================
 
-import type { AnimationOptions } from "./scene3d";
 export type GenerativeEffectType = 'molecules' | 'shockwave' | 'aura' | 'dataStream' | 'constellation' | 'hologram' | 'portal' | 'dnaHelix' | 'orb' | 'lightning' | 'aurora' | 'fire' | 'forcefield' | 'neuralNetwork' | 'blackHole' | 'iceCrystals' | 'smokePlume' | 'volumetricFog' | 'smokeRing' | 'flares' | 'sparklesBurst' | 'bubbles' | 'glyphs' | 'smokeRibbon' | 'fire' | 'fieldLines' | 'strangeAttractor' | 'harmonicShell' | 'galaxy' | 'fireflySwarm' | 'murmuration' | 'planetaryRings' | 'waterCaustics' | 'iceHalo' | 'fallingLeaves' | 'lichtenberg' | 'dandelionSeeds';
 
 export interface BaseGenerativeEffectConfig {
@@ -240,7 +239,6 @@ export interface FlaresConfig extends BaseGenerativeEffectConfig {
     maskLayer: number;
     radius: number;
     padding: number;
-    fitKey?: string;
 }
 
 export interface BubblesConfig extends BaseGenerativeEffectConfig {
@@ -636,8 +634,6 @@ export type GenerativeEffectConfig = ({
 
 export interface GenerativeEffectSettings {
     config: GenerativeEffectConfig;
-    /** Keyframe animations targeting config properties (intensity, speed, opacity, etc.) */
-    animations?: AnimationOptions[];
 }
 
 
