@@ -150,13 +150,7 @@ export class SceneBuilderV {
         if (createdObject.type !== 'group') {
             this.buildObject(createdObject, group);
         }
-        // Per-object effects — EffectsGeneratorV needs the scene as parent
-        if (createdObject.effects?.length) {
-            createdObject.effects.forEach((effect) => {
-                // const fx = new EffectsGeneratorV(this.scene, effect);
-                // this.updatables.push(fx as unknown as Updatable);
-            });
-        }
+        // Object effects (createdObject.effects) run on the viewer's operations runtime — not in the vanilla build.
         children.forEach((child) => this.buildNode(child, group));
     }
     private buildObject(obj, parent) {

@@ -8,7 +8,7 @@ import type { TextConfig } from "./text";
 import type { EffectTriggerMode } from "./effects";
 import type { PathConfig } from "./animations";
 import type { LightObjectConfig } from "./lights";
-import type { Interaction, MouseMoveInteraction, MouseMoveInteractions, ObjectAnimations } from "./objectSettings";
+import type { Interaction, MouseMoveInteraction, MouseMoveInteractions, ObjectAnimations, ObjectEffect } from "./objectSettings";
 import type { GenerativeEffectConfig, GenerativeEffectSettings, BubblesConfig, GlyphsConfig, SparklesBurstConfig } from "./generativeEffects";
 import { GalleryLayoutSettings } from "./gallery";
 import type { CloudsConfig, MoonSettings, RainConfig, WaterConfig } from "./environment";
@@ -250,7 +250,8 @@ export type GeneralObjectSettings = {
     materialSettings: MaterialSettings;
     rigidBodySettings?: RigidBodySettings;
     edgesSettings?: ObjectEdges;
-    effects?: GenerativeEffectSettings[];
+    /** Effects layered on the object (frost, metalize…) — see ObjectEffect. */
+    effects?: ObjectEffect[];
     /** Continuous effects - always running (animations, transform, color) */
     animations?: ObjectAnimations;
     /** Click / hover action interactions */

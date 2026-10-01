@@ -38,3 +38,4 @@ export * from './MaterialCompiler';
 export * from './nodeOverrides';
 export * from './settingsPatch';
 export * from './actionKeys';
+export * from './objectEffects';

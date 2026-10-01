@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import { updateCurrentLayoutSettings } from '../utils/galleriesUtils';
 import { FrameV } from './FrameV';
 import { ImageGeometryV } from './ImageGeometryV';
-import { EffectsGeneratorV } from './EffectsGeneratorV';
 import type { CreatedObjectSettings } from "../types/scene3d";
 export interface GalleryLayoutVOptions {
     onFrameClick?: (url: string) => void;
@@ -48,15 +47,6 @@ export class GalleryLayoutV {
                     rotation: frame.rotation,
                 });
                 this.imageGeos.push(ig);
-            }
-        }
-        if (this.createdObject.effects) {
-            for (const effectSettings of this.createdObject.effects) {
-                if (effectSettings.enabled) {
-                    const fxParent = new THREE.Group();
-                    this.group.add(fxParent);
-                    this.effects.push(new EffectsGeneratorV((fxParent as any), effectSettings));
-                }
             }
         }
     }

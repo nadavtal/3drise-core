@@ -175,6 +175,25 @@ export interface OperationEffect {
     params?: Record<string, OperationParamValue>;
 }
 
+/**
+ * An effect that stays on the object (`CreatedObject.effects`) — the same
+ * operations interactions use, layered over the object's own geometry and
+ * materials. Switching `enabled` plays the operation's in / out transition;
+ * while on, the effect holds its finished state (with its own motion running).
+ * Only operations whose finished state keeps the object visible qualify
+ * (the viewer's definitions list 'object' in `usableIn`). Always on the object
+ * itself — no targets, no channel.
+ */
+export interface ObjectEffect {
+    id: string;
+    operation: OperationName;
+    enabled: boolean;
+    /** Narrows a model to named nodes. */
+    meshNames?: string[];
+    /** Overrides of the operation's parameter defaults. */
+    params?: Record<string, OperationParamValue>;
+}
+
 export type InteractionAnimationCommand = 'play' | 'pause' | 'stop' | 'toggle';
 
 export interface InteractionAnimation {

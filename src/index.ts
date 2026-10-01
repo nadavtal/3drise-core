@@ -51,6 +51,7 @@ export * from './data/index';
 export * from './constants/index';
 export * from './shaders/index';
 export * from './autoAnimate/index';
+export * from './animations/index';
 // Three.js vanilla classes
 export { LightsManagerV } from './three/LightsManagerV';
 export { FrameV } from './three/FrameV';
