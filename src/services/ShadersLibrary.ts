@@ -1,6 +1,6 @@
 import { getType } from "../utils/dataUtils";
 import { commonNoiseFunctions } from "../shaders/CommonNoiseFunctions";
-import type { OptionalProperty } from "../utils/optionalProperties";
+import type { OptionalProperty } from "../properties/tables/optionalProperties";
 import type { UniformDefinition } from "../types/types";
 export type CustomShaderSettings = {
     name: string;

@@ -1,17 +1,26 @@
 import type { MouseMoveInteraction, MouseMoveInteractions, ObjectAnimations } from "../types/objectSettings";
-import { getGenerativeAnimatable, isGenerativeFamilyConfig } from "./generativeAnimatable";
+import { getAnimatableSpecs, getPropertySpecs } from "../properties/registry";
+import type { PropertyKind, PropertySpec } from "../properties/types";
+
 export type AnimatableDomain = 'transform' | 'material' | 'edges' | 'light' | 'clouds' | 'rain' | 'particles' | 'effect' | 'grid';
 
 export interface AnimatableProperty {
     value: string;
     label: string;
+    /** From the property registry: value kind and bounds (mouse-move seeds its range from these). */
+    kind?: PropertyKind;
+    min?: number;
+    max?: number;
+    step?: number;
 }
 
 export interface AnimatableTarget {
     id?: string;
+    type?: string;
     meshSettings?: Record<string, any>;
     materialSettings?: Record<string, any>;
     edgesSettings?: {
+        enabled?: boolean;
         type?: 'tube' | 'cube';
         materialSettings?: Record<string, any>;
     };
@@ -22,77 +31,23 @@ export interface AnimatableTarget {
     mouseMove?: MouseMoveInteractions | MouseMoveInteraction;
 }
 
+// =============================================================================
+// getAnimatableProperties — per-domain view of the property registry
+// =============================================================================
+//
+// What the keyframe Animation tab, the MouseMove tab and analyzeScene can drive on
+// one domain of an object. Since the property registry (src/properties) this is a
+// filter over getAnimatableSpecs: the animatable rule lives there, once, for the
+// timeline, mouse-move, the AI scene analysis and the controllers alike.
+//
+// Values are domain-relative names ('position', 'roughness', 'intensity'), which is
+// what the mouse-move / keyframe domains store.
+//
+// Transform keeps its three vectors: `visible` is a timeline step track, not
+// something a pointer or a keyframe tween can drive.
+//
+// =============================================================================
 
-// =============================================================================
-// getAnimatableProperties — canonical per-domain property discovery
-// =============================================================================
-//
-// Single source of truth for "what properties can the animations / mouseMove
-// system target on a given domain?". Both *PropsSection (keyframe animations UI)
-// and *MouseMoveSection (mouse-move UI) read from here, so the two systems
-// never drift.
-//
-// Accepts any AnimatableTarget — CreatedObjectSettings, CloudsSettings, and
-// future env components (Sky/Ocean/...) all satisfy the structural interface.
-//
-// Domain rules:
-//   - transform: hardcoded ['position', 'rotation', 'scale']
-//   - material : keys of settings.materialSettings minus an excluded list
-//   - edges    : geometry props by edgesSettings.type + filtered material keys
-//   - light    : the generated LIGHTS_ANIMATABLE registry, by settings.config.type
-//   - clouds   : ['speed'] when settings.config.type === 'clouds'
-//   - effect   : the EFFECTS_ANIMATABLE registry, by settings.config.type
-//   - grid     : the GRIDS_ANIMATABLE registry, by settings.config.type
-//
-// =============================================================================
-// CONSTANTS
-// =============================================================================
-const TRANSFORM_PROPS = [
-    { value: 'position', label: 'Position' },
-    { value: 'rotation', label: 'Rotation' },
-    { value: 'scale', label: 'Scale' },
-];
-const EXCLUDED_MATERIAL_KEYS = new Set([
-    'materialType', 'materialVariant', 'side',
-    'u_time', 'u_mouse',
-    'apply', 'visible', 'map', 'uHasTexture',
-]);
-// Volumetric cloud deck properties. Only scalars that can be interpolated per
-// frame without rebuilding the density field: altitudes and feature sizes are
-// deliberately absent, because the vertical profile is measured as a fraction of
-// base-to-top, so animating an altitude restretches the whole field and the deck
-// appears to pump rather than move.
-const CLOUDS_PROPS = [
-    { value: 'coverage', label: 'Coverage' },
-    { value: 'density', label: 'Density' },
-    { value: 'profile', label: 'Vertical profile' },
-    { value: 'detailStrength', label: 'Detail erosion' },
-    { value: 'curlStrength', label: 'Curl warp' },
-    { value: 'shear', label: 'Wind shear' },
-    { value: 'anvil', label: 'Anvil spread' },
-    { value: 'precipitation', label: 'Precipitation' },
-    { value: 'windBearing', label: 'Wind bearing' },
-    { value: 'windSpeed', label: 'Wind speed' },
-    { value: 'rise', label: 'Convective rise' },
-    { value: 'churn', label: 'Detail churn' },
-    { value: 'evolution', label: 'Formation / decay' },
-    { value: 'extinction', label: 'Extinction' },
-    { value: 'powder', label: 'Powder' },
-    { value: 'silverLining', label: 'Silver lining' },
-    { value: 'ambient', label: 'Ambient' },
-];
-const RAIN_PROPS = [
-    { value: 'color', label: 'Color' },
-    { value: 'size', label: 'Size' },
-    { value: 'opacity', label: 'Opacity' },
-    { value: 'speed', label: 'Speed' },
-    { value: 'windStrength', label: 'Wind Strength' },
-    { value: 'windDirection', label: 'Wind Direction' },
-    { value: 'turbulence', label: 'Turbulence' },
-];
-// =============================================================================
-// HELPERS
-// =============================================================================
 /** camelCase / kebab-ish → "Title Case". */
 export function toAnimatableLabel(key: string): string {
     return key
@@ -100,102 +55,42 @@ export function toAnimatableLabel(key: string): string {
         .replace(/^./, s => s.toUpperCase())
         .trim();
 }
-function getMaterialProperties(materialSettings) {
-    if (!materialSettings)
-        return [];
-    return Object.keys(materialSettings)
-        .filter(k => !EXCLUDED_MATERIAL_KEYS.has(k))
-        .map(k => ({ value: k, label: k }));
-}
-function getEdgesProperties(edgesSettings) {
-    if (!edgesSettings)
-        return [];
-    const props = [];
-    if (edgesSettings.type === 'tube')
-        props.push({ value: 'tubeRadius', label: 'Tube Radius' });
-    if (edgesSettings.type === 'cube')
-        props.push({ value: 'cubeSize', label: 'Cube Size' });
-    if (edgesSettings.materialSettings) {
-        for (const k of Object.keys(edgesSettings.materialSettings)) {
-            if (EXCLUDED_MATERIAL_KEYS.has(k))
-                continue;
-            props.push({ value: k, label: toAnimatableLabel(k) });
-        }
-    }
-    return props;
-}
-function getCloudsProperties() {
-    return [...CLOUDS_PROPS];
-}
-function getRainProperties() {
-    return [...RAIN_PROPS];
-}
-function isCloudsConfig(config) {
-    return config?.type === 'clouds';
-}
-function isRainConfig(config) {
-    return config?.type === 'rain';
-}
-// =============================================================================
-// MAIN
-// =============================================================================
+
+const toAnimatable = (s: PropertySpec): AnimatableProperty => {
+    const out: AnimatableProperty = { value: s.name, label: s.label, kind: s.kind };
+    if (s.min !== undefined) out.min = s.min;
+    if (s.max !== undefined) out.max = s.max;
+    if (s.step !== undefined) out.step = s.step;
+    return out;
+};
+
 export function getAnimatableProperties(settings: AnimatableTarget, domain: AnimatableDomain): AnimatableProperty[] {
-    switch (domain) {
-        case 'transform':
-            return [...TRANSFORM_PROPS];
-        case 'material':
-            return getMaterialProperties(settings.materialSettings);
-        case 'edges':
-            return getEdgesProperties(settings.edgesSettings);
-        // Lights read the same generated registry as the generative families, so a
-        // new light type's knobs show up without touching this file.
-        case 'light':
-            return getGenerativeAnimatable('lights', settings.config);
-        case 'clouds':
-            return isCloudsConfig(settings.config) ? getCloudsProperties() : [];
-        case 'rain':
-            return isRainConfig(settings.config) ? getRainProperties() : [];
-        // Generative families read their knobs from the generated registry, so the
-        // panel always matches what the renderer can actually drive per frame.
-        case 'particles':
-            return getGenerativeAnimatable('particles', settings.config);
-        case 'effect':
-            return getGenerativeAnimatable('effects', settings.config);
-        case 'grid':
-            return getGenerativeAnimatable('grids', settings.config);
-        default:
-            return [];
-    }
+    if (!settings) return [];
+    return getAnimatableSpecs('object', settings)
+        .filter(s => s.domain === domain)
+        .filter(s => domain !== 'transform' || s.kind === 'vec3')
+        .map(toAnimatable);
 }
+
+/** Domain priority when a name exists in more than one (edges before material: an edges key shadows the mesh's). */
+const DETECT_ORDER: AnimatableDomain[] = ['edges', 'light', 'effect', 'grid', 'particles', 'clouds', 'rain', 'material'];
+
 /**
  * Detect which domain a property name belongs to, for a given target. Used by
  * the runtime + UI to migrate flat MouseMove arrays into the new per-domain
  * shape, and to route the runtime's combined dispatch.
+ *
+ * Reads every registry property (not only animatable ones), so an entry saved
+ * before the animatable rule tightened still routes to its domain.
  */
 export function detectAnimatableDomain(settings: AnimatableTarget, propertyName: string): AnimatableDomain | null {
     const head = propertyName.split('.')[0];
     if (head === 'position' || head === 'rotation' || head === 'scale') {
         return 'transform';
     }
-    const edges = getEdgesProperties(settings.edgesSettings).map(p => p.value);
-    if (edges.includes(propertyName))
-        return 'edges';
-    if (getGenerativeAnimatable('lights', settings.config).some(p => p.value === propertyName))
-        return 'light';
-    if (getGenerativeAnimatable('effects', settings.config).some(p => p.value === propertyName))
-        return 'effect';
-    if (getGenerativeAnimatable('grids', settings.config).some(p => p.value === propertyName))
-        return 'grid';
-    if (isCloudsConfig(settings.config)) {
-        if (getCloudsProperties().some(p => p.value === propertyName))
-            return 'clouds';
+    const specs = getPropertySpecs('object', settings);
+    for (const domain of DETECT_ORDER) {
+        if (specs.some(s => s.domain === domain && s.name === propertyName)) return domain;
     }
-    if (isRainConfig(settings.config)) {
-        if (getRainProperties().some(p => p.value === propertyName))
-            return 'rain';
-    }
-    const material = getMaterialProperties(settings.materialSettings).map(p => p.value);
-    if (material.includes(propertyName))
-        return 'material';
     return null;
 }

@@ -10,3 +10,8 @@ export { STYLES } from './recipes';
 export type { StyleName, EnterName, AmbientName } from './recipes';
 export type { DraftClip, DraftSequence, DraftTrack, DraftKey, DraftEase, DraftValue } from './draft';
 export { createRng } from './rng';
+export { describeScene } from './describeScene';
+export type {
+    SceneAnalysis, DescribeSceneInput, DescribeOptions, PropKind, PropContext, ElementContext,
+    ObjectContext, EnvironmentKey, EnvironmentContext,
+} from './describeScene';
