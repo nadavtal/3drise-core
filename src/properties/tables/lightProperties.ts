@@ -1,4 +1,4 @@
-// Moved from client (client/app/utils/lightProperties.ts). Property tables — the registry (../registry) is built on these.
+// Property table (moved from the client). The registry (../registry.ts) is built on these tables.
 // =============================================================================
 // lightProperties — the knobs LightControllerUi shows, per light type
 // =============================================================================

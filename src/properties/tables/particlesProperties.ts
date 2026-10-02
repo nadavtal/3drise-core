@@ -1,4 +1,4 @@
-// Moved from client (client/app/utils/particlesProperties.ts). Property tables — the registry (../registry) is built on these.
+// Property table (moved from the client). The registry (../registry.ts) is built on these tables.
 import type { OptionalProperty } from './optionalProperties';
 import type { GenerativeParticlesType } from '../../types/generativeParticles';
 

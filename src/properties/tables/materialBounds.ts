@@ -1,4 +1,4 @@
-// Moved from client (client/app/containers/pages/controllers/materialBounds.ts). Property tables — the registry (../registry) is built on these.
+// Property table (moved from the client). The registry (../registry.ts) is built on these tables.
 // =============================================================================
 // MATERIAL PROPERTY BOUNDS — Min/Max/Step for Slider Controls
 // =============================================================================

@@ -4,5 +4,4 @@ export * from './particlesProperties';
 export * from './effectsProperties';
 export * from './gridProperties';
 export * from './materialBounds';
-export * from './getPropertyConfig';
 export * from './geometryProperties';
