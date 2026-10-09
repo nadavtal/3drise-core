@@ -18,7 +18,11 @@
 //   particles        PARTICLES_PROPERTIES[type];  animatable = GENERATIVE_PARTICLES_ANIMATABLE
 //   effect           EFFECT_PROPERTIES[type];     animatable = EFFECTS_ANIMATABLE
 //   grid             GRID_PROPERTIES[type];       animatable = GRIDS_ANIMATABLE
-//   rain / clouds    rain / clouds object lists;  animatable = RAIN_ANIMATABLE_KEYS / CLOUD_ANIMATABLE_PROPERTIES
+//   environment      ENVIRONMENT_PROPERTIES[type]; animatable = ENVIRONMENT_OBJECTS_ANIMATABLE (snow, rain…)
+//   land             LAND_PROPERTIES[type];       animatable = LAND_OBJECTS_ANIMATABLE (mountains, hills, dunes, canyon)
+//   space            SPACE_PROPERTIES[type];      animatable = SPACE_OBJECTS_ANIMATABLE (stars, earth, solarSystem, shootingStars)
+//   text             TEXT_PROPERTIES[type];       animatable = TEXT_OBJECTS_ANIMATABLE (handwriting, neonTube, fourierSketch; the legacy 2d / 3d text has no config.type)
+//   rain / clouds    the scene-level rain element (RainSettings) / legacy clouds object;  animatable = RAIN_ANIMATABLE_KEYS / CLOUD_ANIMATABLE_PROPERTIES
 //   text/plain/path  their controller lists (config knobs, structural)
 //   mesh (shapes)    SHAPE_CONTROLS[config.type] + MODE_CONTROLS[modeConfig.mode] (structural)
 //   camera           position / target / fov
@@ -43,10 +47,14 @@ import { LIGHTS_ANIMATABLE } from '../data/lightsDefaults';
 import { GENERATIVE_PARTICLES_ANIMATABLE } from '../data/particlesDefaults';
 import { EFFECTS_ANIMATABLE } from '../data/effectsDefaults';
 import { GRIDS_ANIMATABLE } from '../data/gridsDefaults';
+import { ENVIRONMENT_OBJECTS_ANIMATABLE } from '../data/environmentDefaults';
+import { LAND_OBJECTS_ANIMATABLE } from '../data/landDefaults';
+import { SPACE_OBJECTS_ANIMATABLE } from '../data/spaceDefaults';
+import { TEXT_OBJECTS_ANIMATABLE, isTextObjectConfig } from '../data/textDefaults';
 import { CLOUD_ANIMATABLE_PROPERTIES } from '../environment/cloudConfigs';
 import {
     type OptionalProperty,
-    skyOptionalProperties, cloudDeckOptionalProperties, cirrusOptionalProperties,
+    skyOptionalProperties, skyStarsOptionalProperties, cloudDeckOptionalProperties, cirrusOptionalProperties,
     oceanSurfaceOptionalProperties, terrainOptionalProperties,
     rainOptionalProperties, cloudsOptionalProperties,
     textOptionalProperties, plainOptionalProperties,
@@ -57,6 +65,10 @@ import { LIGHT_PROPERTIES, SHADOW_PROPERTIES, type LightProperty } from './table
 import { PARTICLES_PROPERTIES } from './tables/particlesProperties';
 import { EFFECT_PROPERTIES } from './tables/effectsProperties';
 import { GRID_PROPERTIES } from './tables/gridProperties';
+import { ENVIRONMENT_PROPERTIES } from './tables/environmentProperties';
+import { LAND_PROPERTIES } from './tables/landProperties';
+import { SPACE_PROPERTIES } from './tables/spaceProperties';
+import { TEXT_PROPERTIES } from './tables/textProperties';
 import { MATERIAL_PROPERTY_BOUNDS } from './tables/materialBounds';
 import type {
     DescribedProperty, PropertyDomain, PropertyElement, PropertyKind, PropertyOption, PropertySpec,
@@ -81,7 +93,15 @@ const MATERIAL_STRUCTURAL = new Set([
  * Objects that own their shader: their materialSettings (if any) never reach the
  * renderer, so they have no material properties. They animate through config.
  */
-export const SELF_MANAGED_MATERIAL_TYPES = new Set(['effect', 'grid', 'light', 'particles']);
+export const SELF_MANAGED_MATERIAL_TYPES = new Set(['effect', 'grid', 'light', 'particles', 'environment', 'space', 'land']);
+
+/**
+ * True when the object draws with its own shaders: a whole object type from the set above, or a text look.
+ * Object type 'text' also hosts the legacy bitmap / 3D text, which keeps its material, so text is decided per
+ * object (config.type), not by type. Use this, never the set alone, wherever the material panel is decided.
+ */
+export const selfManagesMaterial = (obj: { type?: string; config?: unknown } | null | undefined): boolean =>
+    !!obj && (SELF_MANAGED_MATERIAL_TYPES.has(obj.type as string) || (obj.type === 'text' && isTextObjectConfig(obj.config)));
 
 const CAMERA_SPECS: PropertySpec[] = [
     { key: 'position', name: 'position', label: 'Position', kind: 'vec3', domain: 'camera', animatable: true },
@@ -249,7 +269,18 @@ type Family = {
     list: OptionalProperty[];
     /** Animatable knob → label, or null when the family has no per-frame knobs. */
     animatable: Map<string, string> | null;
+    /** Where the knobs live on the settings. 'config.' for every object family; ''
+     *  for the sky, whose six knobs sit at the root of SkySettings. */
+    prefix?: string;
 };
+
+/** Environment families animate by the environment rule (numbers and colours unless the schema opts out). */
+const envFamily = (domain: PropertyDomain, list: OptionalProperty[], prefix: string): Family => ({
+    domain,
+    list,
+    prefix,
+    animatable: new Map(list.filter(envAnimatable).map(p => [p.name, p.label ?? propertyLabel(p.name)])),
+});
 
 const tableOf = (rows: Array<{ value: string; label: string }> | undefined) =>
     new Map((rows ?? []).map(r => [r.value, r.label]));
@@ -262,12 +293,31 @@ function familyOf(obj: any): Family | null {
     const particles = () => ({ domain: 'particles' as const, list: (PARTICLES_PROPERTIES as Record<string, OptionalProperty[]>)[t!] ?? [], animatable: tableOf((GENERATIVE_PARTICLES_ANIMATABLE as Record<string, any>)[t!]) });
     const effect = () => ({ domain: 'effect' as const, list: (EFFECT_PROPERTIES as Record<string, OptionalProperty[]>)[t!] ?? [], animatable: tableOf((EFFECTS_ANIMATABLE as Record<string, any>)[t!]) });
     const grid = () => ({ domain: 'grid' as const, list: GRID_PROPERTIES[t!] ?? [], animatable: tableOf(GRIDS_ANIMATABLE[t!]) });
+    const environment = () => ({ domain: 'environment' as const, list: (ENVIRONMENT_PROPERTIES as Record<string, OptionalProperty[]>)[t!] ?? [], animatable: tableOf((ENVIRONMENT_OBJECTS_ANIMATABLE as Record<string, any>)[t!]) });
+    const space = () => ({ domain: 'space' as const, list: (SPACE_PROPERTIES as Record<string, OptionalProperty[]>)[t!] ?? [], animatable: tableOf((SPACE_OBJECTS_ANIMATABLE as Record<string, any>)[t!]) });
+    const land = () => ({ domain: 'land' as const, list: (LAND_PROPERTIES as Record<string, OptionalProperty[]>)[t!] ?? [], animatable: tableOf((LAND_OBJECTS_ANIMATABLE as Record<string, any>)[t!]) });
+    const text = () => ({ domain: 'text' as const, list: (TEXT_PROPERTIES as Record<string, OptionalProperty[]>)[t!] ?? [], animatable: tableOf((TEXT_OBJECTS_ANIMATABLE as Record<string, any>)[t!]) });
+
+    // Environment elements seen through the object view, so the Animation and
+    // MouseMove panels (getAnimatableProperties) work on them like on any object.
+    // The sky is flat — no config block — so it is keyed before the config.type gate.
+    if (type === 'sky') return envFamily('sky', skyOptionalProperties, '');
+    if (type === 'ocean' && obj?.config) return envFamily('ocean', oceanSurfaceOptionalProperties(obj.config.waterType, obj.config.host), 'config.');
+    if (type === 'terrain' && obj?.config) return envFamily('terrain', terrainOptionalProperties(obj.config.terrainType), 'config.');
 
     if (t) {
         if (type === 'light') return light();
         if (type === 'particles') return particles();
         if (type === 'effect') return effect();
         if (type === 'grid') return grid();
+        // Before the rain branch: the rain *object* is a family member; the branch below is the scene-level rain element.
+        if (type === 'environment' && (ENVIRONMENT_OBJECTS_ANIMATABLE as Record<string, unknown>)[t]) return environment();
+        // Space objects only under their own object type: their keys ('stars', 'earth'…) are too generic to match by config.type alone.
+        if (type === 'space' && (SPACE_OBJECTS_ANIMATABLE as Record<string, unknown>)[t]) return space();
+        // Land objects only under their own object type: their keys are landform names ('hills'…).
+        if (type === 'land' && (LAND_OBJECTS_ANIMATABLE as Record<string, unknown>)[t]) return land();
+        // Text looks only under the text object type, and only with a config.type: the legacy 2d / 3d text (no config.type) falls through to its own list below.
+        if (type === 'text' && (TEXT_OBJECTS_ANIMATABLE as Record<string, unknown>)[t]) return text();
         if (t === 'rain') return { domain: 'rain', list: rainOptionalProperties, animatable: new Map(RAIN_ANIMATABLE_KEYS.map(k => [k, propertyLabel(k)])) };
         if (t === 'clouds') return { domain: 'clouds', list: cloudsOptionalProperties, animatable: new Map(CLOUD_ANIMATABLE_PROPERTIES.map(k => [k, propertyLabel(k)])) };
         // Older objects carry a generative config under another object type.
@@ -292,11 +342,11 @@ function configSpecs(obj: any): PropertySpec[] {
     }
     const family = familyOf(obj);
     if (!family) return [];
-    const { domain, list, animatable } = family;
+    const { domain, list, animatable, prefix = 'config.' } = family;
     const out: PropertySpec[] = [];
     const seen = new Set<string>();
     for (const p of list) {
-        const spec = fromOptional(p, 'config.', domain, !!animatable?.has(p.name));
+        const spec = fromOptional(p, prefix, domain, !!animatable?.has(p.name));
         out.push(spec);
         seen.add(p.name);
     }
@@ -304,7 +354,7 @@ function configSpecs(obj: any): PropertySpec[] {
     for (const [name, label] of animatable ?? []) {
         if (seen.has(name)) continue;
         const kind = kindOfValue(name, obj?.config?.[name]) ?? 'number';
-        out.push({ key: `config.${name}`, name, label: label || propertyLabel(name), kind, domain, animatable: true });
+        out.push({ key: `${prefix}${name}`, name, label: label || propertyLabel(name), kind, domain, animatable: true });
     }
     if (domain === 'light') {
         for (const p of (SHADOW_PROPERTIES as Record<string, OptionalProperty[]>)[obj.config.type] ?? []) {
@@ -316,7 +366,7 @@ function configSpecs(obj: any): PropertySpec[] {
 
 function objectSpecs(obj: CreatedObjectSettings | any): PropertySpec[] {
     if (!obj) return [];
-    const ownsMaterial = !SELF_MANAGED_MATERIAL_TYPES.has(obj.type);
+    const ownsMaterial = !selfManagesMaterial(obj);
     return [
         ...TRANSFORM_SPECS,
         ...(ownsMaterial ? materialSpecs(obj.materialSettings, 'materialSettings.', 'material') : []),
@@ -332,7 +382,10 @@ function objectSpecs(obj: CreatedObjectSettings | any): PropertySpec[] {
 function environmentSpecs(element: Exclude<PropertyElement, 'object' | 'camera'>, settings: any): PropertySpec[] {
     switch (element) {
         case 'sky':
-            return envSpecs(skyOptionalProperties, '', 'sky');
+            return [
+                ...envSpecs(skyOptionalProperties, '', 'sky'),
+                ...envSpecs(skyStarsOptionalProperties, 'stars.', 'stars'),
+            ];
         case 'clouds':
             return [
                 ...envSpecs(cloudDeckOptionalProperties(settings?.config?.deckType), 'config.', 'clouds'),
@@ -365,6 +418,7 @@ export function getPropertySpecs(element: PropertyElement, settings: any): Prope
 export function isPropertyLive(element: PropertyElement, spec: PropertySpec, settings: any): boolean {
     if (spec.domain === 'edges') return settings?.edgesSettings?.enabled !== false;
     if (element === 'clouds') return spec.domain === 'cirrus' ? !!settings?.cirrus?.enabled : !!settings?.config?.enabled;
+    if (spec.domain === 'stars') return settings?.stars?.visible !== false;
     return true;
 }
 
@@ -375,11 +429,11 @@ export function getAnimatableSpecs(element: PropertyElement, settings: any): Pro
 
 /**
  * Object config families the animation timeline keys. The V2 applier drives
- * `config.*` through the object's live config handle, which these four register;
+ * `config.*` through the object's live config handle, which these seven register;
  * rain and the legacy cloud object have per-frame knobs for the keyframe /
  * mouse-move systems only.
  */
-export const TRACK_CONFIG_DOMAINS: ReadonlySet<PropertyDomain> = new Set<PropertyDomain>(['light', 'particles', 'effect', 'grid']);
+export const TRACK_CONFIG_DOMAINS: ReadonlySet<PropertyDomain> = new Set<PropertyDomain>(['light', 'particles', 'effect', 'grid', 'environment', 'space', 'land', 'text']);
 
 /** What an animation clip can key on this element (timeline track picker, AI clips). */
 export function getTrackSpecs(element: PropertyElement, settings: any): PropertySpec[] {

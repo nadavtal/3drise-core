@@ -31,6 +31,17 @@ export const skyOptionalProperties: OptionalProperty[] = [
     { name: 'azimuth', label: 'Azimuth', description: 'Compass direction of the sun', type: 'number', min: -180, max: 180, step: 1, unit: '°' },
 ];
 
+// The sky's built-in stars (SkyStars): keyed under `stars.` on SkySettings. count and
+// milkyWay rebuild the dome, so they are structural; the rest are uniforms.
+export const skyStarsOptionalProperties: OptionalProperty[] = [
+    { name: 'brightness', label: 'Brightness', description: 'How bright the stars are once it is dark', type: 'number', min: 0, max: 4, step: 0.05, default: 1 },
+    { name: 'count', label: 'Count', description: 'How many stars fill the sky', type: 'number', min: 500, max: 20000, step: 100, animatable: false, default: 4000 },
+    { name: 'size', label: 'Size', description: 'Size of the star points', type: 'number', min: 0.3, max: 3, step: 0.05, default: 1 },
+    { name: 'twinkle', label: 'Twinkle', description: 'How much the stars flicker. 0 holds them steady', type: 'number', min: 0, max: 1, step: 0.01, default: 0.5 },
+    { name: 'milkyWay', label: 'Milky Way', description: 'Gathers part of the stars into a dense band across the sky', type: 'number', min: 0, max: 1, step: 0.01, animatable: false, default: 0 },
+    { name: 'warmth', label: 'Colour Spread', description: 'Colour temperature spread: 0 is all white, 1 shows blue giants and orange dwarfs', type: 'number', min: 0, max: 1, step: 0.01, default: 0.5 },
+];
+
 export const oceanOptionalProperties: OptionalProperty[] = [
     {
         name: 'sunColor',
@@ -117,9 +128,21 @@ const terrainEnabled: OptionalProperty = {
 
 /** Terrain properties for a given landform. Strata, plateau, incision and the dune
  *  terms only appear on the types whose shader branch reads them. */
+// The four splat colours. TERRAIN_SCHEMA is numbers only, so they were missing
+// from the registry entirely: no panel row, no timeline track, no keyframe or
+// pointer binding (the agent facade had a hand-written env.terrain.colors()).
+// The renderer reads them every frame (applyTerrainUniforms), so they animate.
+const terrainColors: OptionalProperty[] = [
+    { name: 'lowColor', label: 'Low colour', description: 'Ground at the bottom of the height range', type: 'color' },
+    { name: 'midColor', label: 'Mid colour', description: 'Ground at mid height', type: 'color' },
+    { name: 'rockColor', label: 'Rock colour', description: 'Exposed rock, placed by slope rather than height, so cliffs read as cliffs at any altitude', type: 'color' },
+    { name: 'peakColor', label: 'Peak colour', description: 'Snow, salt or bleached stone at the top of the range', type: 'color' },
+];
+
 export const terrainOptionalProperties = (type?: TerrainType): OptionalProperty[] => [
     terrainEnabled,
     ...toTerrainOptional(TERRAIN_SCHEMA, type),
+    ...terrainColors,
 ];
 
 /**

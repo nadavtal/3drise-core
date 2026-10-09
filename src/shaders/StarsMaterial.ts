@@ -17,6 +17,10 @@ export interface StarsMaterialUniforms {
     colorMix: {
         value: number;
     };
+    /** Multiplier on every star's sprite size. */
+    sizeScale: {
+        value: number;
+    };
 }
 
 declare global {
@@ -38,6 +42,7 @@ const vertexShader = /*glsl*/ `
   varying float vDepth;
   
   uniform float time;
+  uniform float sizeScale;
 
   void main() {
     vColor = color;
@@ -46,7 +51,7 @@ const vertexShader = /*glsl*/ `
 
     // Twinkling effect based on time, frequency, and phase
     float twinkle = sin(time * freq + phase) * 0.2 + 0.8;
-    gl_PointSize = size * twinkle;
+    gl_PointSize = size * twinkle * sizeScale;
 
     // Position stars at far depth to appear behind everything
     vec4 pos = projectionMatrix * mvPosition;
@@ -93,7 +98,8 @@ const StarsMaterial = shaderMaterial({
     opacity: 1.0,
     uColor: new THREE.Color(1.0, 1.0, 1.0),
     targetColor: new THREE.Color(1.0, 1.0, 1.0),
-    colorMix: 0.0
+    colorMix: 0.0,
+    sizeScale: 1.0
 }, vertexShader, fragmentShader);
 // Extend the material for use in React Three Fiber
 extend({ StarsMaterial });

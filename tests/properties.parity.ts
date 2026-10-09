@@ -15,6 +15,10 @@ import {
     getPropertySpecs, getAnimatableSpecs, getAnimatableProperties, getGenerativeAnimatable, detectAnimatableDomain,
     CLOUD_ANIMATABLE_PROPERTIES,
     DEFAULT_LIGHTS, DEFAULT_GENERATIVE_PARTICLES, DEFAULT_GENERATIVE_EFFECTS, GRIDS_ANIMATABLE,
+    DEFAULT_ENVIRONMENT_OBJECTS, ENVIRONMENT_PROPERTIES,
+    DEFAULT_SPACE_OBJECTS, SPACE_PROPERTIES,
+    DEFAULT_LAND_OBJECTS, LAND_PROPERTIES,
+    DEFAULT_TEXT_OBJECTS, TEXT_PROPERTIES,
     LIGHT_PROPERTIES, SHADOW_PROPERTIES, PARTICLES_PROPERTIES, EFFECT_PROPERTIES, GRID_PROPERTIES,
     skyOptionalProperties, cloudDeckOptionalProperties, cirrusOptionalProperties,
     oceanSurfaceOptionalProperties, terrainOptionalProperties, rainOptionalProperties, cloudsOptionalProperties,
@@ -54,17 +58,21 @@ function rowsMatch(label: string, element: PropertyElement, settings: any, rows:
 // Generative families + lights: animatable == the generated tables (getGenerativeAnimatable)
 // -----------------------------------------------------------------------------
 
-const families: Array<[string, 'light' | 'particles' | 'effect' | 'grid', Record<string, any>, Record<string, OptionalProperty[]>]> = [
+const families: Array<[string, 'light' | 'particles' | 'effect' | 'grid' | 'environment' | 'space' | 'land' | 'text', Record<string, any>, Record<string, OptionalProperty[]>]> = [
     ['light', 'light', DEFAULT_LIGHTS, LIGHT_PROPERTIES as any],
     ['particles', 'particles', DEFAULT_GENERATIVE_PARTICLES, PARTICLES_PROPERTIES as any],
     ['effect', 'effect', DEFAULT_GENERATIVE_EFFECTS, EFFECT_PROPERTIES as any],
     ['grid', 'grid', Object.fromEntries(Object.keys({ ...GRIDS_ANIMATABLE, ...GRID_PROPERTIES }).map(t => [t, {}])), GRID_PROPERTIES],
+    ['environment', 'environment', DEFAULT_ENVIRONMENT_OBJECTS, ENVIRONMENT_PROPERTIES as any],
+    ['space', 'space', DEFAULT_SPACE_OBJECTS, SPACE_PROPERTIES as any],
+    ['land', 'land', DEFAULT_LAND_OBJECTS, LAND_PROPERTIES as any],
+    ['text', 'text', DEFAULT_TEXT_OBJECTS, TEXT_PROPERTIES as any],
 ];
 
 for (const [objType, domain, defaults, lists] of families) {
     for (const t of Object.keys(defaults)) {
         const obj = { id: 'x', type: objType, meshSettings: {}, config: { ...(defaults[t] ?? {}), type: t } };
-        const family = ({ light: 'lights', particles: 'particles', effect: 'effects', grid: 'grids' } as const)[domain];
+        const family = ({ light: 'lights', particles: 'particles', effect: 'effects', grid: 'grids', environment: 'environment', space: 'space', land: 'land', text: 'text' } as const)[domain];
         check(`${objType}/${t}: animatable config == generated table`, () => {
             const expected = sorted(getGenerativeAnimatable(family, obj.config).map(p => p.value));
             assert.deepEqual(names(getAnimatableSpecs('object', obj), 'config.'), expected);
@@ -162,11 +170,21 @@ for (const [label, m] of Object.entries(SAMPLE_MATERIALS)) {
     });
 }
 
-check('self-managed material: light / particles / effect / grid have no material properties', () => {
-    for (const type of ['light', 'particles', 'effect', 'grid']) {
+check('self-managed material: light / particles / effect / grid / environment / space / land have no material properties', () => {
+    for (const type of ['light', 'particles', 'effect', 'grid', 'environment', 'space', 'land']) {
         const obj = { id: 'x', type, meshSettings: {}, materialSettings: SAMPLE_MATERIALS.standard, config: { type: 'none' } };
         assert.equal(getPropertySpecs('object', obj).filter(s => s.domain === 'material').length, 0, type);
     }
+});
+
+check('text: a look draws its own material, the legacy 2d / 3d text keeps it', () => {
+    for (const look of Object.keys(DEFAULT_TEXT_OBJECTS)) {
+        const obj = { id: 'x', type: 'text', meshSettings: {}, materialSettings: SAMPLE_MATERIALS.standard, config: { ...(DEFAULT_TEXT_OBJECTS as any)[look] } };
+        assert.equal(getPropertySpecs('object', obj).filter(s => s.domain === 'material').length, 0, look);
+    }
+    const legacy = { id: 'x', type: 'text', meshSettings: {}, materialSettings: SAMPLE_MATERIALS.standard, config: { text: 'Hello', renderMode: 'bitmap' } };
+    assert.ok(getPropertySpecs('object', legacy).some(s => s.domain === 'material'), 'legacy text keeps its material');
+    assert.ok(!getPropertySpecs('object', legacy).some(s => s.domain === 'text'), 'legacy text is not in the text family');
 });
 
 check('getAnimatableProperties(transform): the three vectors', () => {

@@ -3,7 +3,7 @@ import type { CameraState, CreatedObjectSettings, GridSettings, QuaternionArray,
 import type { FogSettings } from "./environment";
 import type { PostProcessingState } from "./postprocessing";
 import { Object3D } from "three";
-import type { HtmlElement } from "./uiController";
+import type { UiLayer } from "../ui/uiSpec";
 import type { Action } from "./actions";
 import type { SceneLightConfig } from "./lights";
 import type { ActionSequence } from "./actions";
@@ -37,8 +37,6 @@ export interface SceneConfig {
     camera: CameraState;
     onObjectClick?: (object: CreatedObjectSettings, ref: Object3D) => void;
     onObjectHover?: (object: CreatedObjectSettings | null, ref: Object3D) => void;
-    onUiElementClick?: (element: HtmlElement) => void;
-    onUiElementHover?: (element: HtmlElement | null) => void;
     onSceneInitialized?: () => void;
 }
 
@@ -59,8 +57,6 @@ export interface SceneBuilderProps {
     className?: string;
     onObjectClick?: (object: CreatedObjectSettings, ref: Object3D, event: ThreeEvent<MouseEvent>) => void;
     onSceneInitialized?: () => void;
-    onUiElementClick?: (element: HtmlElement) => void;
-    onUiElementHover?: (element: HtmlElement | null) => void;
 }
 
 export interface ProjectData {
@@ -71,7 +67,8 @@ export interface ProjectData {
     camera: CameraState;
     environments: EnvironmentConfig[];
     sceneObjects: CreatedObjectSettings[];
-    uiSettings: any;
+    /** UI layers: agent-written HTML/CSS that controls the scene (see ui/uiSpec). */
+    uiLayers?: UiLayer[];
     actions?: Action[];
     /** Animations V2 rows (normalised by the viewer: normalizeSequence / normalizeClip). */
     animationSequences?: any[];

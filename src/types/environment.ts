@@ -2,7 +2,15 @@ import type { MaterialSettings } from "./materials";
 import type { CustomHandlers } from "./handlerSettings";
 import type { GridSettings } from "./scene3d";
 import type { MouseMoveInteraction, MouseMoveInteractions, ObjectAnimations } from "./objectSettings";
+/** Scene id of the sky. It is the sky mesh's id too, so findById('3drise-sky')
+ *  reaches the mesh, its uniforms and the live handle the controllers drive. */
+export const SKY_ID = '3drise-sky';
+
 export interface SkySettings {
+    /** Always SKY_ID. Optional so an older save (which has none) still types. */
+    id?: string;
+    /** Discriminator the animation / mouse-move panels and the registry key off. */
+    type?: 'sky';
     visible: boolean;
     turbidity: number;
     rayleigh: number;
@@ -10,9 +18,47 @@ export interface SkySettings {
     mieDirectionalG: number;
     elevation: number;
     azimuth: number;
-    handlers?: CustomHandlers;
+    /** Per-domain keyframes; the `sky` domain drives the six Preetham / sun knobs. */
+    animations?: ObjectAnimations;
+    /** Per-domain pointer bindings; same `sky` domain. */
+    mouseMove?: MouseMoveInteractions;
     sunSystem: any;
+    /** Built-in night sky (SkyStars). Absent = on. */
+    stars?: SkyStarsSettings;
 }
+
+/** The built-in night sky (viewer SkyStars). Every field optional: an older save
+ *  fills in from SKY_STARS_DEFAULTS (normalizeSkyStars). */
+export interface SkyStarsSettings {
+    visible?: boolean;
+    /** Multiplier on star brightness, default 1. */
+    brightness?: number;
+    /** Number of stars (structural: rebuilds the dome). */
+    count?: number;
+    /** Point size multiplier. */
+    size?: number;
+    /** Twinkle depth, 0 = steady. */
+    twinkle?: number;
+    /** Fraction of the stars gathered into a Milky Way band, 0 = none (structural). */
+    milkyWay?: number;
+    /** Colour spread: 0 = all white, 1 = full blue / orange temperature range. */
+    warmth?: number;
+}
+
+export const SKY_STARS_DEFAULTS: Required<SkyStarsSettings> = {
+    visible: true,
+    brightness: 1,
+    count: 4000,
+    size: 1,
+    twinkle: 0.5,
+    milkyWay: 0,
+    warmth: 0.5,
+};
+
+/** Merge a saved stars block over the defaults — absent block = default stars (they
+ *  were always on before the block existed). */
+export const normalizeSkyStars = (stars?: SkyStarsSettings | null): Required<SkyStarsSettings> =>
+    ({ ...SKY_STARS_DEFAULTS, ...(stars ?? {}) });
 
 export interface MoonSettings {
     visible: boolean;

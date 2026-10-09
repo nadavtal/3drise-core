@@ -367,6 +367,8 @@ export const MaterialRegistryAPI = {
             description: asset.description || `User shader "${asset.name}"`,
             materialClass: null,
             defaultSettings,
+            // Every sampler2D is a texture to resolve (URL → Texture) — not only names with "map" / "texture".
+            textureProperties: asset.uniforms.filter((u) => u.type === 'sampler2D').map((u) => u.name),
             _shaderSource: {
                 vertex: asset.vertex,
                 fragment: asset.fragment,

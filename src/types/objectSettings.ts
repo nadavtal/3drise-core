@@ -1,4 +1,5 @@
 import type { AnimationOptions, Vector3 } from "./scene3d";
+import type { SceneCommand } from "./commands";
 import type { MaterialSettings } from "./materials";
 import type { ShaderEffect } from "./shaderEffects";
 import type { ColorEffectType, EffectTriggerMode, TransformEffectType } from "./effects";
@@ -88,6 +89,41 @@ export interface GridConfigEffects {
     animations?: AnimationOptions[];
 }
 
+/** Keyframe animations for the sky's Preetham / sun knobs (SkySettings, root level). */
+export interface SkyEffects {
+    animations?: AnimationOptions[];
+}
+
+/** Keyframe animations for the water's own config knobs (OceanWaterSettings.config). */
+export interface OceanEffects {
+    animations?: AnimationOptions[];
+}
+
+/** Keyframe animations for the terrain surface's lighting / colour knobs (ProceduralTerrainSettings.config). */
+export interface TerrainEffects {
+    animations?: AnimationOptions[];
+}
+
+/** Keyframe animations for an environment object's config knobs (type 'environment': snow…). */
+export interface EnvironmentObjectEffects {
+    animations?: AnimationOptions[];
+}
+
+/** Keyframe animations for a land object's surface knobs (type 'land'). */
+export interface LandObjectEffects {
+    animations?: AnimationOptions[];
+}
+
+/** Keyframe animations for a space object's config knobs (type 'space': stars, earth, solarSystem, shootingStars). */
+export interface SpaceObjectEffects {
+    animations?: AnimationOptions[];
+}
+
+/** Keyframe animations for a text look's config knobs (type 'text', config.type set: handwriting, neonTube, fourierSketch). */
+export interface TextObjectEffects {
+    animations?: AnimationOptions[];
+}
+
 export interface RainEffects {
     /** Keyframe animations for rain config properties */
     animations?: AnimationOptions[];
@@ -113,6 +149,20 @@ export interface ObjectAnimations {
     effect?: EffectConfigEffects;
     /** Grid domain: a grid object's own config knobs (type 'grid'). */
     grid?: GridConfigEffects;
+    /** Environment domain: a weather object's own config knobs (type 'environment': snow…). */
+    environment?: EnvironmentObjectEffects;
+    /** Space domain: a space object's own config knobs (type 'space': stars, earth…). */
+    space?: SpaceObjectEffects;
+    /** Land domain: a land object's surface knobs (type 'land': mountains, hills, dunes, canyon). */
+    land?: LandObjectEffects;
+    /** Text domain: an animated text look's own config knobs (type 'text', config.type set). */
+    text?: TextObjectEffects;
+    /** Sky domain: the sky's turbidity / rayleigh / mie / elevation / azimuth. */
+    sky?: SkyEffects;
+    /** Ocean domain: the water's config knobs (OceanWaterSettings). */
+    ocean?: OceanEffects;
+    /** Terrain domain: the surface's lighting and colour knobs. */
+    terrain?: TerrainEffects;
 }
 
 export interface PropertyMutation {
@@ -141,6 +191,7 @@ export type InteractionTrigger = 'click' | 'mouseEnter' | 'mouseLeave';
  */
 export type OperationName =
     | 'jelly' | 'flip' | 'spin' | 'swirl' | 'moveToFront'
+    | 'float' | 'sway' | 'bounce' | 'wobble' | 'pulse' | 'shake' | 'rotate' | 'grow'
     | 'glow' | 'rimLight' | 'dissolve' | 'emberAsh' | 'particleSwarm' | 'hologram' | 'shatter'
     | 'sandErosion' | 'teleport' | 'inkBloom' | 'flock' | 'metalize' | 'liquidMetal' | 'frost' | 'heatCracks' | 'petrify' | 'portal' | 'voxelize' | 'unweave' | 'petalPeel' | 'fade' | 'visibility' | 'displayImage'
     | 'zoom' | 'frame' | 'focus' | 'orbit'
@@ -152,6 +203,7 @@ export type OperationName =
  *   transform  the object's own position / rotation / scale
  *   visual     how the object is drawn (material, shader, visibility) — never its transform
  *   camera     the camera (zoom, look at)
+ *   effects    the object's own effects (its Effects tab): play / stop / toggle them
  */
 export type OperationChannel = 'transform' | 'visual' | 'camera';
 
@@ -173,6 +225,13 @@ export interface OperationEffect {
     meshNames?: Record<string, string[]>;
     /** Overrides of the operation's parameter defaults. */
     params?: Record<string, OperationParamValue>;
+    /**
+     * Reverse / loop / yoyo, for operations that can also be object effects (the object's effects
+     * controller runs them). Autoplay and visible do not apply to a triggered effect.
+     */
+    playback?: EffectPlayback;
+    /** Targeting a group: a physical effect moves the whole group ('group', default) or each child on its own spot ('each'). Visual effects on a group always go to each child. */
+    scope?: 'group' | 'each';
 }
 
 /**
@@ -184,42 +243,151 @@ export interface OperationEffect {
  * (the viewer's definitions list 'object' in `usableIn`). Always on the object
  * itself — no targets, no channel.
  */
+/**
+ * How an effect plays. All optional; with none set it plays in once and holds.
+ *   autoplay  plays when the scene starts / the effect is switched on (default true).
+ *             Off: it waits at its start until something plays it.
+ *   reverse   starts at its end and plays back to the original
+ *   loop      when a pass ends, jumps back to its start and plays again
+ *   yoyo      plays there and back (once, or over and over with loop)
+ */
+export interface EffectPlayback {
+    autoplay?: boolean;
+    reverse?: boolean;
+    loop?: boolean;
+    yoyo?: boolean;
+}
+
 export interface ObjectEffect {
     id: string;
     operation: OperationName;
     enabled: boolean;
+    /** Autoplay / reverse / loop / yoyo — see EffectPlayback. */
+    playback?: EffectPlayback;
     /** Narrows a model to named nodes. */
     meshNames?: string[];
     /** Overrides of the operation's parameter defaults. */
     params?: Record<string, OperationParamValue>;
+    /**
+     * On a group, a physical effect moves the whole group as one piece ('group', the default) or
+     * every child on its own spot ('each', staggered by the clip's `spread`). Visual effects on a
+     * group always go to each child.
+     */
+    scope?: 'group' | 'each';
+}
+
+/**
+ * How a group's effects reach its children one after another (see claude/group-effects-plan.md).
+ * Defaults: core `DEFAULT_EFFECT_SPREAD`.
+ */
+export interface EffectSpread {
+    /** Who goes first: scene-tree order, along an axis of the group, centre → out, or random (seeded by the group). */
+    order?: 'tree' | 'x' | 'y' | 'z' | 'radial' | 'random';
+    /** Seconds from the first child to the last (a fixed total, whatever the number of children). 0 = together. */
+    total?: number;
+    /** Going off: last in, first out ('reverse'), or the same order. */
+    out?: 'reverse' | 'same';
+}
+
+/**
+ * Effects that take turns on an object. The object's own `effects` run the whole time; on top
+ * of them one step is on at a time. A step holds effects that go together and owns the timing.
+ */
+export interface EffectStep {
+    id: string;
+    /** Effects that go together (one take-over at most). Their own playback is not used: looks play in and hold, motions run while the step is on. */
+    effects: ObjectEffect[];
+    /** Seconds the step's looks take to play in — and out, when the step ends. Default 1. */
+    in?: number;
+    /** Seconds the step stays once its looks are on. Default 1. */
+    hold?: number;
+    /**
+     * How the step ends. Default: directly — the next step's take-over sweeps over this one,
+     * the plain object never shows. True: this step plays out first, back to the object, and
+     * only then does the next step start.
+     */
+    playOut?: boolean;
+}
+
+export interface EffectSteps {
+    steps: EffectStep[];
+    /** After the last step, start again from the first. Off: it stays on the last step. */
+    loop?: boolean;
+    /** Through the steps there and back. */
+    yoyo?: boolean;
+}
+
+/**
+ * What an object's Effects tab holds — the object's own effect clip, stored as one value in
+ * `CreatedObject.effects`: Base effects (on the whole time), steps that take turns, the model
+ * parts they apply to, and the saved template it came from. Same shape as a template (EffectClip)
+ * plus what only an object has (parts, source). Read it with core `objectEffectClipOf`.
+ */
+export interface ObjectEffectClip {
+    /** Base: on the whole time. */
+    effects: ObjectEffect[];
+    /** Effects that take turns on top of the Base ones. */
+    steps?: EffectStep[];
+    loop?: boolean;
+    yoyo?: boolean;
+    /**
+     * The effects (Base and steps) follow the object's visibility: shown → they play in (the steps
+     * from the first), hidden → they play out first and then the object goes. Off: hiding cuts them.
+     */
+    visible?: boolean;
+    /** Groups: how the effects reach the children one after another. */
+    spread?: EffectSpread;
+    /** Model parts (node names) the effects apply to; none = the whole object. */
+    parts?: string[];
+    /** The saved effect clip (template) these effects were copied from / saved to. */
+    source?: { id: string };
+}
+
+/**
+ * A saved effect clip — a TEMPLATE: always-on effects and steps, with no target inside.
+ * What an object's Effects tab holds is that object's own clip (ObjectEffectClip);
+ * importing a template copies it into the object. Interactions and actions point at a
+ * template by id and apply it to their targets (EffectClipUse).
+ */
+export interface EffectClip {
+    id: string;
+    name: string;
+    effects: ObjectEffect[];
+    steps?: EffectStep[];
+    loop?: boolean;
+    yoyo?: boolean;
+    /** Imported into an object, its effects follow the object's visibility (applied by a command: not used). */
+    visible?: boolean;
+    /** Imported into a group: how its effects reach the children. */
+    spread?: EffectSpread;
+    /** Preview image (the asset's url), when one was taken. */
+    previewUrl?: string;
+    /** The asset's owner and privacy (only a private clip of your own is updated in place). */
+    creatorId?: string;
+    privacy?: string;
+}
+
+/** A template applied to targets: by an action (applied / reverted with it) or an interaction. */
+export interface EffectClipUse {
+    id: string;
+    /** EffectClip id. */
+    clip: string;
+    /** Scene object ids; interactions may also use 'self'. */
+    targets: string[];
+    /** Narrows a `model` target to named nodes, keyed by that model's object id. */
+    meshNames?: Record<string, string[]>;
 }
 
 export type InteractionAnimationCommand = 'play' | 'pause' | 'stop' | 'toggle';
 
-export interface InteractionAnimation {
-    id: string;
-    kind: 'clip' | 'sequence';
-    /** Clip or sequence id. */
-    ref: string;
-    command: InteractionAnimationCommand;
-}
-
 /** toggle: apply, then revert, … */
 export type InteractionActionCommand = 'apply' | 'revert' | 'toggle';
-
-export interface InteractionAction {
-    id: string;
-    /** Action sequence id. */
-    ref: string;
-    command: InteractionActionCommand;
-}
 
 export interface Interaction {
     mouseEvent: InteractionTrigger;
     enabled: boolean;
-    effects: OperationEffect[];
-    animations: InteractionAnimation[];
-    actions: InteractionAction[];
+    /** What happens, in order — run by the viewer's triggers engine. */
+    commands: SceneCommand[];
 }
 
 export interface ClickInteraction {
@@ -265,6 +433,20 @@ export interface MouseMoveInteractions {
     effect?: MouseMoveDomain;
     /** Grid domain: a grid object's own config knobs. */
     grid?: MouseMoveDomain;
+    /** Environment domain: a weather object's own config knobs. */
+    environment?: MouseMoveDomain;
+    /** Space domain: a space object's own config knobs. */
+    space?: MouseMoveDomain;
+    /** Land domain: a land object's surface knobs. */
+    land?: MouseMoveDomain;
+    /** Text domain: an animated text look's own config knobs. */
+    text?: MouseMoveDomain;
+    /** Sky domain: the sky's Preetham / sun knobs. */
+    sky?: MouseMoveDomain;
+    /** Ocean domain: the water's config knobs. */
+    ocean?: MouseMoveDomain;
+    /** Terrain domain: the surface's lighting and colour knobs. */
+    terrain?: MouseMoveDomain;
 }
 
 

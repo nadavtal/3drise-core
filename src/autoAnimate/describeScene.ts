@@ -130,7 +130,7 @@ const roundValue = (v: unknown): unknown => (Array.isArray(v) ? v.map(r) : typeo
 const PROP_KINDS = new Set<PropKind>(['vec3', 'number', 'color', 'boolean', 'select']);
 
 /** Families whose set-only properties go out as patch (transform / material / edges / shadow are not offered). */
-const PATCH_DOMAINS = new Set(['light', 'particles', 'effect', 'grid', 'rain', 'clouds', 'config', 'sky', 'cirrus', 'ocean', 'terrain']);
+const PATCH_DOMAINS = new Set(['light', 'particles', 'effect', 'grid', 'environment', 'space', 'land', 'text', 'rain', 'clouds', 'config', 'sky', 'cirrus', 'ocean', 'terrain']);
 
 const toProp = (p: DescribedProperty): PropContext | null => {
     if (!PROP_KINDS.has(p.kind as PropKind)) return null;

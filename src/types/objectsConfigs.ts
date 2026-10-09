@@ -24,8 +24,6 @@ export interface MyGridConfig {
     size: number;
     /** plane subdivisions per side; auto-derived when omitted (bumped if displace > 0) */
     segments?: number;
-    /** lay flat on XZ (true) or keep upright on XY (false) */
-    flat: boolean;
     lineMode: MyGridLineMode;
     cellMode: MyGridCellMode;
     lineWidth: number;
@@ -43,7 +41,6 @@ export interface MyGridConfig {
     glowColor: string;
     bgColor: string;
     bgOpacity: number;
-    followMouse: boolean;
     /**
      * 0..1 assemble amount. The build boundary sweeps outward from the focus
      * point with a bright leading edge. Defaults to 1 (fully built); animate it

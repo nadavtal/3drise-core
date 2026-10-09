@@ -94,7 +94,7 @@ const materials: Record<MaterialType, MaterialDefinition> = {
                     'Product visualization',
                     'Outdoor environments and terrain',
                 ],
-                textureProperties: ['map', 'normalMap', 'bumpMap', 'aoMap', 'alphaMap', 'displacementMap', 'envMap'],
+                textureProperties: ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'bumpMap', 'aoMap', 'alphaMap', 'displacementMap', 'emissiveMap', 'envMap'],
                 defaultSettings: {
                     color: "#ffffff",
                     roughness: 0.5,
@@ -134,7 +134,7 @@ const materials: Record<MaterialType, MaterialDefinition> = {
                     'High-end product visualization',
                     'Photorealistic rendering',
                 ],
-                textureProperties: ['map', 'normalMap', 'alphaMap', 'envMap'],
+                textureProperties: ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'bumpMap', 'aoMap', 'alphaMap', 'displacementMap', 'emissiveMap', 'envMap'],
                 defaultSettings: {
                     color: "#ffffff",
                     roughness: 0.5,

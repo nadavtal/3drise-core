@@ -2,7 +2,7 @@ import type { MouseMoveInteraction, MouseMoveInteractions, ObjectAnimations } fr
 import { getAnimatableSpecs, getPropertySpecs } from "../properties/registry";
 import type { PropertyKind, PropertySpec } from "../properties/types";
 
-export type AnimatableDomain = 'transform' | 'material' | 'edges' | 'light' | 'clouds' | 'rain' | 'particles' | 'effect' | 'grid';
+export type AnimatableDomain = 'transform' | 'material' | 'edges' | 'light' | 'clouds' | 'rain' | 'particles' | 'effect' | 'grid' | 'environment' | 'space' | 'land' | 'text' | 'sky' | 'ocean' | 'terrain';
 
 export interface AnimatableProperty {
     value: string;
@@ -73,7 +73,7 @@ export function getAnimatableProperties(settings: AnimatableTarget, domain: Anim
 }
 
 /** Domain priority when a name exists in more than one (edges before material: an edges key shadows the mesh's). */
-const DETECT_ORDER: AnimatableDomain[] = ['edges', 'light', 'effect', 'grid', 'particles', 'clouds', 'rain', 'material'];
+const DETECT_ORDER: AnimatableDomain[] = ['edges', 'light', 'effect', 'grid', 'environment', 'space', 'land', 'text', 'particles', 'clouds', 'rain', 'sky', 'ocean', 'terrain', 'material'];
 
 /**
  * Detect which domain a property name belongs to, for a given target. Used by

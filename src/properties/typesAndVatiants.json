@@ -1,0 +1,4179 @@
+{
+    "objectTypes": [
+        {
+            "id": "f817e85d-6t78-11f1-8573-00163e32d101",
+            "objectTypeName": "model",
+            "description": "Import a 3d model",
+            "seoBody": null,
+            "defaultVariant": null,
+            "iconName": "cube",
+            "order": 0,
+            "enabled": true,
+            "createdAt": "2026-06-17T16:24:09.000Z",
+            "updatedAt": "2026-06-17T16:24:09.000Z"
+        },
+        {
+            "id": "f7536fd7-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "group",
+            "description": "An empty container that parents other objects so they move or scale together.",
+            "seoBody": null,
+            "defaultVariant": null,
+            "iconName": "box",
+            "order": 1,
+            "enabled": true,
+            "createdAt": "2026-06-17T16:24:08.000Z",
+            "updatedAt": "2026-06-17T16:24:08.000Z"
+        },
+        {
+            "id": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "description": "A primitive 3D shape (box, sphere, cylinder, etc.). The most common object type for general geometry.",
+            "seoBody": null,
+            "defaultVariant": "box",
+            "iconName": "cube",
+            "order": 2,
+            "enabled": true,
+            "createdAt": "2026-06-17T16:24:08.000Z",
+            "updatedAt": "2026-06-17T16:24:08.000Z"
+        },
+        {
+            "id": "f732d206-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "grid",
+            "description": "A grid overlay (cells and sections), typically on the ground plane.",
+            "seoBody": null,
+            "defaultVariant": null,
+            "iconName": "calculator",
+            "order": 3,
+            "enabled": true,
+            "createdAt": "2026-06-17T16:24:08.000Z",
+            "updatedAt": "2026-06-17T16:24:08.000Z"
+        },
+        {
+            "id": "f7745031-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "light",
+            "description": "A light source illuminating the scene. Choose the kind based on directionality and falloff.",
+            "seoBody": null,
+            "defaultVariant": null,
+            "iconName": "lightbulb",
+            "order": 4,
+            "enabled": true,
+            "createdAt": "2026-06-17T16:24:08.000Z",
+            "updatedAt": "2026-06-17T16:24:08.000Z"
+        },
+        {
+            "id": "f6f1a6a4-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "environment",
+            "description": "Environmental elements from the world",
+            "seoBody": null,
+            "defaultVariant": null,
+            "iconName": "globe",
+            "order": 5,
+            "enabled": true,
+            "createdAt": "2026-06-17T16:24:07.000Z",
+            "updatedAt": "2026-06-17T16:24:07.000Z"
+        },
+        {
+            "id": "f71242f6-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "gallery",
+            "description": "A layout that arranges multiple image frames in 3D space.",
+            "seoBody": null,
+            "defaultVariant": "tiles",
+            "iconName": "images",
+            "order": 6,
+            "enabled": true,
+            "createdAt": "2026-06-17T16:24:07.000Z",
+            "updatedAt": "2026-06-17T16:24:07.000Z"
+        },
+        {
+            "id": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "description": "Generative visual effects that add geometry or particles around a focal point.",
+            "seoBody": null,
+            "defaultVariant": "aura",
+            "iconName": "palette",
+            "order": 7,
+            "enabled": true,
+            "createdAt": "2026-06-17T16:24:07.000Z",
+            "updatedAt": "2026-06-17T16:24:07.000Z"
+        },
+        {
+            "id": "f7b5bfba-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "particles",
+            "description": "A particle system arranged in a configurable shape. Use for swarms, sparks, dust, dotted shapes.",
+            "seoBody": null,
+            "defaultVariant": null,
+            "iconName": "sparkles",
+            "order": 8,
+            "enabled": true,
+            "createdAt": "2026-06-17T16:24:09.000Z",
+            "updatedAt": "2026-09-16T06:20:43.000Z"
+        },
+        {
+            "id": "f7d663ca-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "path",
+            "description": "A 3D spline or path that other objects can follow.",
+            "seoBody": null,
+            "defaultVariant": null,
+            "iconName": "draw-polygon",
+            "order": 9,
+            "enabled": false,
+            "createdAt": "2026-06-17T16:24:09.000Z",
+            "updatedAt": "2026-08-06T07:27:18.000Z"
+        },
+        {
+            "id": "f7f6f91b-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "space",
+            "description": "Elements from space",
+            "seoBody": null,
+            "defaultVariant": null,
+            "iconName": "planet-ringed",
+            "order": 10,
+            "enabled": true,
+            "createdAt": "2026-06-17T16:24:09.000Z",
+            "updatedAt": "2026-06-17T16:24:09.000Z"
+        },
+        {
+            "id": "e841a567-7fb1-49ac-9d90-eb26a414b07f",
+            "objectTypeName": "text",
+            "description": "2d text, 3d text and more",
+            "seoBody": null,
+            "defaultVariant": null,
+            "iconName": "font",
+            "order": 11,
+            "enabled": true,
+            "createdAt": "2026-08-27T06:51:07.000Z",
+            "updatedAt": "2026-08-27T06:51:07.000Z"
+        }
+    ],
+    "allVariants": [
+        {
+            "id": "6e49e604-3007-4505-bd87-5e31b1393d94",
+            "objectTypeId": "e841a567-7fb1-49ac-9d90-eb26a414b07f",
+            "objectTypeName": "text",
+            "name": "2d text",
+            "description": "2d 'bitmap' text",
+            "tags": [
+                "text"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "text": "Hello",
+                    "renderMode": "bitmap"
+                }
+            }
+        },
+        {
+            "id": "992fe6fa-0d34-4d07-a600-0acee0c881fa",
+            "objectTypeId": "e841a567-7fb1-49ac-9d90-eb26a414b07f",
+            "objectTypeName": "text",
+            "name": "3d text",
+            "description": "3d text",
+            "tags": [
+                "text"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "text": "Hello",
+                    "renderMode": "text3d"
+                }
+            }
+        },
+        {
+            "id": "71h8sjh8-6a6f-gu85-8573-00163e32d101",
+            "objectTypeId": "f732d206-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "grid",
+            "name": "advanced grid",
+            "description": "A Grid with shader material , animation and noise effects.",
+            "tags": [
+                "grid"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "flat": true,
+                    "size": 50,
+                    "type": "advancedGrid",
+                    "bgColor": "#05080d",
+                    "enabled": true,
+                    "cellMode": 2,
+                    "cellSize": 1,
+                    "displace": 0,
+                    "lineMode": 2,
+                    "segments": null,
+                    "animScale": 0.5,
+                    "animSpeed": 1,
+                    "bgOpacity": 0,
+                    "cellColor": "#1a5999",
+                    "glowColor": "#339eff",
+                    "lineColor": "#477fb8",
+                    "lineWidth": 1,
+                    "followMouse": false,
+                    "sectionSize": 5,
+                    "fadeDistance": null,
+                    "fadeStrength": 0.65,
+                    "sectionColor": "#80c7ff",
+                    "sectionWidth": 1.6,
+                    "animIntensity": 1
+                }
+            }
+        },
+        {
+            "id": "68da2961-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f71242f6-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "gallery",
+            "name": "arc",
+            "description": "Frames along an arc segment. Use for partial-curve panoramas, theater-row layouts.",
+            "tags": [
+                "arc",
+                "curve",
+                "partial-circle",
+                "panorama",
+                "theater"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "layout": "arc",
+                    "radius": 3,
+                    "arcAngle": 180,
+                    "numImages": 8,
+                    "geometryType": "none"
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "64899c43-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "aura",
+            "description": "Soft pulsing glow shell around the object. Use for magical, mystical, holy effects.",
+            "tags": [
+                "aura",
+                "glow",
+                "halo",
+                "magical",
+                "mystical",
+                "holy",
+                "energy-field"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "aura",
+                    "color": "#7b2fff",
+                    "speed": 1,
+                    "enabled": true,
+                    "opacity": 0.6,
+                    "intensity": 1,
+                    "innerColor": "#ffffff",
+                    "layerCount": 3,
+                    "outerColor": "#7b2fff",
+                    "pulseSpeed": 1.5,
+                    "noiseAmount": 0.3,
+                    "fresnelPower": 3,
+                    "sizeMultiplier": 1.3
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "658e490f-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "aurora",
+            "description": "Flowing color ribbons (northern lights). Use for polar, atmospheric, magical-curtain effects.",
+            "tags": [
+                "aurora",
+                "northern-lights",
+                "borealis",
+                "ribbons",
+                "polar",
+                "curtain"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "aurora",
+                    "color": "#00ff88",
+                    "speed": 1,
+                    "enabled": true,
+                    "opacity": 0.75,
+                    "arcWidth": 0.6,
+                    "intensity": 1,
+                    "colorShift": 0.33,
+                    "ribbonCount": 6,
+                    "waveAmplitude": 0.55
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "71b9euh8-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f732d206-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "grid",
+            "name": "basic grid",
+            "description": "Basic grid with cells and sections",
+            "tags": [
+                "grid"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "side": 2,
+                    "type": "basic",
+                    "cellSize": 1,
+                    "fadeFrom": 0,
+                    "cellColor": "#630c0c",
+                    "sectionSize": 10,
+                    "fadeDistance": 30,
+                    "fadeStrength": 1,
+                    "followCamera": false,
+                    "sectionColor": "#ffffff",
+                    "cellThickness": 1,
+                    "sectionThickness": 1.5
+                },
+                "material": {
+                    "materialType": "basic",
+                    "materialVariant": "Standard",
+                    "materialDefaults": {
+                        "color": "#ffffff",
+                        "opacity": 1,
+                        "emissive": "#000000",
+                        "metalness": 0.5,
+                        "roughness": 0.5,
+                        "wireframe": false,
+                        "flatShading": false,
+                        "transparent": false,
+                        "envMapIntensity": 1,
+                        "emissiveIntensity": 1
+                    }
+                }
+            }
+        },
+        {
+            "id": "4745f1dc-293a-462c-af90-a65c4431dfbc",
+            "objectTypeId": "f7b5bfba-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "particles",
+            "name": "bioluminescentWake",
+            "description": "Bioluminescent plankton that flash when the water shears: swell orbits, excitable cells that tire and recover, moon glitter; the cursor is a hand, falling pebbles or a hunting fish. Use for night sea and fantasy scenes.",
+            "tags": [
+                "bioluminescence",
+                "plankton",
+                "ocean",
+                "night",
+                "excitable-medium",
+                "waves",
+                "water",
+                "interactive"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "seed": 1,
+                    "size": 1,
+                    "type": "bioluminescentWake",
+                    "color": "#3cc3ff",
+                    "speed": 1,
+                    "current": 0.3,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "quality": "medium",
+                    "glowTime": 1,
+                    "recovery": 6,
+                    "deepColor": "#1a8f8a",
+                    "intensity": 1,
+                    "moonlight": 0.6,
+                    "trailMode": "streak",
+                    "trailColor": "#2f7dff",
+                    "trailShare": 1,
+                    "pointerMode": "fish",
+                    "sensitivity": 1,
+                    "swellHeight": 1,
+                    "trailLength": 1.5,
+                    "pointerColor": "#dff4ff",
+                    "trailOpacity": 0.6,
+                    "waterClarity": 1,
+                    "particleCount": 36000,
+                    "pointerRadius": 1,
+                    "pointerStrength": 1
+                }
+            }
+        },
+        {
+            "id": "65ef19e3-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "blackHole",
+            "description": "A ray-traced Schwarzschild black hole: gravitational lensing, photon ring and a Doppler-beamed accretion disk with relativistic jets. Use for space, gravity and cosmic scenes.",
+            "tags": [
+                "black-hole",
+                "gravitational-lensing",
+                "accretion-disk",
+                "relativity",
+                "space",
+                "cosmic",
+                "singularity"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "tilt": 15,
+                    "type": "blackHole",
+                    "color": "#ffd2a0",
+                    "speed": 1,
+                    "beaming": 1,
+                    "enabled": true,
+                    "lensing": 1,
+                    "opacity": 0.95,
+                    "jetColor": "#88aaff",
+                    "diskColor": "#ff6600",
+                    "diskOuter": 3,
+                    "intensity": 1.2,
+                    "jetEnabled": true,
+                    "horizonSize": 0.4,
+                    "rotationSpeed": 1
+                }
+            }
+        },
+        {
+            "id": "6220eea0-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "box",
+            "description": "Rectangular box / cube. Use for crates, walls, blocks, cubes.",
+            "tags": [
+                "box",
+                "cube",
+                "block",
+                "crate",
+                "rectangular",
+                "cuboid"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "size": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "type": "box"
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "68992683-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f71242f6-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "gallery",
+            "name": "box",
+            "description": "Frames mounted on the inside or outside faces of a cube. Use for room-like installations.",
+            "tags": [
+                "box",
+                "cube",
+                "cubic",
+                "room",
+                "six-sided"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "size": 4,
+                    "layout": "box",
+                    "geometryType": "none"
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "8403f5f9-288e-45f7-ac7a-eb5eb8e026a0",
+            "objectTypeId": "f7b5bfba-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "particles",
+            "name": "brownianDust",
+            "description": "Dust drifting in window light: Langevin motion in Kolmogorov turbulence, mullion shadows, forward scattering, glints and bokeh; the cursor is a hand, a torch or a charged rod. Use for interiors and cinematic scenes.",
+            "tags": [
+                "dust",
+                "sunbeam",
+                "god-rays",
+                "brownian-motion",
+                "turbulence",
+                "bokeh",
+                "interior",
+                "interactive"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "size": 1,
+                    "type": "brownianDust",
+                    "color": "#ffd7a1",
+                    "speed": 1,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "aperture": 0.6,
+                    "beamAngle": 38,
+                    "beamWidth": 0.32,
+                    "intensity": 1,
+                    "trailMode": "comet",
+                    "anisotropy": 0.7,
+                    "trailColor": "#ffb870",
+                    "trailShare": 0.3,
+                    "turbulence": 1,
+                    "hazeDensity": 1,
+                    "pointerMode": "hand",
+                    "temperature": 1,
+                    "trailLength": 2.5,
+                    "windowPanes": 3,
+                    "ambientColor": "#7892b8",
+                    "pointerColor": "#ffe7c2",
+                    "trailOpacity": 0.5,
+                    "particleCount": 5000,
+                    "pointerRadius": 1,
+                    "pointerStrength": 1
+                }
+            }
+        },
+        {
+            "id": "6691dc69-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "bubbles",
+            "description": "Rising translucent spheres that pop. Use for underwater scenes, carbonation, magical effects.",
+            "tags": [
+                "bubbles",
+                "underwater",
+                "carbonation",
+                "magical",
+                "rising-spheres"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "bubbles",
+                    "color": "#00ffff",
+                    "scale": 1,
+                    "speed": 1,
+                    "colors": [
+                        "#00ffff",
+                        "#88ccff",
+                        "#ffffff"
+                    ],
+                    "enabled": true,
+                    "opacity": 0.8,
+                    "intensity": 1,
+                    "spawnRate": 5,
+                    "floatSpeed": 0.5,
+                    "lifetimeMs": 4000,
+                    "iridescence": 0.7
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "62e393d2-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "capsule",
+            "description": "Cylinder with hemispherical caps. Use for pills, character bodies, rounded poles.",
+            "tags": [
+                "capsule",
+                "pill",
+                "tablet",
+                "rounded-pole",
+                "pod"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "capsule",
+                    "length": 1,
+                    "radius": 0.3,
+                    "capSegments": 4,
+                    "radialSegments": 8
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "4d9d1ee0-86d0-4838-8fee-da969f809fb8",
+            "objectTypeId": "f732d206-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "grid",
+            "name": "chladniGrid",
+            "description": "Vibrating Chladni plates: sand settles on the nodal lines of a standing wave that drifts between resonances. Use for sound, music, science and meditative floors.",
+            "tags": [
+                "chladni",
+                "cymatics",
+                "standing-wave",
+                "sound",
+                "vibration",
+                "sand",
+                "floor"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "flat": true,
+                    "size": 50,
+                    "type": "chladniGrid",
+                    "grain": 0.8,
+                    "modeM": 5,
+                    "modeN": 3,
+                    "morph": 0.4,
+                    "reveal": 1,
+                    "bgColor": "#06080b",
+                    "cellMode": 2,
+                    "cellSize": 8,
+                    "displace": 0,
+                    "lineMode": 0,
+                    "animScale": 0.5,
+                    "animSpeed": 1,
+                    "bgOpacity": 0,
+                    "cellColor": "#16222e",
+                    "glowColor": "#ffe2a8",
+                    "lineColor": "#d9c7a3",
+                    "lineWidth": 1.2,
+                    "followMouse": false,
+                    "sectionSize": 1,
+                    "fadeStrength": 0.6,
+                    "sectionColor": "#4d5d6e",
+                    "sectionWidth": 0.8,
+                    "animIntensity": 0.6,
+                    "revealDuration": 0
+                }
+            }
+        },
+        {
+            "id": "e90f8357-35d1-4c8f-96e6-e0ef3deae93c",
+            "objectTypeId": "f7b5bfba-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "particles",
+            "name": "chladniSand",
+            "description": "Sand on an invisible vibrating plate: resonant plate modes throw grains onto the nodal lines, drawing Chladni figures that form and re-form; the cursor bows, touches or taps the plate. Use for science, sound and abstract scenes.",
+            "tags": [
+                "chladni",
+                "cymatics",
+                "sand",
+                "standing-waves",
+                "sound",
+                "science",
+                "interactive"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "seed": 1,
+                    "size": 1,
+                    "type": "chladniSand",
+                    "color": "#f1e3c2",
+                    "speed": 1,
+                    "sweep": 0.4,
+                    "damping": 0.025,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "quality": "medium",
+                    "hopColor": "#fff3d6",
+                    "amplitude": 1,
+                    "frequency": 4.63,
+                    "grainSize": 1,
+                    "intensity": 1,
+                    "trailMode": "streak",
+                    "lightAngle": 22,
+                    "trailColor": "#ffcf8a",
+                    "trailShare": 0.5,
+                    "pointerMode": "bow",
+                    "trailLength": 1.6,
+                    "pointerColor": "#fff4dc",
+                    "trailOpacity": 0.6,
+                    "particleCount": 20000,
+                    "pointerRadius": 1,
+                    "pointerStrength": 1
+                }
+            }
+        },
+        {
+            "id": "b8d25bcf-f52c-4778-88d4-208593c7c4db",
+            "objectTypeId": "f732d206-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "grid",
+            "name": "circuit grid",
+            "description": "Beautifull circuit grid",
+            "tags": [],
+            "defaultSettings": {
+                "config": {
+                    "flat": true,
+                    "size": 50,
+                    "type": "circuitGrid",
+                    "reveal": 1,
+                    "bgColor": "#020806",
+                    "padSize": 1,
+                    "powered": 0.65,
+                    "cellMode": 0,
+                    "cellSize": 1.6,
+                    "displace": 0,
+                    "lineMode": 2,
+                    "animScale": 1,
+                    "animSpeed": 1,
+                    "bgOpacity": 0,
+                    "cellColor": "#082420",
+                    "glowColor": "#59ffb8",
+                    "lineColor": "#186b5c",
+                    "lineWidth": 1.6,
+                    "chipChance": 0.06,
+                    "followMouse": false,
+                    "sectionSize": 6,
+                    "fadeStrength": 0.7,
+                    "sectionColor": "#8cf0b4",
+                    "sectionWidth": 1.2,
+                    "animIntensity": 1,
+                    "revealDuration": 0
+                }
+            }
+        },
+        {
+            "id": "67b5fc4d-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f71242f6-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "gallery",
+            "name": "circular",
+            "description": "Frames arranged on a flat circle facing inward. Use for carousels, ceremonial arrangements.",
+            "tags": [
+                "circular",
+                "circle",
+                "carousel",
+                "ring-of-frames",
+                "round"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "layout": "circular",
+                    "radius": 3,
+                    "numImages": 8,
+                    "geometryType": "none"
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "2c66d079-8c55-420f-b531-1dc3c65cad2d",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "club",
+            "description": "Club mesh",
+            "tags": [
+                "club",
+                "card"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "club"
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "62822c80-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "cone",
+            "description": "Pointed cone. Use for traffic cones, spires, ice-cream cones, witch hats.",
+            "tags": [
+                "cone",
+                "tip",
+                "point",
+                "spire",
+                "traffic-cone",
+                "horn"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "cone",
+                    "height": 1,
+                    "radius": 0.5,
+                    "radialSegments": 32
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "64ca584a-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "constellation",
+            "description": "Orbiting stars connected by faint lines, twinkling. Use for space, cosmic, network visuals.",
+            "tags": [
+                "constellation",
+                "stars",
+                "network",
+                "cosmic",
+                "connections",
+                "twinkle"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "constellation",
+                    "color": "#ffe066",
+                    "speed": 0.3,
+                    "enabled": true,
+                    "opacity": 0.1,
+                    "starSize": 0.05,
+                    "intensity": 1,
+                    "starCount": 60,
+                    "lineOpacity": 0.3,
+                    "orbitRadius": 2,
+                    "twinkleSpeed": 2,
+                    "connectRadius": 1.2
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "fe6ddcc2-b7cc-4c6c-bc57-54f3e5f88329",
+            "objectTypeId": "f732d206-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "grid",
+            "name": "contour grid",
+            "description": "Dazzling contour grid",
+            "tags": [],
+            "defaultSettings": {
+                "config": {
+                    "flat": true,
+                    "size": 50,
+                    "type": "contourGrid",
+                    "warp": 0.35,
+                    "levels": 16,
+                    "reveal": 1,
+                    "bgColor": "#020a0a",
+                    "cellMode": 1,
+                    "cellSize": 14,
+                    "displace": 0,
+                    "lineMode": 0,
+                    "animScale": 0.5,
+                    "animSpeed": 1,
+                    "bgOpacity": 0,
+                    "cellColor": "#1a5c52",
+                    "glowColor": "#8cffbf",
+                    "lineColor": "#59d9b3",
+                    "lineWidth": 1,
+                    "roughness": 0.5,
+                    "followMouse": false,
+                    "sectionSize": 5,
+                    "fadeStrength": 0.7,
+                    "sectionColor": "#bff299",
+                    "sectionWidth": 2.2,
+                    "animIntensity": 1,
+                    "revealDuration": 0
+                }
+            }
+        },
+        {
+            "id": "6261af4d-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "cylinder",
+            "description": "Cylinder (pipe / tube / column). Use for poles, columns, cans, pipes.",
+            "tags": [
+                "cylinder",
+                "pipe",
+                "tube",
+                "column",
+                "can",
+                "pole",
+                "barrel"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "cylinder",
+                    "height": 1,
+                    "radiusTop": 0.5,
+                    "radiusBottom": 0.5,
+                    "radialSegments": 32
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "30699f79-a7cb-4467-9be9-a62f383865ea",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "dandelionSeeds",
+            "description": "Dandelion seeds let go of the head one by one and drift away: a high-drag pappus gives them a slow terminal fall, and curl-noise wind with updrafts carries them. Use for meadow, summer, wish, gentle scenes.",
+            "tags": [
+                "dandelion",
+                "seeds",
+                "wind",
+                "pappus",
+                "drift",
+                "nature",
+                "summer",
+                "delicate"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "lift": 1,
+                    "type": "dandelionSeeds",
+                    "color": "#ffeccf",
+                    "speed": 1,
+                    "enabled": true,
+                    "opacity": 1,
+                    "seedSize": 1,
+                    "intensity": 1,
+                    "seedCount": 90,
+                    "stemColor": "#d8b183",
+                    "windSpeed": 0.55,
+                    "turbulence": 0.8,
+                    "windDirection": 20
+                }
+            }
+        },
+        {
+            "id": "64aa0aa2-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "dataStream",
+            "description": "Spiraling particle stream flowing inward or outward. Use for sci-fi tech, energy flow, data viz.",
+            "tags": [
+                "data-stream",
+                "spiral",
+                "flow",
+                "sci-fi",
+                "energy-flow",
+                "particles"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "dataStream",
+                    "color": "#00ff88",
+                    "speed": 0.5,
+                    "inward": false,
+                    "enabled": true,
+                    "opacity": 1,
+                    "hotColor": "#00ff88",
+                    "midColor": "#00ff88",
+                    "coldColor": "#00ff88",
+                    "intensity": 0.7,
+                    "spiralTurns": 4,
+                    "particleSize": 0.01,
+                    "streamRadius": 1,
+                    "particleCount": 50
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "ee01c9cc-3158-4b25-85b5-d90b12156744",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "diamond",
+            "description": "Diamond mesh",
+            "tags": [
+                "diamond",
+                "card"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "diamond"
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "63e7a86b-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f7745031-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "light",
+            "name": "directional",
+            "description": "Parallel rays from one direction (like the sun). Use for sunlight, moonlight, key light.",
+            "tags": [
+                "directional",
+                "sunlight",
+                "moonlight",
+                "key-light",
+                "parallel"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "directional",
+                    "color": "#ffffff",
+                    "enabled": true,
+                    "intensity": 1
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "652ba4dc-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "dnaHelix",
+            "description": "Double/triple strand helix of particles. Use for biology, genetics, twisted-strand visuals.",
+            "tags": [
+                "dna",
+                "helix",
+                "genetics",
+                "biology",
+                "double-helix",
+                "strand"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "dnaHelix",
+                    "color": "#ff6600",
+                    "speed": 1,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "intensity": 0.02,
+                    "helixHeight": 2,
+                    "helixRadius": 0.8,
+                    "strandCount": 2,
+                    "basePairColor": "#aaffcc",
+                    "particleCount": 60,
+                    "runningLightEnabled": true
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "6386f7f9-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "dodecahedron",
+            "description": "12-sided polyhedron with pentagonal faces. Use for d12 dice, faceted gemstones.",
+            "tags": [
+                "dodecahedron",
+                "d12",
+                "12-sided",
+                "pentagonal"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "dodecahedron",
+                    "detail": 0,
+                    "radius": 0.5
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "893650d6-a3cf-4a52-b5b0-3eb178ea001b",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "droplet",
+            "description": "Droplet mesh",
+            "tags": [
+                "droplet",
+                "drop"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "droplet",
+                    "taper": 1,
+                    "width": 0.5
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "697c7295-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f7f6f91b-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "space",
+            "name": "earth",
+            "description": "Full earth component",
+            "tags": [
+                "earth",
+                "planet",
+                "globe",
+                "world"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "earth",
+                    "radius": 1,
+                    "enabled": true,
+                    "sunPosition": [
+                        5,
+                        5,
+                        5
+                    ],
+                    "atmosphereDayColor": "#4db2ff",
+                    "atmosphereTwilightColor": "#bc490b"
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "231d241f-56df-41bd-8775-6b509dd7bcbc",
+            "objectTypeId": "f7b5bfba-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "particles",
+            "name": "electronOrbitals",
+            "description": "A hydrogen electron cloud as Bohmian trajectories: a superposition of two orbitals breathing at the Bohr frequency, coloured by quantum phase; the cursor is a photon, a magnet or a detector. Use for science and tech scenes.",
+            "tags": [
+                "quantum",
+                "hydrogen",
+                "orbital",
+                "bohmian",
+                "wavefunction",
+                "atom",
+                "science",
+                "interactive"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "mix": 0.35,
+                    "seed": 1,
+                    "size": 1,
+                    "type": "electronOrbitals",
+                    "color": "#6fd6ff",
+                    "speed": 1,
+                    "stateA": "4f+2",
+                    "stateB": "3d+1",
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "quality": "medium",
+                    "intensity": 1,
+                    "pointSize": 0.8,
+                    "timeScale": 1,
+                    "trailMode": "comet",
+                    "phaseColor": "#ff6ad5",
+                    "trailColor": "#7a8cff",
+                    "trailShare": 0.3,
+                    "phaseFronts": 1,
+                    "pointerMode": "photon",
+                    "trailLength": 2.5,
+                    "cloudDensity": 0.7,
+                    "pointerColor": "#fff2c4",
+                    "trailOpacity": 0.45,
+                    "particleCount": 24000,
+                    "pointerRadius": 1,
+                    "pointerStrength": 1
+                }
+            }
+        },
+        {
+            "id": "6e3021e3-e8ca-425b-9a25-87f9c275bede",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "fallingLeaves",
+            "description": "Leaves drifting past the object, each one integrating the Andersen-Pesavento-Wang falling-plate equations, so they flutter, glide and tumble like real leaves.",
+            "tags": [
+                "leaves",
+                "autumn",
+                "falling",
+                "flutter",
+                "tumble",
+                "aerodynamics",
+                "nature",
+                "wind"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "fallingLeaves",
+                    "wind": 0.5,
+                    "color": "#7f9b3f",
+                    "speed": 1,
+                    "spread": 2.2,
+                    "tumble": 0.35,
+                    "enabled": true,
+                    "opacity": 1,
+                    "leafSize": 1.3,
+                    "intensity": 1,
+                    "leafCount": 60,
+                    "fallHeight": 3,
+                    "autumnColor": "#c4631f"
+                }
+            }
+        },
+        {
+            "id": "6878e8dd-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f71242f6-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "gallery",
+            "name": "fan",
+            "description": "Frames fanned out from a common origin. Use for splayed-card layouts, paper-fan visuals.",
+            "tags": [
+                "fan",
+                "splay",
+                "spread",
+                "paper-fan"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "layout": "fan",
+                    "radius": 3,
+                    "arcAngle": 60,
+                    "numImages": 5,
+                    "geometryType": "none"
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "50c6a7bf-a41d-49a4-833d-03a65eec2167",
+            "objectTypeId": "f7b5bfba-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "particles",
+            "name": "faradayPowder",
+            "description": "Glowing powder on an invisible vibrating plate: acoustic streaming gathers it into swirling heaps at the antinodes, hotter where the plate moves most; the cursor bows, touches or taps the plate. Use for abstract, sound and fire-like scenes.",
+            "tags": [
+                "faraday",
+                "cymatics",
+                "powder",
+                "acoustic-streaming",
+                "glow",
+                "abstract",
+                "interactive"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "seed": 1,
+                    "size": 1,
+                    "type": "faradayPowder",
+                    "color": "#ff8a2a",
+                    "hover": 1,
+                    "speed": 1,
+                    "sweep": 0.3,
+                    "swirl": 1,
+                    "damping": 0.025,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "quality": "medium",
+                    "puffSize": 1,
+                    "amplitude": 1,
+                    "frequency": 4.63,
+                    "glowColor": "#ffe7a6",
+                    "intensity": 1,
+                    "trailMode": "comet",
+                    "trailColor": "#ff5a1e",
+                    "trailShare": 0.6,
+                    "pointerMode": "bow",
+                    "trailLength": 1.6,
+                    "pointerColor": "#fff4dc",
+                    "trailOpacity": 0.6,
+                    "particleCount": 12000,
+                    "pointerRadius": 1,
+                    "pointerStrength": 1
+                }
+            }
+        },
+        {
+            "id": "b13bcdc8-604d-4f92-87a2-4720ddbfd0c7",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "fieldLines",
+            "description": "Analytic magnetic dipole field lines around the object, with trapped particles bouncing between mirror points like the Van Allen belts. Use for sci-fi planets, energy cores, magnetism.",
+            "tags": [
+                "magnetic-field",
+                "dipole",
+                "field-lines",
+                "magnetosphere",
+                "plasma",
+                "sci-fi",
+                "planet"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "tilt": 11,
+                    "type": "fieldLines",
+                    "color": "#7ff5e4",
+                    "speed": 1,
+                    "twist": 0,
+                    "extent": 3.2,
+                    "shells": 4,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "apexColor": "#6a5cff",
+                    "intensity": 1,
+                    "particleSize": 1.2,
+                    "linesPerShell": 12,
+                    "particleCount": 6
+                }
+            }
+        },
+        {
+            "id": "6713eed1-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "fire",
+            "description": "Flame particles rising upward with hot-to-cool color gradient. Use for fire, torches, flames.",
+            "tags": [
+                "fire",
+                "flame",
+                "torch",
+                "burning",
+                "flames",
+                "hot"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "mode": "tongues",
+                    "sway": 1.2,
+                    "tint": "#ff6600",
+                    "type": "fire",
+                    "color": "#ff3300",
+                    "light": true,
+                    "speed": 1,
+                    "height": 2,
+                    "radius": 1,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "tongues": 36,
+                    "coverage": 0.85,
+                    "intensity": 1,
+                    "turbulence": 1.5,
+                    "heightScale": 1.5,
+                    "radiusScale": 0.5
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "597b83ee-029f-4773-a99b-c1a1c972077d",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "fireflySwarm",
+            "description": "Kuramoto-coupled fireflies drifting on a divergence-free flow: random blinking slowly locks into sync, with ripples of light rolling through the swarm. Use for night, garden, forest, magical scenes.",
+            "tags": [
+                "fireflies",
+                "synchrony",
+                "kuramoto",
+                "night",
+                "glow",
+                "swarm",
+                "nature",
+                "magic"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "fireflySwarm",
+                    "color": "#6f7d45",
+                    "count": 150,
+                    "speed": 1,
+                    "spread": 2.4,
+                    "enabled": true,
+                    "opacity": 1,
+                    "coupling": 1,
+                    "glowSize": 1,
+                    "frequency": 0.55,
+                    "intensity": 1,
+                    "driftSpeed": 1,
+                    "flashColor": "#d4ff5c"
+                }
+            }
+        },
+        {
+            "id": "66f35ba4-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "flares",
+            "description": "Radiating lens flares with glow. Use for bright lights, magical shines, cinematic effects.",
+            "tags": [
+                "flares",
+                "lens-flare",
+                "glow",
+                "bright",
+                "cinematic",
+                "shines"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "flares",
+                    "color": "#ff6600",
+                    "speed": 1,
+                    "fitKey": "scale",
+                    "radius": 1,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "padding": 0.5,
+                    "shooting": true,
+                    "intensity": 1,
+                    "maskLayer": 0,
+                    "maskResolution": 512
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "57e3786c-9f26-4fa0-8902-f8a5e45a59d0",
+            "objectTypeId": "f732d206-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "grid",
+            "name": "flowNetGrid",
+            "description": "A potential-flow net around a cylinder: streamlines and equipotentials cross at right angles and bend around the obstacle. Use for aerodynamic, fluid and engineering floors.",
+            "tags": [
+                "flow-net",
+                "potential-flow",
+                "streamlines",
+                "fluid",
+                "aerodynamics",
+                "conformal",
+                "floor"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "flat": true,
+                    "size": 50,
+                    "type": "flowNetGrid",
+                    "reveal": 1,
+                    "bgColor": "#02070b",
+                    "cellMode": 1,
+                    "cellSize": 1.5,
+                    "displace": 0,
+                    "lineMode": 2,
+                    "animScale": 0.6,
+                    "animSpeed": 1,
+                    "bgOpacity": 0,
+                    "cellColor": "#0c3148",
+                    "flowAngle": 0,
+                    "glowColor": "#5fd0ff",
+                    "lineColor": "#3f8fbf",
+                    "lineWidth": 1,
+                    "circulation": 2,
+                    "followMouse": false,
+                    "sectionSize": 5,
+                    "fadeStrength": 0.7,
+                    "sectionColor": "#9fe3ff",
+                    "sectionWidth": 1.6,
+                    "animIntensity": 0.8,
+                    "obstacleRadius": 3,
+                    "revealDuration": 0
+                }
+            }
+        },
+        {
+            "id": "17bbdfdc-1718-4caf-8123-f8fb85ff1dee",
+            "objectTypeId": "f7745031-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "light",
+            "name": "fluorescent",
+            "description": "A fluorescent tube",
+            "tags": [],
+            "defaultSettings": {
+                "config": {
+                    "on": true,
+                    "age": 0.15,
+                    "hum": 0.3,
+                    "halo": 1,
+                    "type": "fluorescentTube",
+                    "color": "#ffffff",
+                    "decay": 1,
+                    "tubes": 1,
+                    "length": 1.2,
+                    "shadow": {
+                        "bias": -0.0001,
+                        "radius": 5,
+                        "enabled": false,
+                        "mapSize": 512,
+                        "cameraFar": 100,
+                        "intensity": 1,
+                        "cameraNear": 0.05,
+                        "normalBias": 0
+                    },
+                    "warmup": 1.2,
+                    "emitter": "tubes",
+                    "enabled": true,
+                    "flicker": 0,
+                    "startup": "stutter",
+                    "diameter": 0.026,
+                    "distance": 0,
+                    "colorMode": "temperature",
+                    "intensity": 1,
+                    "greenShift": 0.35,
+                    "temperature": 4000,
+                    "tubeSpacing": 0.14,
+                    "shadowStrength": 0.4
+                }
+            }
+        },
+        {
+            "id": "65ae8d09-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "forcefield",
+            "description": "Hex-pattern energy shield around the object. Use for shields, barriers, sci-fi protection.",
+            "tags": [
+                "forcefield",
+                "shield",
+                "barrier",
+                "hex-grid",
+                "protection",
+                "energy-shield"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "forcefield",
+                    "color": "#44aaff",
+                    "speed": 1,
+                    "enabled": true,
+                    "hexSize": 0.06,
+                    "opacity": 0.9,
+                    "rimColor": "#ffffff",
+                    "intensity": 1,
+                    "shieldColor": "#44aaff",
+                    "rippleEnabled": true
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "5f4a64fb-119a-4ae7-a939-79861bce2fed",
+            "objectTypeId": "f732d206-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "grid",
+            "name": "fractal grid",
+            "description": "Fractal base grid",
+            "tags": [],
+            "defaultSettings": {
+                "config": {
+                    "flat": true,
+                    "size": 50,
+                    "type": "fractalGrid",
+                    "depth": 5,
+                    "reveal": 1,
+                    "bgColor": "#020810",
+                    "cellMode": 2,
+                    "cellSize": 4,
+                    "displace": 0,
+                    "lineMode": 0,
+                    "animScale": 0.5,
+                    "animSpeed": 1,
+                    "bgOpacity": 0,
+                    "cellColor": "#1f61a3",
+                    "glowColor": "#66e6ff",
+                    "lineColor": "#59bfff",
+                    "lineWidth": 1.6,
+                    "followMouse": true,
+                    "sectionSize": 4,
+                    "splitJitter": 0.5,
+                    "splitRadius": 3.5,
+                    "fadeStrength": 0.7,
+                    "sectionColor": "#99e6ff",
+                    "sectionWidth": 2.2,
+                    "animIntensity": 1,
+                    "revealDuration": 0
+                }
+            }
+        },
+        {
+            "id": "f350de8e-9e27-4a98-a72f-585d3755ae18",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "galaxy",
+            "description": "A spiral galaxy from density-wave theory: nested elliptical orbits twist into arms, lit by young blue stars, dust lanes and a warm bulge. Use for space, cosmic, sci-fi scenes.",
+            "tags": [
+                "galaxy",
+                "spiral-arms",
+                "density-wave",
+                "stars",
+                "space",
+                "cosmic",
+                "milky-way"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "dust": 0.6,
+                    "tilt": 22,
+                    "type": "galaxy",
+                    "color": "#9fc4ff",
+                    "speed": 1,
+                    "radius": 3,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "armTwist": 5.5,
+                    "bulgeSize": 0.22,
+                    "coreColor": "#ffd9a8",
+                    "intensity": 1,
+                    "starCount": 18000,
+                    "ellipticity": 0.32
+                }
+            }
+        },
+        {
+            "id": "7ef0a81c-addc-4a02-9110-389eb834db34",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "gear",
+            "description": "Gear shape mesh",
+            "tags": [
+                "gear",
+                "cog"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "hole": 0.16,
+                    "type": "gear",
+                    "inner": 0.38,
+                    "outer": 0.5,
+                    "teeth": 12
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "a378585a-6698-4fef-be85-f7cdc74f8192",
+            "objectTypeId": "f732d206-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "grid",
+            "name": "girihGrid",
+            "description": "Islamic star-and-rosette strapwork built by Hankin polygons-in-contact: rays leave every edge midpoint at the contact angle and close into interlaced stars. Use for ornament, palace, mosaic and ritual floors.",
+            "tags": [
+                "girih",
+                "islamic",
+                "star-pattern",
+                "strapwork",
+                "hankin",
+                "tiling",
+                "ornament",
+                "floor"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "flat": true,
+                    "size": 50,
+                    "type": "girihGrid",
+                    "reveal": 1,
+                    "tiling": 0,
+                    "bgColor": "#05070a",
+                    "cellMode": 2,
+                    "cellSize": 4,
+                    "displace": 0,
+                    "lineMode": 2,
+                    "animScale": 0.5,
+                    "animSpeed": 1,
+                    "bgOpacity": 0,
+                    "cellColor": "#12616f",
+                    "glowColor": "#38c4c8",
+                    "lineColor": "#f2c469",
+                    "lineWidth": 1.2,
+                    "angleDrift": 5,
+                    "strapWidth": 0.07,
+                    "followMouse": false,
+                    "sectionSize": 3,
+                    "contactAngle": 67.5,
+                    "fadeStrength": 0.65,
+                    "sectionColor": "#3f6fc4",
+                    "sectionWidth": 0.8,
+                    "animIntensity": 0.25,
+                    "revealDuration": 0
+                }
+            }
+        },
+        {
+            "id": "66b20df3-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "glyphs",
+            "description": "Floating symbols or runes circling the object. Use for magic, arcane, mystical effects.",
+            "tags": [
+                "glyphs",
+                "runes",
+                "magic",
+                "arcane",
+                "mystical",
+                "floating-symbols"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "glyphs",
+                    "color": "#ff00ff",
+                    "speed": 1,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "intensity": 1,
+                    "ringColor": "#ff00ff",
+                    "glyphCount": 30,
+                    "hoverColor": "#ffeb99",
+                    "morphSpeed": 0.3,
+                    "ringRadius": 1.2,
+                    "glyphsColor": "#ff00ff",
+                    "hoverRadius": 0.5,
+                    "rotationSpeed": 0.5,
+                    "hoverIntensity": 2,
+                    "shadesMultiplier": 0.5
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "1781ba3e-73a3-443a-8e38-53c865cc7a01",
+            "objectTypeId": "f732d206-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "grid",
+            "name": "gravWaveGrid",
+            "description": "A spacetime lattice around an inspiralling black-hole binary: the wells pinch the grid and chirping quadrupole waves spiral outward until the merger rings down. Use for space, physics and sci-fi floors.",
+            "tags": [
+                "gravitational-waves",
+                "black-holes",
+                "binary",
+                "spacetime",
+                "relativity",
+                "chirp",
+                "space",
+                "floor"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "flat": true,
+                    "size": 50,
+                    "type": "gravWaveGrid",
+                    "reveal": 1,
+                    "strain": 1,
+                    "bgColor": "#03050b",
+                    "cellMode": 0,
+                    "cellSize": 1,
+                    "displace": 0,
+                    "lineMode": 0,
+                    "animScale": 0.5,
+                    "animSpeed": 1,
+                    "bgOpacity": 0,
+                    "cellColor": "#1b3a7a",
+                    "chirpTime": 14,
+                    "glowColor": "#8fd8ff",
+                    "lineColor": "#3d6fc9",
+                    "lineWidth": 1,
+                    "massRatio": 0.6,
+                    "waveSpeed": 6.5,
+                    "followMouse": false,
+                    "sectionSize": 5,
+                    "fadeStrength": 0.7,
+                    "sectionColor": "#9cc2ff",
+                    "sectionWidth": 1.4,
+                    "animIntensity": 0.7,
+                    "revealDuration": 0
+                }
+            }
+        },
+        {
+            "id": "353bb96c-eb55-45d1-a1a3-d7a520551786",
+            "objectTypeId": "f7b5bfba-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "particles",
+            "name": "grinderSparks",
+            "description": "Slow-motion grinder sparks: drag-limited ballistics, radiative cooling on the blackbody scale, carbon bursts, floor bounces and reflections; the cursor moves the grinder, aims the spray or sweeps the air. Use for industrial and cinematic scenes.",
+            "tags": [
+                "sparks",
+                "grinder",
+                "metal",
+                "blackbody",
+                "industrial",
+                "fire",
+                "cinematic",
+                "interactive"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "seed": 1,
+                    "size": 1,
+                    "type": "grinderSparks",
+                    "color": "#fff1d6",
+                    "speed": 1,
+                    "carbon": 0.5,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "quality": "medium",
+                    "exposure": 1,
+                    "intensity": 1,
+                    "sparkRate": 1,
+                    "trailMode": "comet",
+                    "emberColor": "#ff3a12",
+                    "sprayAngle": 14,
+                    "trailColor": "#ff7a2e",
+                    "trailShare": 1,
+                    "wheelSpeed": 35,
+                    "pointerMode": "wheel",
+                    "temperature": 2000,
+                    "trailLength": 0.9,
+                    "floorReflect": 0.35,
+                    "pointerColor": "#ffd9a0",
+                    "trailOpacity": 0.9,
+                    "particleCount": 12000,
+                    "pointerRadius": 1,
+                    "pointerStrength": 1
+                }
+            }
+        },
+        {
+            "id": "a8b1296d-6a22-4bf3-98ff-6183b0d9ae62",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "harmonicShell",
+            "description": "An iridescent soap-film shell shaped by morphing spherical harmonics, with glowing nodal lines. Use for energy shields, magic, vibration, organic sci-fi.",
+            "tags": [
+                "spherical-harmonics",
+                "iridescent",
+                "thin-film",
+                "shell",
+                "cymatics",
+                "shield",
+                "bubble"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "harmonicShell",
+                    "color": "#3a2a6b",
+                    "speed": 1,
+                    "degree": 3,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "rimColor": "#bfe8ff",
+                    "amplitude": 0.22,
+                    "intensity": 1,
+                    "nodalLines": 0.6,
+                    "filmThickness": 380,
+                    "sizeMultiplier": 1.35
+                }
+            }
+        },
+        {
+            "id": "ca82412a-145e-49c7-95d8-b2940be39aa4",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "heart",
+            "description": "simple heart mesh",
+            "tags": [],
+            "defaultSettings": {
+                "config": {
+                    "type": "heart",
+                    "bevelSize": 0.03,
+                    "bevelSegments": 3,
+                    "curveSegments": 64,
+                    "bevelThickness": 0.03
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "6837b8c7-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f71242f6-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "gallery",
+            "name": "helix",
+            "description": "Frames spiraling vertically like a DNA strand. Use for tall, twisting columns of images.",
+            "tags": [
+                "helix",
+                "twist",
+                "spiral-column",
+                "tall-spiral"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "layout": "helix",
+                    "radius": 2,
+                    "numImages": 16,
+                    "rotations": 3,
+                    "geometryType": "none",
+                    "heightIncrement": 0.5
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "65e8d204-fecc-4178-902e-93777ef1cee8",
+            "objectTypeId": "f732d206-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "grid",
+            "name": "hex grid",
+            "description": "honeycomb grid",
+            "tags": [
+                "grid",
+                "hex"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "flat": true,
+                    "size": 50,
+                    "type": "hexGrid",
+                    "bgColor": "#030809",
+                    "plateau": true,
+                    "cellMode": 2,
+                    "cellSize": 1.4,
+                    "displace": 0,
+                    "lineMode": 1,
+                    "animScale": 0.6,
+                    "animSpeed": 1,
+                    "bgOpacity": 0,
+                    "cellColor": "#0f4869",
+                    "glowColor": "#4df3ff",
+                    "lineColor": "#2a9ec7",
+                    "lineWidth": 1.2,
+                    "followMouse": false,
+                    "sectionSize": 4,
+                    "fadeStrength": 0.7,
+                    "sectionColor": "#73eaff",
+                    "sectionWidth": 2,
+                    "animIntensity": 1
+                }
+            }
+        },
+        {
+            "id": "64eafe9e-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "hologram",
+            "description": "Scanline + glitch overlay. Use for futuristic UI, projections, sci-fi displays.",
+            "tags": [
+                "hologram",
+                "scanline",
+                "glitch",
+                "sci-fi",
+                "projection",
+                "futuristic",
+                "display"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "hologram",
+                    "color": "#00ffcc",
+                    "speed": 1,
+                    "enabled": true,
+                    "opacity": 0.5,
+                    "intensity": 1,
+                    "scanColor": "#00ffcc",
+                    "scanSpeed": 1.5,
+                    "gridEnabled": true,
+                    "flickerAmount": 0.15,
+                    "glitchEnabled": true,
+                    "scanlineCount": 8
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "67755522-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f71242f6-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "gallery",
+            "name": "horizontal",
+            "description": "Single horizontal line of frames. Use for film strips, timelines, horizontal showcases.",
+            "tags": [
+                "horizontal",
+                "row",
+                "strip",
+                "line",
+                "timeline"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "layout": "horizontal",
+                    "spacing": 1.5,
+                    "numImages": 8,
+                    "geometryType": "none"
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "80740e5a-2d0b-42a3-be4b-67f3b545fd2b",
+            "objectTypeId": "f732d206-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "grid",
+            "name": "hyperbolicGrid",
+            "description": "An Escher-style {p,q} tiling of the Poincaré disk that glides through itself; tiles shrink endlessly toward the rim. Use for mystical, mathematical and portal floors.",
+            "tags": [
+                "hyperbolic",
+                "poincare-disk",
+                "escher",
+                "tiling",
+                "non-euclidean",
+                "portal",
+                "floor"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "flat": true,
+                    "size": 50,
+                    "type": "hyperbolicGrid",
+                    "drift": 0.5,
+                    "sides": 7,
+                    "reveal": 1,
+                    "bgColor": "#07030c",
+                    "valence": 3,
+                    "cellMode": 2,
+                    "cellSize": 22,
+                    "displace": 0,
+                    "lineMode": 1,
+                    "animScale": 1.2,
+                    "animSpeed": 1,
+                    "bgOpacity": 0,
+                    "cellColor": "#2a1446",
+                    "glowColor": "#b07cff",
+                    "lineColor": "#c9a4ff",
+                    "lineWidth": 1.4,
+                    "followMouse": false,
+                    "sectionSize": 3,
+                    "fadeStrength": 0.2,
+                    "sectionColor": "#ffd9f2",
+                    "sectionWidth": 1,
+                    "animIntensity": 0.7,
+                    "revealDuration": 0
+                }
+            }
+        },
+        {
+            "id": "660ff268-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "iceCrystals",
+            "description": "Six-fold snow crystals grow as frost on the object, from hexagonal plates to feathery dendrites, with facets that glint and drifting diamond dust. Use for winter, frost, cold magic.",
+            "tags": [
+                "ice",
+                "snowflake",
+                "frost",
+                "dendrite",
+                "crystal",
+                "winter",
+                "diamond-dust"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "iceCrystals",
+                    "color": "#88ccff",
+                    "habit": 0.8,
+                    "speed": 0.5,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "sparkle": 1,
+                    "branches": 5,
+                    "iceColor": "#9fd8ff",
+                    "intensity": 1,
+                    "pulseSpeed": 0.4,
+                    "spikeCount": 30,
+                    "spikeLength": 1,
+                    "frostEnabled": true
+                }
+            }
+        },
+        {
+            "id": "071f0dd3-708e-448c-817f-3f05348f788c",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "iceHalo",
+            "description": "Atmospheric ice optics around the object as a light source: a dispersed 22° halo, sun dogs, a parhelic circle and a light pillar. Use for cold skies, suns, lamps, magic light.",
+            "tags": [
+                "halo",
+                "ice-crystals",
+                "sun-dog",
+                "parhelion",
+                "refraction",
+                "atmosphere",
+                "winter",
+                "light"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "iceHalo",
+                    "color": "#fff2dd",
+                    "glare": 0.9,
+                    "speed": 1,
+                    "pillar": 0.45,
+                    "enabled": true,
+                    "opacity": 1,
+                    "sunDogs": 0.8,
+                    "haloScale": 0.35,
+                    "intensity": 1,
+                    "outerHalo": 0.4,
+                    "parhelicCircle": 0.35
+                }
+            }
+        },
+        {
+            "id": "6324647d-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "icosahedron",
+            "description": "20-sided polyhedron. Use for d20 dice, geodesic forms, faceted gems.",
+            "tags": [
+                "icosahedron",
+                "d20",
+                "20-sided",
+                "geodesic",
+                "faceted"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "icosahedron",
+                    "detail": 0,
+                    "radius": 0.5
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "3d7311ca-b7a8-4027-b207-50b21c3d6b4c",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "infinity",
+            "description": "Infinity mesh",
+            "tags": [
+                "infinity"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "infinity",
+                    "waist": 0.14,
+                    "samples": 220,
+                    "thickness": 0.12
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "40544400-910b-4b96-b098-f733e0e2b1a1",
+            "objectTypeId": "f7745031-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "light",
+            "name": "Led",
+            "description": "A let array",
+            "tags": [],
+            "defaultSettings": {
+                "config": {
+                    "on": true,
+                    "pwm": 0,
+                    "halo": 1,
+                    "rows": 4,
+                    "type": "ledArray",
+                    "color": "#ffffff",
+                    "count": 8,
+                    "decay": 1,
+                    "layout": "panel",
+                    "shadow": {
+                        "bias": -0.0001,
+                        "radius": 1,
+                        "enabled": false,
+                        "mapSize": 512,
+                        "cameraFar": 100,
+                        "intensity": 1,
+                        "cameraNear": 0.02,
+                        "normalBias": 0
+                    },
+                    "warmup": 0,
+                    "dieSize": 0.022,
+                    "emitter": "dies",
+                    "enabled": true,
+                    "flicker": 0,
+                    "spacing": 0.06,
+                    "diffuser": 0,
+                    "distance": 0,
+                    "rgbSpeed": 0.2,
+                    "colorMode": "temperature",
+                    "intensity": 1,
+                    "rgbSpread": 1,
+                    "temperature": 5000
+                }
+            }
+        },
+        {
+            "id": "529f0fbe-1f82-465c-b435-0464c655c9ef",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "lichtenberg",
+            "description": "A Lichtenberg figure grown by the dielectric breakdown model: a glowing fern of electricity creeps over the surface, holds, fades and regrows. Use for energy, sci-fi, power and lightning scenes.",
+            "tags": [
+                "lichtenberg",
+                "lightning",
+                "electric",
+                "dielectric-breakdown",
+                "fractal",
+                "branching",
+                "energy",
+                "sci-fi"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "lichtenberg",
+                    "color": "#6f9dff",
+                    "pulse": 0.6,
+                    "speed": 1,
+                    "enabled": true,
+                    "opacity": 1,
+                    "branching": 2.2,
+                    "coreColor": "#f2f6ff",
+                    "intensity": 1,
+                    "lineWidth": 1,
+                    "nodeCount": 3200,
+                    "growthTime": 9
+                }
+            }
+        },
+        {
+            "id": "07365d40-5914-4185-8823-a53b69710742",
+            "objectTypeId": "f7745031-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "light",
+            "name": "light bulb",
+            "description": "A bulb mesh with point light init",
+            "tags": [],
+            "defaultSettings": {
+                "config": {
+                    "on": true,
+                    "halo": 1,
+                    "type": "lightBulb",
+                    "color": "#ffffff",
+                    "decay": 1,
+                    "glass": "clear",
+                    "shape": "classic",
+                    "shadow": {
+                        "bias": -0.0001,
+                        "radius": 1,
+                        "enabled": false,
+                        "mapSize": 512,
+                        "cameraFar": 100,
+                        "intensity": 1,
+                        "cameraNear": 0.05,
+                        "normalBias": 0
+                    },
+                    "warmup": 0.25,
+                    "enabled": true,
+                    "flicker": 0,
+                    "distance": 0,
+                    "colorMode": "temperature",
+                    "glassTint": "#ffb070",
+                    "intensity": 1,
+                    "temperature": 2700
+                }
+            }
+        },
+        {
+            "id": "656dd599-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "lightning",
+            "description": "Branching electric bolts striking the object. Use for storms, electricity, tesla effects.",
+            "tags": [
+                "lightning",
+                "electric",
+                "bolt",
+                "tesla",
+                "storm",
+                "spark",
+                "electricity"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "lightning",
+                    "color": "#ffffff",
+                    "speed": 1,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "boltCount": 4,
+                    "glowColor": "#6699ff",
+                    "intensity": 1,
+                    "branchDepth": 4,
+                    "flickerRate": 10,
+                    "strikeRadius": 2,
+                    "branchProbability": 0.5
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "c9466069-c8c4-40c2-a8bb-7f3d7f2b4659",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "lightning",
+            "description": "Lightning mesh",
+            "tags": [
+                "lightning"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "lightning",
+                    "width": 0.6,
+                    "height": 1
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "bcd97785-b50c-4ad4-ad49-d7e10a8c90b1",
+            "objectTypeId": "f7b5bfba-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "particles",
+            "name": "magneticBottle",
+            "description": "Charged particles woven over any mesh shape: counter-rotating constant-bearing spirals that tighten into glowing tips, in two exact family colours; the cursor pinches, drifts or heats the orbits. Use for sci-fi and tech scenes.",
+            "tags": [
+                "magnetic-mirror",
+                "plasma",
+                "spiral",
+                "vortex",
+                "shapes",
+                "physics",
+                "sci-fi",
+                "interactive"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "glow": 1,
+                    "seed": 1,
+                    "size": 1,
+                    "type": "magneticBottle",
+                    "color": "#5fd6ff",
+                    "shape": {
+                        "type": "cone",
+                        "height": 1,
+                        "radius": 0.5,
+                        "radialSegments": 32
+                    },
+                    "speed": 1,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "quality": "medium",
+                    "lineLife": 6,
+                    "windings": 0.6,
+                    "intensity": 1,
+                    "trailMode": "comet",
+                    "trailColor": "#8f7bff",
+                    "trailShare": 1,
+                    "lineDensity": 1,
+                    "pitchSpread": 0.3,
+                    "pointerMode": "drift",
+                    "trailLength": 0.8,
+                    "counterColor": "#ff6fb3",
+                    "pointerColor": "#fff0c8",
+                    "trailOpacity": 0.8,
+                    "particleCount": 48,
+                    "pointerRadius": 1,
+                    "pointerStrength": 1
+                }
+            }
+        },
+        {
+            "id": "28472d4c-12b5-4ab2-81eb-495114a877e4",
+            "objectTypeId": "f732d206-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "grid",
+            "name": "moire grid",
+            "description": "Moire",
+            "tags": [],
+            "defaultSettings": {
+                "config": {
+                    "flat": true,
+                    "size": 50,
+                    "spin": 1,
+                    "type": "moireGrid",
+                    "shape": "square",
+                    "reveal": 1,
+                    "bgColor": "#02040d",
+                    "cellMode": 2,
+                    "cellSize": 2.8,
+                    "displace": 0,
+                    "lineMode": 0,
+                    "animScale": 1,
+                    "animSpeed": 1,
+                    "bgOpacity": 0,
+                    "cellColor": "#0d1a40",
+                    "glowColor": "#99d9ff",
+                    "lineColor": "#226bd9",
+                    "lineWidth": 1.4,
+                    "layerAngle": 0.05,
+                    "layerScale": 1.06,
+                    "followMouse": false,
+                    "sectionSize": 12,
+                    "fadeStrength": 0.7,
+                    "sectionColor": "#f2599e",
+                    "sectionWidth": 0,
+                    "animIntensity": 1,
+                    "revealDuration": 0
+                }
+            }
+        },
+        {
+            "id": "6448c429-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "molecules",
+            "description": "A molecule drawn as quantum electron clouds: hydrogen orbitals that morph from 1s to 4f, ligands arranged by the Thomson problem and bonding density. Use for chemistry, science, atomic visuals.",
+            "tags": [
+                "molecule",
+                "atomic-orbitals",
+                "electron-cloud",
+                "quantum",
+                "chemistry",
+                "vsepr",
+                "science"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "molecules",
+                    "color": "#00d4ff",
+                    "speed": 1,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "orbital": -1,
+                    "atomSize": 0.08,
+                    "atomCount": 6,
+                    "bondColor": "#ffffff",
+                    "intensity": 1,
+                    "showBonds": true,
+                    "phaseColor": "#ff5a8a",
+                    "orbitRadius": 1.5,
+                    "cloudDensity": 1,
+                    "randomizeAxes": true
+                }
+            }
+        },
+        {
+            "id": "0836c9fa-2db8-4322-a4d0-8828408fcd92",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "murmuration",
+            "description": "A starling murmuration: thousands of boids with topological neighbours swirl around a drifting roost, folding into dense, wave-like sheets. Use for dusk, wildlife, flocking, atmospheric scenes.",
+            "tags": [
+                "birds",
+                "flock",
+                "boids",
+                "murmuration",
+                "starlings",
+                "swarm",
+                "nature",
+                "dusk"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "murmuration",
+                    "color": "#b9c8dc",
+                    "count": 2200,
+                    "speed": 1,
+                    "enabled": true,
+                    "opacity": 0.92,
+                    "birdSize": 1,
+                    "cohesion": 1,
+                    "alignment": 1,
+                    "intensity": 1,
+                    "separation": 1,
+                    "flockRadius": 2.6
+                }
+            }
+        },
+        {
+            "id": "510b1475-71fb-4670-97ee-9cc659597038",
+            "objectTypeId": "f7b5bfba-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "particles",
+            "name": "neonRain",
+            "description": "Night rain lit by neon: Marshall–Palmer drops at terminal velocity, gusting sheets, splash crowns and rim drips, each drop lit like a tiny lens; the cursor is an umbrella, a gust or a headlight. Use for city, noir and cinematic scenes.",
+            "tags": [
+                "rain",
+                "neon",
+                "night",
+                "city",
+                "splash",
+                "weather",
+                "cinematic",
+                "interactive"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "seed": 1,
+                    "size": 1,
+                    "type": "neonRain",
+                    "color": "#ff2f9a",
+                    "speed": 1,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "quality": "medium",
+                    "aperture": 0.5,
+                    "dropSize": 1,
+                    "rainRate": 18,
+                    "gustiness": 0.6,
+                    "intensity": 1,
+                    "lampColor": "#ffae52",
+                    "neonLight": 1,
+                    "trailMode": "streak",
+                    "windSpeed": 0.8,
+                    "neonColor2": "#22dcff",
+                    "trailColor": "#9fb8ff",
+                    "trailShare": 0.6,
+                    "pointerMode": "umbrella",
+                    "trailLength": 1.2,
+                    "pointerColor": "#eaf2ff",
+                    "trailOpacity": 0.7,
+                    "particleCount": 10000,
+                    "pointerRadius": 1,
+                    "pointerStrength": 1
+                }
+            }
+        },
+        {
+            "id": "65ced02b-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "neuralNetwork",
+            "description": "Pulsing nodes connected by signal lines. Use for AI, brain, network visualizations.",
+            "tags": [
+                "neural-network",
+                "brain",
+                "ai",
+                "nodes",
+                "synapses",
+                "network"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "neuralNetwork",
+                    "color": "#00aaff",
+                    "speed": 1,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "intensity": 1,
+                    "nodeColor": "#00aaff",
+                    "nodeCount": 20,
+                    "orbitSpeed": 0.3,
+                    "pulseColor": "#ffffff",
+                    "signalSpeed": 1.2
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "6344f7d9-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "octahedron",
+            "description": "8-sided polyhedron (two pyramids back-to-back). Use for d8 dice, crystals, faceted diamonds.",
+            "tags": [
+                "octahedron",
+                "d8",
+                "8-sided",
+                "diamond-shape",
+                "bipyramid"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "octahedron",
+                    "detail": 0,
+                    "radius": 0.5
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "654c4539-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "orb",
+            "description": "Glowing sphere with layered shells and corona. Use for energy balls, plasma, magical orbs.",
+            "tags": [
+                "orb",
+                "energy-ball",
+                "plasma",
+                "glow-sphere",
+                "magical-sphere"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "orb",
+                    "color": "#7b2fff",
+                    "speed": 1,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "coreSize": 0.15,
+                    "intensity": 1.5,
+                    "glowLayers": 3,
+                    "innerColor": "#ffffff",
+                    "outerColor": "#7b2fff",
+                    "pulseSpeed": 1.5,
+                    "coronaColor": "#88ccff",
+                    "noiseAmount": 0.45,
+                    "coronaEnabled": true
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "40a127e2-7c11-4b66-9b6d-7b88e21727c1",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "paw print",
+            "description": "Dog paw print",
+            "tags": [
+                "paw",
+                "dog"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "pawPrint"
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "62c2dad5-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "plane",
+            "description": "Flat 2D rectangle. Use for ground, floors, walls, screens, ceilings.",
+            "tags": [
+                "plane",
+                "flat",
+                "ground",
+                "floor",
+                "wall",
+                "screen",
+                "ceiling",
+                "sheet"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "size": [
+                        1,
+                        1
+                    ],
+                    "type": "plane",
+                    "widthSegments": 1,
+                    "heightSegments": 1
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "2aa62adc-1e85-42fc-890b-0245225e8a3a",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "planetaryRings",
+            "description": "A Saturn-like ring system: Keplerian shear shapes icy clumps, resonant moons open gaps and spiral density waves, and the planet casts a soft shadow. Use for planets, sci-fi, space scenes.",
+            "tags": [
+                "rings",
+                "saturn",
+                "planet",
+                "kepler",
+                "resonance",
+                "density-wave",
+                "space",
+                "ice"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "tilt": 17,
+                    "type": "planetaryRings",
+                    "color": "#e9dcc2",
+                    "moons": 3,
+                    "speed": 1,
+                    "spokes": 0.45,
+                    "enabled": true,
+                    "opacity": 1,
+                    "gapColor": "#8fa2b6",
+                    "sunAngle": 45,
+                    "dustColor": "#ffd3a1",
+                    "intensity": 1,
+                    "innerRadius": 1.35,
+                    "outerRadius": 2.6,
+                    "sunElevation": 24,
+                    "forwardScatter": 0.35
+                }
+            }
+        },
+        {
+            "id": "640811a5-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f7745031-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "light",
+            "name": "point",
+            "description": "Omnidirectional light from a single point. Use for bulbs, lamps, candles, fires.",
+            "tags": [
+                "point",
+                "bulb",
+                "lamp",
+                "candle",
+                "omni",
+                "omnidirectional"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "point",
+                    "color": "#ffffff",
+                    "decay": 1,
+                    "enabled": true,
+                    "distance": 0,
+                    "intensity": 1
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "63a733f3-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "point",
+            "description": "A rendered point (single vertex). Use for star markers, light positions, debug dots.",
+            "tags": [
+                "point",
+                "dot",
+                "marker",
+                "vertex"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "point",
+                    "radius": 0.1
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "25e32476-9177-4124-89d6-248167466ae1",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "polygon",
+            "description": "dynamic polygon",
+            "tags": [
+                "shape",
+                "polygone"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "polygon",
+                    "sides": 5
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "650b5518-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "portal",
+            "description": "A wormhole funnel shaped like Flamm's paraboloid: a lensed view into another universe, Keplerian swirl and infalling, blueshifting matter. Use for portals, sci-fi gates, rifts.",
+            "tags": [
+                "portal",
+                "wormhole",
+                "gravitational-lensing",
+                "rift",
+                "vortex",
+                "sci-fi",
+                "gate"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "portal",
+                    "color": "#8800ff",
+                    "speed": 1,
+                    "radius": 1.5,
+                    "enabled": true,
+                    "opacity": 0.95,
+                    "intensity": 1,
+                    "throatSize": 0.38,
+                    "funnelDepth": 0.6,
+                    "spiralTurns": 6,
+                    "particleCount": 160,
+                    "rotationSpeed": 1.2,
+                    "innerGlowColor": "#e9e4ff",
+                    "otherSideColor": "#2a6bff",
+                    "outerGlowColor": "#8800ff",
+                    "particleRingEnabled": true
+                }
+            }
+        },
+        {
+            "id": "685868c7-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f71242f6-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "gallery",
+            "name": "pyramid",
+            "description": "Layered tapering layout, wide at the base. Use for hierarchies, leaderboards, monuments.",
+            "tags": [
+                "pyramid",
+                "tiered",
+                "hierarchy",
+                "monument",
+                "tapered"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "layers": 4,
+                    "layout": "pyramid",
+                    "spacing": 1.2,
+                    "geometryType": "none"
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "0fb6e4ea-be1e-48fd-b224-3c36ceebce2e",
+            "objectTypeId": "f732d206-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "grid",
+            "name": "quas grid",
+            "description": "Quas grid",
+            "tags": [],
+            "defaultSettings": {
+                "config": {
+                    "flat": true,
+                    "size": 50,
+                    "type": "quasiGrid",
+                    "phase": 0.2,
+                    "reveal": 1,
+                    "bgColor": "#0d0503",
+                    "cellMode": 2,
+                    "cellSize": 3,
+                    "displace": 0,
+                    "lineMode": 1,
+                    "symmetry": 5,
+                    "animScale": 0.5,
+                    "animSpeed": 1,
+                    "bgOpacity": 0,
+                    "cellColor": "#381a08",
+                    "glowColor": "#ffa640",
+                    "lineColor": "#8c4d1f",
+                    "lineWidth": 1.2,
+                    "followMouse": false,
+                    "sectionSize": 5,
+                    "fadeStrength": 0.7,
+                    "sectionColor": "#ffc759",
+                    "sectionWidth": 2,
+                    "animIntensity": 1,
+                    "revealDuration": 0
+                }
+            }
+        },
+        {
+            "id": "54ca235e-1493-40b1-ac71-d0ae92865f14",
+            "objectTypeId": "f732d206-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "grid",
+            "name": "radar grid",
+            "description": "cool radar grid",
+            "tags": [],
+            "defaultSettings": {
+                "config": {
+                    "flat": true,
+                    "size": 50,
+                    "type": "radarGrid",
+                    "reveal": 1,
+                    "spokes": 24,
+                    "bgColor": "#020d08",
+                    "cellMode": 0,
+                    "cellSize": 2.5,
+                    "displace": 0,
+                    "lineMode": 1,
+                    "animScale": 0.5,
+                    "animSpeed": 1,
+                    "bgOpacity": 0.25,
+                    "cellColor": "#0d3324",
+                    "glowColor": "#59ff99",
+                    "lineColor": "#1a805a",
+                    "lineWidth": 1,
+                    "sweepWidth": 0.13,
+                    "blipDensity": 0.08,
+                    "followMouse": false,
+                    "sectionSize": 4,
+                    "fadeDistance": 24,
+                    "fadeStrength": 0.25,
+                    "sectionColor": "#80ffb8",
+                    "sectionWidth": 1.8,
+                    "animIntensity": 1,
+                    "revealDuration": 0
+                }
+            }
+        },
+        {
+            "id": "69ddf885-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f6f1a6a4-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "environment",
+            "name": "rain",
+            "description": "Dropping rain effect",
+            "tags": [
+                "rain",
+                "water",
+                "weather",
+                "precipitation"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "size": 0.1,
+                    "type": "rain",
+                    "color": "#ffffff",
+                    "speed": 1,
+                    "splash": false,
+                    "density": 100,
+                    "enabled": true,
+                    "opacity": 0.5,
+                    "turbulence": 0,
+                    "windStrength": 0,
+                    "windDirection": 0
+                },
+                "material": {},
+                "transform": {
+                    "scale": [
+                        100,
+                        100,
+                        100
+                    ]
+                }
+            }
+        },
+        {
+            "id": "693be3c0-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f71242f6-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "gallery",
+            "name": "random",
+            "description": "Fully random positions and rotations. Use for fully unpredictable arrangements.",
+            "tags": [
+                "random",
+                "unpredictable",
+                "chaos"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "bounds": 5,
+                    "layout": "random",
+                    "numImages": 12,
+                    "geometryType": "none"
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "eb14f6ad-d376-4108-8fe3-1bd716486a82",
+            "objectTypeId": "f732d206-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "grid",
+            "name": "reactionDiffusionGrid",
+            "description": "A living Gray-Scott reaction-diffusion field: coral, labyrinths and dividing spots grow across the plane and never settle. Use for organic, biological and alien floors.",
+            "tags": [
+                "reaction-diffusion",
+                "gray-scott",
+                "turing-pattern",
+                "coral",
+                "organic",
+                "morphogenesis",
+                "floor"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "feed": 0.037,
+                    "flat": true,
+                    "kill": 0.06,
+                    "size": 50,
+                    "type": "reactionDiffusionGrid",
+                    "reveal": 1,
+                    "bgColor": "#03080a",
+                    "cellMode": 0,
+                    "cellSize": 3,
+                    "displace": 0,
+                    "lineMode": 0,
+                    "animScale": 0.5,
+                    "animSpeed": 1,
+                    "bgOpacity": 0,
+                    "cellColor": "#0d4b52",
+                    "glowColor": "#2fd9c8",
+                    "lineColor": "#7ff0d4",
+                    "lineWidth": 1.1,
+                    "tileCells": 7,
+                    "variation": 0.55,
+                    "followMouse": false,
+                    "sectionSize": 5,
+                    "fadeStrength": 0.7,
+                    "sectionColor": "#f0a26a",
+                    "sectionWidth": 1.2,
+                    "animIntensity": 0.6,
+                    "revealDuration": 0
+                }
+            }
+        },
+        {
+            "id": "6303fbff-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "ring",
+            "description": "Flat ring (annulus). Use for halos, washers, planetary rings, dartboards.",
+            "tags": [
+                "ring",
+                "annulus",
+                "halo",
+                "washer",
+                "flat-ring"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "ring",
+                    "innerRadius": 0.3,
+                    "outerRadius": 0.8,
+                    "phiSegments": 8,
+                    "thetaSegments": 32
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "673449be-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f71242f6-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "gallery",
+            "name": "scattered",
+            "description": "Randomly positioned frames within a bounded volume. Use for organic or chaotic arrangements.",
+            "tags": [
+                "scattered",
+                "random",
+                "chaotic",
+                "organic"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "bounds": 5,
+                    "layout": "scattered",
+                    "numImages": 12,
+                    "geometryType": "none"
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "2843a44a-017f-48b3-bddb-1bc86d891d3b",
+            "objectTypeId": "f7b5bfba-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "particles",
+            "name": "shapeBurst",
+            "description": "Bursts of charged particles that spiral out in a magnetic field and land exactly on a mesh shape, white-hot cooling to two family colours, then dissolve; the cursor detonates, curls or pulls them. Use for reveals, logos and impact moments.",
+            "tags": [
+                "burst",
+                "explosion",
+                "reveal",
+                "spirals",
+                "shapes",
+                "magnetic-field",
+                "motion",
+                "interactive"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "seed": 1,
+                    "size": 1,
+                    "type": "shapeBurst",
+                    "color": "#45d1ff",
+                    "shape": {
+                        "type": "icosahedron",
+                        "detail": 0,
+                        "radius": 0.5
+                    },
+                    "speed": 1,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "quality": "medium",
+                    "dissolve": 0.3,
+                    "headSize": 1.4,
+                    "holdTime": 1.2,
+                    "interval": 2.8,
+                    "formSpeed": 2.4,
+                    "heatColor": "#fff6e0",
+                    "intensity": 1,
+                    "trailMode": "comet",
+                    "trailColor": "#6a5cff",
+                    "trailShare": 0.5,
+                    "pointerMode": "detonate",
+                    "trailLength": 0.4,
+                    "counterColor": "#ff5aa8",
+                    "pointerColor": "#ffffff",
+                    "trailOpacity": 0.8,
+                    "fieldStrength": 1,
+                    "particleCount": 180,
+                    "pointerRadius": 1,
+                    "pointerStrength": 1
+                }
+            }
+        },
+        {
+            "id": "b4387e34-4641-4731-bcf3-430b16fe53d7",
+            "objectTypeId": "f7b5bfba-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "particles",
+            "name": "shapeFlow",
+            "description": "A wind tunnel of particle streams flowing round an invisible mesh shape: divergence-free flow, wake eddies, streaklines coloured by pressure; the cursor is a second obstacle, a jet or a vortex. Use for tech, aero and product scenes.",
+            "tags": [
+                "flow",
+                "wind-tunnel",
+                "streamlines",
+                "aerodynamics",
+                "shapes",
+                "fluid",
+                "science",
+                "interactive"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "rake": "sheet",
+                    "seed": 1,
+                    "size": 1,
+                    "type": "shapeFlow",
+                    "color": "#3f7bff",
+                    "lanes": 44,
+                    "shape": {
+                        "type": "sphere",
+                        "rings": 32,
+                        "radius": 0.5,
+                        "segments": 32
+                    },
+                    "speed": 1,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "quality": "medium",
+                    "headSize": 1,
+                    "fastColor": "#ff6a3d",
+                    "flowSpeed": 1,
+                    "intensity": 1,
+                    "trailMode": "comet",
+                    "windPitch": 0,
+                    "trailColor": "#1b2a6b",
+                    "trailShare": 1,
+                    "turbulence": 0.9,
+                    "pointerMode": "obstacle",
+                    "streamWidth": 0.85,
+                    "trailLength": 1.2,
+                    "pointerColor": "#ffffff",
+                    "trailOpacity": 0.7,
+                    "particleCount": 2400,
+                    "pointerRadius": 1,
+                    "pointerStrength": 1
+                }
+            }
+        },
+        {
+            "id": "4a058c73-605d-4d25-9860-67cfda992f20",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "shield",
+            "description": "Shield mesh",
+            "tags": [
+                "shield"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "shield",
+                    "width": 0.8
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "64691d20-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "shockwave",
+            "description": "A Sedov–Taylor blast wave: a razor-bright front over a compressed shell that bursts out, slows and cools, raising dust and a brief condensation dome. Use for explosions, impacts, sci-fi pulses.",
+            "tags": [
+                "shockwave",
+                "blast-wave",
+                "explosion",
+                "sedov-taylor",
+                "impact",
+                "pulse",
+                "dust"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "dust": 0.5,
+                    "type": "shockwave",
+                    "color": "#ffffff",
+                    "speed": 1,
+                    "enabled": true,
+                    "opacity": 0.8,
+                    "rimColor": "#88ccff",
+                    "shapeNum": 0,
+                    "intensity": 1,
+                    "ringCount": 2,
+                    "thickness": 0.04,
+                    "instability": 0.4,
+                    "condensation": 0.3,
+                    "deceleration": 0.85,
+                    "expansionRadius": 3,
+                    "intervalSeconds": 2
+                }
+            }
+        },
+        {
+            "id": "69bd554e-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f7f6f91b-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "space",
+            "name": "shootingStars",
+            "description": "Add shooting stars",
+            "tags": [
+                "shooting",
+                "stars",
+                "meteors",
+                "comets"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "shootingStars",
+                    "color": "#ffffff",
+                    "count": 10,
+                    "enabled": true,
+                    "speedRange": [
+                        0.05,
+                        0.15
+                    ],
+                    "followMouse": false,
+                    "lengthRange": [
+                        50,
+                        150
+                    ],
+                    "intervalRange": [
+                        2,
+                        5
+                    ],
+                    "trailLengthRange": [
+                        10,
+                        100
+                    ]
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "71b9euh8-6a6f-gu85-8573-00163e32d101",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "smoke ribbon",
+            "description": "Smoke ribbon effect ",
+            "tags": [
+                "smoke"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "smokeRibbon",
+                    "wind": [
+                        0.15,
+                        0
+                    ],
+                    "color": "#f2f2f7",
+                    "edgeX": 0.4,
+                    "edgeY": 0.32,
+                    "speed": 0.18,
+                    "width": 1.5,
+                    "detail": 1.4,
+                    "height": 5,
+                    "planes": 2,
+                    "animate": true,
+                    "density": 1,
+                    "enabled": true,
+                    "colorTop": "#b3b8c7",
+                    "remapLow": 0.38,
+                    "remapHigh": 1,
+                    "twistScale": 0.9,
+                    "twistSpeed": 0.4,
+                    "twistStart": 0.18,
+                    "interactive": false,
+                    "twistStrength": 9,
+                    "segmentsPerLength": 12
+                }
+            }
+        },
+        {
+            "id": "663032c6-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "smokePlume",
+            "description": "A buoyant plume following Morton-Taylor-Turner theory, with curl-noise billows, lit puffs and an optional hot base and crosswind. Use for chimneys, fires, volcanoes, engines.",
+            "tags": [
+                "smoke",
+                "plume",
+                "billow",
+                "chimney",
+                "volcano",
+                "turbulence",
+                "fire-smoke"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "heat": 0,
+                    "type": "smokePlume",
+                    "wind": 0,
+                    "color": "#aaaaaa",
+                    "speed": 1,
+                    "height": 2,
+                    "spread": 0.5,
+                    "enabled": true,
+                    "opacity": 0.6,
+                    "intensity": 1,
+                    "smokeColor": "#b4b4b8",
+                    "turbulence": 0.5,
+                    "particleCount": 180
+                }
+            }
+        },
+        {
+            "id": "6670f97d-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "smokeRing",
+            "description": "Physically simulated vortex rings: smoke spins around each core, rings slow as they grow, wobble with age, and pairs leapfrog through each other. Use for cannons, dragons, magic, calm loops.",
+            "tags": [
+                "smoke-ring",
+                "vortex-ring",
+                "leapfrog",
+                "fluid",
+                "cannon",
+                "dragon-breath",
+                "vapor"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "smokeRing",
+                    "color": "#bbbbbb",
+                    "speed": 1,
+                    "wobble": 0.5,
+                    "enabled": true,
+                    "opacity": 0.65,
+                    "leapfrog": true,
+                    "intensity": 1,
+                    "ringCount": 2,
+                    "riseSpeed": 0.5,
+                    "thickness": 0.18,
+                    "smokeColor": "#c4c4c8",
+                    "expansionRadius": 3,
+                    "intervalSeconds": 2.5
+                }
+            }
+        },
+        {
+            "id": "699cc11f-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f7f6f91b-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "space",
+            "name": "solarSystem",
+            "description": "Sun, planets and moons",
+            "tags": [
+                "solar",
+                "system",
+                "planets",
+                "sun",
+                "celestial"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "solarSystem",
+                    "enabled": true,
+                    "sunColor": "#ffd27a",
+                    "sunRadius": 8,
+                    "enableOrbit": true,
+                    "sunIntensity": 3,
+                    "orbitRingColor": "#444444",
+                    "showOrbitRings": true,
+                    "orbitRingOpacity": 0.35,
+                    "enableSelfRotation": true,
+                    "orbitSpeedMultiplier": 1
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "299f856b-2ec2-4453-a6ba-275bc8db9c1e",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "spade",
+            "description": "Spade mesh",
+            "tags": [
+                "spade",
+                "card"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "spade"
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "5b4e7ffb-e9af-41a6-9869-aa435184b28f",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "sparkle",
+            "description": "Sparkle mesh",
+            "tags": [
+                "sparkle",
+                "magic"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "sparkle",
+                    "inner": 0.14,
+                    "outer": 0.5,
+                    "points": 4
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "66d2768f-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "sparklesBurst",
+            "description": "Exploding burst of sparkling particles. Use for magical impacts, celebrations, starbursts.",
+            "tags": [
+                "sparkles",
+                "burst",
+                "explosion",
+                "celebration",
+                "starburst",
+                "magic-impact"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "loop": true,
+                    "type": "sparklesBurst",
+                    "color": "#ffffff",
+                    "scale": 1.2,
+                    "speed": 1,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "rayCount": 20,
+                    "coreColor": "#ffffff",
+                    "intensity": 1,
+                    "burstColor": "#ffffff",
+                    "durationMs": 1000,
+                    "hoverColor": "#ffeb99",
+                    "hoverRadius": 0.5,
+                    "hoverIntensity": 2
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "68b9a578-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f71242f6-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "gallery",
+            "name": "sphere",
+            "description": "Frames distributed on a sphere's surface. Use for planetarium-like or 360 layouts.",
+            "tags": [
+                "sphere",
+                "planetarium",
+                "360",
+                "spherical-shell"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "layout": "sphere",
+                    "radius": 3,
+                    "numImages": 12,
+                    "geometryType": "none"
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "62416655-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "sphere",
+            "description": "Round 3D sphere. Use for balls, planets, orbs, bubbles.",
+            "tags": [
+                "sphere",
+                "ball",
+                "orb",
+                "globe",
+                "planet",
+                "round",
+                "bubble"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "sphere",
+                    "radius": 0.5,
+                    "widthSegments": 32,
+                    "heightSegments": 32
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "67d66db1-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f71242f6-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "gallery",
+            "name": "spiral",
+            "description": "Frames following a flat or 3D spiral. Use for dramatic, hypnotic, fibonacci-like layouts.",
+            "tags": [
+                "spiral",
+                "fibonacci",
+                "swirl",
+                "hypnotic"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "layout": "spiral",
+                    "radius": 3,
+                    "numImages": 16,
+                    "rotations": 2,
+                    "geometryType": "none",
+                    "heightIncrement": 0.3
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "642839df-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f7745031-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "light",
+            "name": "spot",
+            "description": "Cone-shaped beam from a point. Use for flashlights, stage spotlights, headlights, focused beams.",
+            "tags": [
+                "spot",
+                "spotlight",
+                "flashlight",
+                "beam",
+                "cone-light",
+                "headlight",
+                "stage-light"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "spot",
+                    "angle": 0.7853981633974483,
+                    "color": "#ffffff",
+                    "decay": 1,
+                    "enabled": true,
+                    "distance": 0,
+                    "penumbra": 0.1,
+                    "intensity": 1,
+                    "targetPosition": [
+                        0,
+                        0,
+                        0
+                    ]
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "1960e9ac-721d-47b6-8c78-820e4d624bf9",
+            "objectTypeId": "f7745031-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "light",
+            "name": "Spot Beam",
+            "description": "Spot beam with beautiful configurable beams and light effect",
+            "tags": [],
+            "defaultSettings": {
+                "config": {
+                    "on": true,
+                    "beam": 1,
+                    "halo": 1,
+                    "type": "spotBeam",
+                    "angle": 0.5235987755982988,
+                    "color": "#ffffff",
+                    "decay": 1,
+                    "shadow": {
+                        "bias": -0.0001,
+                        "focus": 1,
+                        "radius": 1,
+                        "enabled": true,
+                        "mapSize": 1024,
+                        "cameraFar": 500,
+                        "cameraFov": 60,
+                        "intensity": 1,
+                        "cameraNear": 0.05,
+                        "normalBias": 0
+                    },
+                    "warmup": 0.3,
+                    "emitter": "lens",
+                    "enabled": true,
+                    "flicker": 0,
+                    "pattern": "round",
+                    "beamMode": "soft",
+                    "distance": 0,
+                    "penumbra": 0.3,
+                    "beamNoise": 0.35,
+                    "beamSteps": 28,
+                    "colorMode": "temperature",
+                    "intensity": 1,
+                    "beamLength": 1,
+                    "temperature": 3600,
+                    "targetPosition": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "patternRotation": 0,
+                    "patternSoftness": 0.25
+                }
+            }
+        },
+        {
+            "id": "70406ce5-c25a-4190-9f1f-73932187ec34",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "star",
+            "description": "star mesh",
+            "tags": [],
+            "defaultSettings": {
+                "config": {
+                    "type": "star",
+                    "inner": 0.2,
+                    "outer": 0.5,
+                    "points": 5,
+                    "curveSegments": 64
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "695c418b-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f7f6f91b-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "space",
+            "name": "stars",
+            "description": "Stars scattered in the sky",
+            "tags": [
+                "stars",
+                "sky",
+                "celestial",
+                "night",
+                "background"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "size": 0.1,
+                    "type": "stars",
+                    "color": "#ffffff",
+                    "count": 5000,
+                    "enabled": true,
+                    "opacity": 1,
+                    "rotateSpeed": 0.1
+                },
+                "material": {
+                    "materialType": "particles"
+                },
+                "transform": {
+                    "scale": [
+                        500,
+                        500,
+                        500
+                    ]
+                }
+            }
+        },
+        {
+            "id": "0f6a3028-30d9-42e6-be8f-094a83dfa6f3",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "strangeAttractor",
+            "description": "Glowing trails of a Lorenz, Aizawa or Thomas strange attractor, integrated with RK4; neighbouring strands drift apart. Use for chaos, science, data art, energy.",
+            "tags": [
+                "strange-attractor",
+                "lorenz",
+                "chaos",
+                "butterfly-effect",
+                "trails",
+                "math-art",
+                "sci-fi"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "strangeAttractor",
+                    "chaos": 0.5,
+                    "color": "#5fb8ff",
+                    "scale": 1.4,
+                    "speed": 1,
+                    "system": 0,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "strands": 6,
+                    "headColor": "#fff1c9",
+                    "intensity": 1,
+                    "trailLength": 0.18,
+                    "ghostOpacity": 0.07,
+                    "particleSize": 2.5
+                }
+            }
+        },
+        {
+            "id": "cd64b779-69da-4afa-98d5-683b48511568",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "super formula",
+            "description": "Super formula mesh",
+            "tags": [],
+            "defaultSettings": {
+                "config": {
+                    "type": "superformula",
+                    "twist1": 0.3,
+                    "twist2": 0.3,
+                    "samples": 256,
+                    "stretchX": 1,
+                    "stretchY": 1,
+                    "symmetry": 6,
+                    "roundness": 0.3
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "636570a9-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "tetrahedron",
+            "description": "4-sided polyhedron (triangular pyramid). Use for d4 dice, simple pyramids, sharp spikes.",
+            "tags": [
+                "tetrahedron",
+                "d4",
+                "4-sided",
+                "pyramid",
+                "spike",
+                "triangular-pyramid"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "tetrahedron",
+                    "detail": 0,
+                    "radius": 0.5
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "2ecba95c-bb82-42cf-9400-94f53cc579fa",
+            "objectTypeId": "f7b5bfba-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "particles",
+            "name": "tidalStream",
+            "description": "A spiral galaxy shredding dwarf satellites into tidal streams: symplectic orbits, density-wave arms, Doppler-shifted blackbody stars; the cursor is a subhalo, black hole or spectroscope. Use for space scenes.",
+            "tags": [
+                "galaxy",
+                "tidal-stream",
+                "n-body",
+                "gravitational-lensing",
+                "black-hole",
+                "doppler",
+                "space",
+                "interactive"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "size": 1,
+                    "type": "tidalStream",
+                    "color": "#8cbcff",
+                    "speed": 1,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "armCount": 2,
+                    "starSize": 1,
+                    "discStars": 70000,
+                    "intensity": 1,
+                    "streamAge": 2.2,
+                    "trailMode": "comet",
+                    "trailColor": "#7fa8ff",
+                    "trailShare": 0.25,
+                    "nebulaColor": "#ff5c8a",
+                    "pointerMode": "subhalo",
+                    "trailLength": 1.6,
+                    "dopplerScale": 2,
+                    "pointerColor": "#ffd29a",
+                    "trailOpacity": 0.55,
+                    "particleCount": 18000,
+                    "pointerRadius": 1,
+                    "redshiftColor": "#ffa070",
+                    "satelliteMass": 0.0005,
+                    "satelliteCount": 2,
+                    "pointerStrength": 1,
+                    "orbitEccentricity": 0.5
+                }
+            }
+        },
+        {
+            "id": "6754c10f-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f71242f6-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "gallery",
+            "name": "tiles",
+            "description": "Grid of evenly-spaced rows and columns. Default arrangement - neat and predictable.",
+            "tags": [
+                "tiles",
+                "grid",
+                "rows",
+                "columns",
+                "matrix",
+                "wall"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "layout": "tiles",
+                    "columns": 4,
+                    "spacing": 1.2,
+                    "geometryType": "none"
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "62a28904-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f794c9f2-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "mesh",
+            "name": "torus",
+            "description": "Donut shape — a ring with thickness. Use for donuts, rings, tubes-as-loops.",
+            "tags": [
+                "torus",
+                "donut",
+                "doughnut",
+                "ring-thick",
+                "loop"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "tube": 0.2,
+                    "type": "torus",
+                    "radius": 0.5,
+                    "radialSegments": 16,
+                    "tubularSegments": 100
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "68172ccd-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f71242f6-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "gallery",
+            "name": "tunnel",
+            "description": "Frames forming a cylindrical tunnel the camera can fly through. Use for immersive walk-throughs.",
+            "tags": [
+                "tunnel",
+                "cylinder-of-frames",
+                "fly-through",
+                "immersive"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "depth": 8,
+                    "layout": "tunnel",
+                    "radius": 3,
+                    "numImages": 12,
+                    "geometryType": "none"
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "68fadd52-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f71242f6-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "gallery",
+            "name": "tunnelPyramid",
+            "description": "A tunnel layout where each ring tapers - pyramid-shaped tunnel.",
+            "tags": [
+                "tunnel-pyramid",
+                "tapered-tunnel",
+                "cone-tunnel"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "depth": 8,
+                    "layout": "tunnelPyramid",
+                    "radius": 3,
+                    "numImages": 12,
+                    "scaleFactor": 0.7,
+                    "geometryType": "none"
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "691b51a2-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f71242f6-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "gallery",
+            "name": "tunnelWave",
+            "description": "A tunnel layout where the rings undulate - wavy tunnel.",
+            "tags": [
+                "tunnel-wave",
+                "wavy-tunnel",
+                "rippling-tunnel"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "depth": 8,
+                    "layout": "tunnelWave",
+                    "radius": 3,
+                    "amplitude": 0.5,
+                    "frequency": 1,
+                    "numImages": 12,
+                    "geometryType": "none"
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "6795bf88-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f71242f6-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "gallery",
+            "name": "vertical",
+            "description": "Single vertical line of frames. Use for stacked feeds, scrolling columns, totem layouts.",
+            "tags": [
+                "vertical",
+                "column",
+                "stack",
+                "totem",
+                "feed"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "layout": "vertical",
+                    "spacing": 1.5,
+                    "numImages": 8,
+                    "geometryType": "none"
+                },
+                "material": null,
+                "transform": null
+            }
+        },
+        {
+            "id": "665099e0-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "volumetricFog",
+            "description": "Ray-marched ground fog around the object: domain-warped density, Beer-Lambert light, self-shadowing and forward scattering toward the light. Use for mist, swamps, mystery, dawn.",
+            "tags": [
+                "fog",
+                "mist",
+                "volumetric",
+                "raymarching",
+                "atmosphere",
+                "haze",
+                "ground-fog"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "volumetricFog",
+                    "color": "#fff1dc",
+                    "speed": 0.4,
+                    "density": 1,
+                    "enabled": true,
+                    "opacity": 0.9,
+                    "fogColor": "#c9d2dc",
+                    "fogRadius": 1.8,
+                    "intensity": 1,
+                    "anisotropy": 0.55,
+                    "driftSpeed": 0.3,
+                    "noiseScale": 1.5,
+                    "layerHeight": 1.2,
+                    "particleCount": 60
+                }
+            }
+        },
+        {
+            "id": "c7f4b4a7-6280-4543-8e3d-7c969b19eeb3",
+            "objectTypeId": "f732d206-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "grid",
+            "name": "voronoid grid",
+            "description": "Voronoid grid",
+            "tags": [],
+            "defaultSettings": {
+                "config": {
+                    "flat": true,
+                    "size": 50,
+                    "type": "voronoiGrid",
+                    "drift": 0.5,
+                    "jitter": 0.9,
+                    "reveal": 1,
+                    "bgColor": "#05030d",
+                    "cellMode": 2,
+                    "cellSize": 3,
+                    "displace": 0,
+                    "lineMode": 1,
+                    "animScale": 0.5,
+                    "animSpeed": 1,
+                    "bgOpacity": 0,
+                    "cellColor": "#1f0d47",
+                    "glowColor": "#b366ff",
+                    "lineColor": "#5a339e",
+                    "lineWidth": 1.4,
+                    "followMouse": false,
+                    "sectionSize": 4,
+                    "fadeStrength": 0.7,
+                    "sectionColor": "#d999ff",
+                    "sectionWidth": 1,
+                    "animIntensity": 1,
+                    "revealDuration": 0
+                }
+            }
+        },
+        {
+            "id": "2ef1e024-f425-4728-8e4c-23710e0d414c",
+            "objectTypeId": "f732d206-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "grid",
+            "name": "wallpaperGrid",
+            "description": "Kaleidoscope patterns with the exact symmetry of the 17 wallpaper groups, drifting and cycling from one group to the next. Use for tiled, ornamental, crystal and mosaic floors.",
+            "tags": [
+                "wallpaper-group",
+                "symmetry",
+                "kaleidoscope",
+                "crystallography",
+                "tiling",
+                "ornament",
+                "mosaic",
+                "floor"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "flat": true,
+                    "size": 50,
+                    "type": "wallpaperGrid",
+                    "group": -1,
+                    "motif": 0.5,
+                    "levels": 11,
+                    "reveal": 1,
+                    "bgColor": "#05070a",
+                    "cellMode": 2,
+                    "cellSize": 10,
+                    "displace": 0,
+                    "lineMode": 2,
+                    "animScale": 0.6,
+                    "animSpeed": 1,
+                    "bgOpacity": 0,
+                    "cellColor": "#101c50",
+                    "cycleTime": 12,
+                    "glowColor": "#ff9ec7",
+                    "lineColor": "#f3d79b",
+                    "lineWidth": 2,
+                    "followMouse": false,
+                    "sectionSize": 0,
+                    "fadeStrength": 0.7,
+                    "sectionColor": "#7fd6ff",
+                    "sectionWidth": 1.4,
+                    "animIntensity": 0.55,
+                    "revealDuration": 0
+                }
+            }
+        },
+        {
+            "id": "057b1128-2007-4c4e-abed-a15432ad9a0e",
+            "objectTypeId": "f6d118fe-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "effect",
+            "name": "waterCaustics",
+            "description": "Sunlight refracted through a rippling water surface: Snell refraction focuses the light into a caustic web on the floor and over the object, with depth blur and chromatic fringes.",
+            "tags": [
+                "caustics",
+                "water",
+                "refraction",
+                "snell",
+                "pool",
+                "underwater",
+                "light",
+                "ripples"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "type": "waterCaustics",
+                    "color": "#a9ecff",
+                    "speed": 1,
+                    "radius": 3.4,
+                    "enabled": true,
+                    "opacity": 1,
+                    "intensity": 1,
+                    "waveScale": 0.45,
+                    "dispersion": 0.5,
+                    "showOnHost": true,
+                    "waterDepth": 2.6,
+                    "waveHeight": 1
+                }
+            }
+        },
+        {
+            "id": "67f698ab-6a6f-11f1-8573-00163e32d101",
+            "objectTypeId": "f71242f6-6a68-11f1-8573-00163e32d101",
+            "objectTypeName": "gallery",
+            "name": "wave",
+            "description": "Frames following a sinusoidal undulating surface. Use for flowing, ocean-like layouts.",
+            "tags": [
+                "wave",
+                "undulating",
+                "sinusoidal",
+                "flowing",
+                "ocean"
+            ],
+            "defaultSettings": {
+                "config": {
+                    "layout": "wave",
+                    "spacing": 1.5,
+                    "amplitude": 1,
+                    "frequency": 1,
+                    "numImages": 10,
+                    "geometryType": "none"
+                },
+                "material": null,
+                "transform": null
+            }
+        }
+    ],
+    "templateObjects": [
+        {
+            "id": "03ab36d2-4a10-4089-b8f8-d71d5d558d4b",
+            "sceneObjectId": "161c22ac-ee71-4369-9a4c-8acefb590163",
+            "objectTypeId": "f7f6f91b-6a68-11f1-8573-00163e32d101",
+            "name": "Saturn",
+            "description": "Saturn star",
+            "price": "0.00",
+            "privacy": "public",
+            "createdBy": "d29fe602-99b6-4471-94ea-95971aed4a41",
+            "createdAt": "2026-08-15T15:04:18.000Z",
+            "updatedAt": "2026-08-15T15:04:18.000Z"
+        },
+        {
+            "id": "05e4d296-cb3b-4d93-8e79-574973f1faa3",
+            "sceneObjectId": "0dd5b820-9412-426a-8a0a-d222bac0a1ae",
+            "objectTypeId": "f7f6f91b-6a68-11f1-8573-00163e32d101",
+            "name": "Mars",
+            "description": "Simple sphere with a texture of mars",
+            "price": null,
+            "privacy": "public",
+            "createdBy": "d29fe602-99b6-4471-94ea-95971aed4a41",
+            "createdAt": "2026-06-19T08:20:14.000Z",
+            "updatedAt": "2026-06-19T08:20:14.000Z"
+        },
+        {
+            "id": "481510d6-58b2-4208-9871-937ecbc1e826",
+            "sceneObjectId": "a5158743-d7d2-4a47-85f6-ebcbd41285dd",
+            "objectTypeId": "f6f1a6a4-6a68-11f1-8573-00163e32d101",
+            "name": "Ocean",
+            "description": "beautiful animated ocean",
+            "price": null,
+            "privacy": "public",
+            "createdBy": "d29fe602-99b6-4471-94ea-95971aed4a41",
+            "createdAt": "2026-06-19T08:19:19.000Z",
+            "updatedAt": "2026-06-19T08:19:19.000Z"
+        },
+        {
+            "id": "8bd8eac1-2f58-4c3c-8502-ca9a46428c21",
+            "sceneObjectId": "343e49ff-00c4-4ea0-95e9-7dc877da4ce3",
+            "objectTypeId": "f6f1a6a4-6a68-11f1-8573-00163e32d101",
+            "name": "Clouds in the sky",
+            "description": "A plane covering the sky with animated clouds material",
+            "price": null,
+            "privacy": "public",
+            "createdBy": "d29fe602-99b6-4471-94ea-95971aed4a41",
+            "createdAt": "2026-06-19T08:17:34.000Z",
+            "updatedAt": "2026-06-19T08:17:34.000Z"
+        },
+        {
+            "id": "5a530b9d-2c54-4a47-8438-f54f9b1dfb9c",
+            "sceneObjectId": "5d27b863-1723-4d5d-96cd-d88870adcb70",
+            "objectTypeId": "f7f6f91b-6a68-11f1-8573-00163e32d101",
+            "name": "Moon with glow",
+            "description": "a sphere with a moon texture and corona glow",
+            "price": null,
+            "privacy": "public",
+            "createdBy": "d29fe602-99b6-4471-94ea-95971aed4a41",
+            "createdAt": "2026-06-19T07:16:35.000Z",
+            "updatedAt": "2026-06-19T07:54:51.000Z"
+        },
+        {
+            "id": "9a390779-cc87-4185-b097-46d3dcce0c74",
+            "sceneObjectId": "f91adf8e-299f-4a0b-98cf-c82d6a9e9a06",
+            "objectTypeId": "f7f6f91b-6a68-11f1-8573-00163e32d101",
+            "name": "Sun",
+            "description": "Full sun with animated lava, corona effect and shooting flares",
+            "price": null,
+            "privacy": "public",
+            "createdBy": "d29fe602-99b6-4471-94ea-95971aed4a41",
+            "createdAt": "2026-06-17T17:37:36.000Z",
+            "updatedAt": "2026-08-06T13:34:17.000Z"
+        }
+    ]
+}

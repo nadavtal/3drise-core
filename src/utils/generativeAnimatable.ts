@@ -2,6 +2,10 @@ import { GENERATIVE_PARTICLES_ANIMATABLE } from "../data/particlesDefaults";
 import { LIGHTS_ANIMATABLE } from "../data/lightsDefaults";
 import { EFFECTS_ANIMATABLE } from "../data/effectsDefaults";
 import { GRIDS_ANIMATABLE } from "../data/gridsDefaults";
+import { ENVIRONMENT_OBJECTS_ANIMATABLE } from "../data/environmentDefaults";
+import { SPACE_OBJECTS_ANIMATABLE } from "../data/spaceDefaults";
+import { LAND_OBJECTS_ANIMATABLE } from "../data/landDefaults";
+import { TEXT_OBJECTS_ANIMATABLE } from "../data/textDefaults";
 
 // =============================================================================
 // GENERATIVE ANIMATABLE REGISTRY — which config knobs may be driven per frame
@@ -24,7 +28,7 @@ export interface AnimatableConfigProperty {
     label: string;
 }
 
-export type GenerativeFamily = 'particles' | 'lights' | 'effects' | 'grids';
+export type GenerativeFamily = 'particles' | 'lights' | 'effects' | 'grids' | 'environment' | 'space' | 'land' | 'text';
 
 // Partial: grids list only the types converted to the config pattern so far (effects list all).
 const FAMILIES: Record<GenerativeFamily, Partial<Record<string, AnimatableConfigProperty[]>>> = {
@@ -34,6 +38,14 @@ const FAMILIES: Record<GenerativeFamily, Partial<Record<string, AnimatableConfig
     lights: LIGHTS_ANIMATABLE,
     effects: EFFECTS_ANIMATABLE,
     grids: GRIDS_ANIMATABLE,
+    // Weather objects (type 'environment'): snow… The legacy rain is not in this table.
+    environment: ENVIRONMENT_OBJECTS_ANIMATABLE,
+    // Celestial bodies and backdrops (type 'space'): stars, earth, solarSystem, shootingStars.
+    space: SPACE_OBJECTS_ANIMATABLE,
+    // Placeable patches of terrain (type 'land'): mountains, hills, dunes, canyon.
+    land: LAND_OBJECTS_ANIMATABLE,
+    // Animated text looks (type 'text', config.type set): handwriting, neonTube, fourierSketch. The legacy bitmap / 3D text is not in this table.
+    text: TEXT_OBJECTS_ANIMATABLE,
 };
 
 /** The animatable knobs of one generative object, by family and config.type. */

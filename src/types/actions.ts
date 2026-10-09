@@ -1,4 +1,4 @@
-import type { OperationEffect } from './objectSettings';
+import type { SceneCommand } from './commands';
 /**
  * Action Types
  * Defines the structure for UI actions that can trigger animations, toggle elements, or load projects
@@ -58,13 +58,14 @@ export interface ActionSequence {
      */
     key?: string;
     description?: string;
+    /** The changes (patches): what elements ARE while the action is applied. */
     targets: ActionTarget[];
     /**
-     * Operations run when the action is applied, undone when it is reverted
-     * (glow, fade, zoom to…). Patches change what elements ARE; effects are what
-     * HAPPENS to objects. Patches are applied first.
+     * What HAPPENS when it is applied, in order (triggers engine): effects, effect clips and
+     * other actions are switched on with it and off again on revert; animations run their
+     * command on apply and stop on revert. Patches are applied first.
      */
-    effects?: OperationEffect[];
+    commands: SceneCommand[];
     assetId?: string | null;
     /** Runtime only */
     isDirty?: boolean;

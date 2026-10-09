@@ -25,8 +25,8 @@ export type EnvironmentElement = (typeof ENVIRONMENT_ELEMENTS)[number];
  */
 export type PropertyDomain =
     | 'transform' | 'material' | 'edges'
-    | 'light' | 'shadow' | 'particles' | 'effect' | 'grid' | 'rain' | 'clouds' | 'config'
-    | 'camera' | 'sky' | 'cirrus' | 'ocean' | 'terrain';
+    | 'light' | 'shadow' | 'particles' | 'effect' | 'grid' | 'environment' | 'space' | 'land' | 'text' | 'rain' | 'clouds' | 'config'
+    | 'camera' | 'sky' | 'stars' | 'cirrus' | 'ocean' | 'terrain';
 
 export interface PropertyOption {
     value: string;

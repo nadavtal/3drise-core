@@ -417,3 +417,62 @@ export const GRIDS_ANIMATABLE: Record<string, { value: string; label: string }[]
         { value: 'signalSpeed', label: 'Signal Speed' },
     ],
 };
+
+// =============================================================================
+// DEFAULT_GRIDS / GRID_LABELS — config defaults and names per grid (config.type)
+// =============================================================================
+// Moved into core from packages/viewer/grid-defaults.json (+ the basic grid) so the
+// object catalog (catalog/objectCatalog.ts) can list grids like every other family.
+export const DEFAULT_GRIDS: Record<string, Record<string, unknown>> = {
+    advancedGrid: {type: "advancedGrid", cellSize: 1, size: 50, lineMode: 2, cellMode: 2, lineWidth: 1, sectionSize: 5, sectionWidth: 1.6, animSpeed: 1, animScale: 0.5, animIntensity: 1, fadeStrength: 0.65, displace: 0, lineColor: "#477fb8", sectionColor: "#80c7ff", cellColor: "#1a5999", glowColor: "#339eff", bgColor: "#05080d", bgOpacity: 0, reveal: 1, revealDuration: 0},
+    hexGrid: {type: "hexGrid", cellSize: 1.4, size: 50, lineMode: 1, cellMode: 2, lineWidth: 1.2, sectionSize: 4, sectionWidth: 2, animSpeed: 1, animScale: 0.6, animIntensity: 1, fadeStrength: 0.7, displace: 0, plateau: true, lineColor: "#2a9ec7", sectionColor: "#73eaff", cellColor: "#0f4869", glowColor: "#4df3ff", bgColor: "#030809", bgOpacity: 0, reveal: 1, revealDuration: 0},
+    circuitGrid: {type: "circuitGrid", cellSize: 1.6, size: 50, lineMode: 2, cellMode: 0, lineWidth: 1.6, sectionSize: 6, sectionWidth: 1.2, animSpeed: 1, animScale: 1, animIntensity: 1, fadeStrength: 0.7, displace: 0, powered: 0.65, chipChance: 0.06, padSize: 1, lineColor: "#186b5c", sectionColor: "#8cf0b4", cellColor: "#082420", glowColor: "#59ffb8", bgColor: "#020806", bgOpacity: 0, reveal: 1, revealDuration: 0},
+    voronoiGrid: {type: "voronoiGrid", cellSize: 3, size: 50, lineMode: 1, cellMode: 2, lineWidth: 1.4, sectionSize: 4, sectionWidth: 1, animSpeed: 1, animScale: 0.5, animIntensity: 1, fadeStrength: 0.7, displace: 0, jitter: 0.9, drift: 0.5, lineColor: "#5a339e", sectionColor: "#d999ff", cellColor: "#1f0d47", glowColor: "#b366ff", bgColor: "#05030d", bgOpacity: 0, reveal: 1, revealDuration: 0},
+    radarGrid: {type: "radarGrid", cellSize: 2.5, size: 50, lineMode: 1, cellMode: 0, lineWidth: 1, sectionSize: 4, sectionWidth: 1.8, animSpeed: 1, animScale: 0.5, animIntensity: 1, fadeDistance: 24, fadeStrength: 0.25, displace: 0, spokes: 24, sweepWidth: 0.13, blipDensity: 0.08, lineColor: "#1a805a", sectionColor: "#80ffb8", cellColor: "#0d3324", glowColor: "#59ff99", bgColor: "#020d08", bgOpacity: 0.25, reveal: 1, revealDuration: 0},
+    moireGrid: {type: "moireGrid", cellSize: 2.8, size: 50, lineMode: 0, cellMode: 2, lineWidth: 1.4, sectionSize: 12, sectionWidth: 0, animSpeed: 1, animScale: 1, animIntensity: 1, fadeStrength: 0.7, displace: 0, shape: "square", layerAngle: 0.05, layerScale: 1.06, spin: 1, lineColor: "#226bd9", sectionColor: "#f2599e", cellColor: "#0d1a40", glowColor: "#99d9ff", bgColor: "#02040d", bgOpacity: 0, reveal: 1, revealDuration: 0},
+    fractalGrid: {type: "fractalGrid", cellSize: 4, size: 50, lineMode: 0, cellMode: 2, lineWidth: 1.6, sectionSize: 4, sectionWidth: 2.2, animSpeed: 1, animScale: 0.5, animIntensity: 1, fadeStrength: 0.7, displace: 0, depth: 5, splitRadius: 3.5, splitJitter: 0.5, lineColor: "#59bfff", sectionColor: "#99e6ff", cellColor: "#1f61a3", glowColor: "#66e6ff", bgColor: "#020810", bgOpacity: 0, reveal: 1, revealDuration: 0},
+    contourGrid: {type: "contourGrid", cellSize: 14, size: 50, lineMode: 0, cellMode: 1, lineWidth: 1, sectionSize: 5, sectionWidth: 2.2, animSpeed: 1, animScale: 0.5, animIntensity: 1, fadeStrength: 0.7, displace: 0, levels: 16, roughness: 0.5, warp: 0.35, lineColor: "#59d9b3", sectionColor: "#bff299", cellColor: "#1a5c52", glowColor: "#8cffbf", bgColor: "#020a0a", bgOpacity: 0, reveal: 1, revealDuration: 0},
+    quasiGrid: {type: "quasiGrid", cellSize: 3, size: 50, lineMode: 1, cellMode: 2, lineWidth: 1.2, sectionSize: 5, sectionWidth: 2, animSpeed: 1, animScale: 0.5, animIntensity: 1, fadeStrength: 0.7, displace: 0, symmetry: 5, phase: 0.2, lineColor: "#8c4d1f", sectionColor: "#ffc759", cellColor: "#381a08", glowColor: "#ffa640", bgColor: "#0d0503", bgOpacity: 0, reveal: 1, revealDuration: 0},
+    flowNetGrid: {type: "flowNetGrid", cellSize: 1.5, size: 50, lineMode: 2, cellMode: 1, lineWidth: 1, sectionSize: 5, sectionWidth: 1.6, animSpeed: 1, animScale: 0.6, animIntensity: 0.8, fadeStrength: 0.7, displace: 0, obstacleRadius: 3, circulation: 2, flowAngle: 0, lineColor: "#3f8fbf", sectionColor: "#9fe3ff", cellColor: "#0c3148", glowColor: "#5fd0ff", bgColor: "#02070b", bgOpacity: 0, reveal: 1, revealDuration: 0},
+    chladniGrid: {type: "chladniGrid", cellSize: 8, size: 50, lineMode: 0, cellMode: 2, lineWidth: 1.2, sectionSize: 1, sectionWidth: 0.8, animSpeed: 1, animScale: 0.5, animIntensity: 0.6, fadeStrength: 0.6, displace: 0, modeN: 3, modeM: 5, morph: 0.4, grain: 0.8, lineColor: "#d9c7a3", sectionColor: "#4d5d6e", cellColor: "#16222e", glowColor: "#ffe2a8", bgColor: "#06080b", bgOpacity: 0, reveal: 1, revealDuration: 0},
+    hyperbolicGrid: {type: "hyperbolicGrid", cellSize: 22, size: 50, lineMode: 1, cellMode: 2, lineWidth: 1.4, sectionSize: 3, sectionWidth: 1, animSpeed: 1, animScale: 1.2, animIntensity: 0.7, fadeStrength: 0.2, displace: 0, sides: 7, valence: 3, drift: 0.5, lineColor: "#c9a4ff", sectionColor: "#ffd9f2", cellColor: "#2a1446", glowColor: "#b07cff", bgColor: "#07030c", bgOpacity: 0, reveal: 1, revealDuration: 0},
+    gravWaveGrid: {type: "gravWaveGrid", cellSize: 1, size: 50, lineMode: 0, cellMode: 0, lineWidth: 1, sectionSize: 5, sectionWidth: 1.4, animSpeed: 1, animScale: 0.5, animIntensity: 0.7, fadeStrength: 0.7, displace: 0, strain: 1, chirpTime: 14, waveSpeed: 6.5, massRatio: 0.6, lineColor: "#3d6fc9", sectionColor: "#9cc2ff", cellColor: "#1b3a7a", glowColor: "#8fd8ff", bgColor: "#03050b", bgOpacity: 0, reveal: 1, revealDuration: 0},
+    girihGrid: {type: "girihGrid", cellSize: 4, size: 50, lineMode: 2, cellMode: 2, lineWidth: 1.2, sectionSize: 3, sectionWidth: 0.8, animSpeed: 1, animScale: 0.5, animIntensity: 0.25, fadeStrength: 0.65, displace: 0, tiling: 0, contactAngle: 67.5, strapWidth: 0.07, angleDrift: 5, lineColor: "#f2c469", sectionColor: "#3f6fc4", cellColor: "#12616f", glowColor: "#38c4c8", bgColor: "#05070a", bgOpacity: 0, reveal: 1, revealDuration: 0},
+    wallpaperGrid: {type: "wallpaperGrid", cellSize: 10, size: 50, lineMode: 2, cellMode: 2, lineWidth: 2, sectionSize: 0, sectionWidth: 1.4, animSpeed: 1, animScale: 0.6, animIntensity: 0.55, fadeStrength: 0.7, displace: 0, group: -1, cycleTime: 12, motif: 0.5, levels: 11, lineColor: "#f3d79b", sectionColor: "#7fd6ff", cellColor: "#101c50", glowColor: "#ff9ec7", bgColor: "#05070a", bgOpacity: 0, reveal: 1, revealDuration: 0},
+    reactionDiffusionGrid: {type: "reactionDiffusionGrid", cellSize: 3, size: 50, lineMode: 0, cellMode: 0, lineWidth: 1.1, sectionSize: 5, sectionWidth: 1.2, animSpeed: 1, animScale: 0.5, animIntensity: 0.6, fadeStrength: 0.7, displace: 0, feed: 0.037, kill: 0.06, variation: 0.55, tileCells: 7, lineColor: "#7ff0d4", sectionColor: "#f0a26a", cellColor: "#0d4b52", glowColor: "#2fd9c8", bgColor: "#03080a", bgOpacity: 0, reveal: 1, revealDuration: 0},
+    lensingGrid: {type: "lensingGrid", cellSize: 2, size: 50, lineMode: 1, cellMode: 2, lineWidth: 1.1, sectionSize: 5, sectionWidth: 1.8, animSpeed: 1, animScale: 0.6, animIntensity: 0.6, fadeStrength: 0.7, displace: 0, mass: 4, orbit: 0, ringGlow: 0.8, lineColor: "#2b4f80", sectionColor: "#9fd0ff", cellColor: "#0b1a33", glowColor: "#ffcf8a", bgColor: "#02040a", bgOpacity: 0, reveal: 1, revealDuration: 0},
+    conformalGrid: {type: "conformalGrid", cellSize: 2, size: 50, lineMode: 0, cellMode: 0, lineWidth: 1, sectionSize: 4, sectionWidth: 1.4, animSpeed: 1, animScale: 0.5, animIntensity: 0.8, fadeStrength: 0.7, displace: 0, flowMap: 2, poleSpread: 6, spokes: 24, arms: 3, circulation: 1.2, drift: 0.35, fill: 0.5, dye: 0.8, lineColor: "#2fb6c9", sectionColor: "#c8fff4", cellColor: "#1a2a78", glowColor: "#9ff0ff", bgColor: "#020a0f", bgOpacity: 0, reveal: 1, revealDuration: 0},
+    truchetGrid: {type: "truchetGrid", cellSize: 3, size: 50, lineMode: 0, cellMode: 0, lineWidth: 1.3, sectionSize: 4, sectionWidth: 1.2, animSpeed: 1, animScale: 0.5, animIntensity: 0.6, fadeStrength: 0.7, displace: 0, flip: 0.25, bias: 0.5, pulse: 0.8, regionFill: 0.8, lineColor: "#a052e0", sectionColor: "#4a2a66", cellColor: "#2a0f45", glowColor: "#ff7ad9", bgColor: "#07030d", bgOpacity: 0, reveal: 1, revealDuration: 0},
+    phyllotaxisGrid: {type: "phyllotaxisGrid", cellSize: 1.6, size: 50, lineMode: 0, cellMode: 0, lineWidth: 0.6, sectionSize: 2, sectionWidth: 1.4, animSpeed: 1, animScale: 0.5, animIntensity: 0.6, fadeStrength: 0.6, displace: 0, divergence: 137.508, bloomRate: 0.04, relief: 0.8, shape: 1, shapeSize: 0.85, shapeGlow: 0.9, lineColor: "#a8661c", sectionColor: "#ffcf70", cellColor: "#3a1a08", glowColor: "#e4ee8a", bgColor: "#070402", bgOpacity: 0, reveal: 1, revealDuration: 0},
+    parastichyGrid: {type: "parastichyGrid", cellSize: 1.2, size: 50, lineMode: 0, cellMode: 0, lineWidth: 1.1, sectionSize: 21, sectionWidth: 0.9, animSpeed: 1, animScale: 0.5, animIntensity: 0.6, fadeStrength: 0.5, displace: 0, divergence: 137.508, third: 0.45, sap: 0.9, fill: 0.35, lineColor: "#d4ac4e", sectionColor: "#7fb8a8", cellColor: "#0f3a33", glowColor: "#fff0b8", bgColor: "#03080a", bgOpacity: 0, reveal: 1, revealDuration: 0},
+    apollonianGrid: {type: "apollonianGrid", cellSize: 2, size: 50, lineMode: 0, cellMode: 1, lineWidth: 1.1, sectionSize: 2, sectionWidth: 2, animSpeed: 1, animScale: 0.5, animIntensity: 0.6, fadeStrength: 0.15, displace: 0, depth: 12, morph: 0.25, lineColor: "#6a90c8", sectionColor: "#c9e4ff", cellColor: "#1a2f5c", glowColor: "#8fb8ff", bgColor: "#03050c", bgOpacity: 0, reveal: 1, revealDuration: 0},
+    hilbertGrid: {type: "hilbertGrid", cellSize: 0.8, size: 50, lineMode: 0, cellMode: 0, lineWidth: 1.2, sectionSize: 8, sectionWidth: 3, animSpeed: 1, animScale: 0.5, animIntensity: 0.6, fadeStrength: 0.7, displace: 0, order: 6, signals: 12, trail: 40, signalSpeed: 10, lineColor: "#2a8a5c", sectionColor: "#1d4d37", cellColor: "#082016", glowColor: "#5dffb0", bgColor: "#020805", bgOpacity: 0, reveal: 1, revealDuration: 0},
+    basic: {side: 2, type: "basic", cellSize: 1, fadeFrom: 0, cellColor: "#630c0c", sectionSize: 10, fadeDistance: 30, fadeStrength: 1, followCamera: false, sectionColor: "#ffffff", cellThickness: 1, sectionThickness: 1.5},
+};
+
+export const GRID_LABELS: Record<string, string> = {
+    advancedGrid: "Advanced Grid",
+    hexGrid: "Hex Grid",
+    circuitGrid: "Circuit Grid",
+    voronoiGrid: "Voronoi Grid",
+    radarGrid: "Radar Grid",
+    moireGrid: "Moire Grid",
+    fractalGrid: "Fractal Grid",
+    contourGrid: "Contour Grid",
+    quasiGrid: "Quasicrystal Grid",
+    flowNetGrid: "Flow Net Grid",
+    chladniGrid: "Chladni Grid",
+    hyperbolicGrid: "Hyperbolic Grid",
+    gravWaveGrid: "Grav Wave Grid",
+    girihGrid: "Girih Grid",
+    wallpaperGrid: "Wallpaper Grid",
+    reactionDiffusionGrid: "Reaction Diffusion Grid",
+    lensingGrid: "Lensing Grid",
+    conformalGrid: "Conformal Grid",
+    truchetGrid: "Truchet Grid",
+    phyllotaxisGrid: "Phyllotaxis Grid",
+    parastichyGrid: "Parastichy Grid",
+    apollonianGrid: "Apollonian Grid",
+    hilbertGrid: "Hilbert Grid",
+    basic: "Basic Grid",
+};

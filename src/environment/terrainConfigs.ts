@@ -16,8 +16,110 @@
  * it, so the type is a config field the shader branches on.
  */
 
+import type { ObjectAnimations, MouseMoveInteractions } from '../types/objectSettings';
+
+
 /** The four landforms the height function shapes. */
 export type TerrainType = 'mountains' | 'dunes' | 'hills' | 'canyon';
+
+// -----------------------------------------------------------------------------
+// Ground textures — real surfaces from the texture library
+// -----------------------------------------------------------------------------
+
+/** The four splat layers. Same four the colours have always been: low and mid by
+ *  height, rock by slope, peak (snow, salt, bleached stone) at the top. */
+export type TerrainLayerKey = 'low' | 'mid' | 'rock' | 'peak';
+export const TERRAIN_LAYER_KEYS: readonly TerrainLayerKey[] = ['low', 'mid', 'rock', 'peak'];
+
+/** A texture set's map URLs. Filled by the client from the texture library when a
+ *  set is assigned, and stored, so an embed renders without the library. */
+export interface TerrainLayerMaps {
+    color?: string;
+    normal?: string;
+    roughness?: string;
+    ao?: string;
+    displacement?: string;
+}
+
+/**
+ * One splat layer's surface.
+ *
+ * A textured layer shows the set's OWN colours and detail — so picking a
+ * different set visibly changes the ground. Its exposure is automatic: scans are
+ * shot at all sorts of brightness, so the texture is first brought to the
+ * LUMINANCE of the layer's colour (`lowColor` … `peakColor`, set by the biome),
+ * then × `tint` × `brightness`. The distant ground is the texture's mean × the
+ * same factors, so near and far agree. A layer with no set is its flat colour.
+ */
+export interface TerrainTextureLayer {
+    /** Texture-library set name (e.g. 'Grass008'). '' = no texture: the layer is
+     *  drawn in its flat colour, as before textures existed. */
+    set: string;
+    /** Resolved map URLs for `set`. Empty until resolved. */
+    maps: TerrainLayerMaps;
+    /** Metres of ground one texture tile covers. */
+    tileSize: number;
+    /** Multiplies the texture's colour. '#ffffff' = as photographed. */
+    tint: string;
+    /** Multiplies the texture's brightness, on top of the automatic exposure.
+     *  1 = the ground's tuned brightness. */
+    brightness: number;
+    /** Normal-map strength. */
+    normalStrength: number;
+}
+
+export type TerrainTextures = Record<TerrainLayerKey, TerrainTextureLayer>;
+
+/** Partial form, for presets and patches: a set name and optionally the numbers. */
+export type TerrainTexturesPatch = Partial<Record<TerrainLayerKey, Partial<TerrainTextureLayer>>>;
+
+export const defaultTerrainTextureLayer: TerrainTextureLayer = {
+    set: '',
+    maps: {},
+    tileSize: 3,
+    tint: '#ffffff',
+    brightness: 1,
+    normalStrength: 1,
+};
+
+/** Per-layer default tile size: rock reads right a little larger than ground. */
+const LAYER_TILE: Record<TerrainLayerKey, number> = { low: 3, mid: 3, rock: 6, peak: 4 };
+
+export function emptyTerrainTextures(): TerrainTextures {
+    const out = {} as TerrainTextures;
+    for (const k of TERRAIN_LAYER_KEYS) out[k] = { ...defaultTerrainTextureLayer, maps: {}, tileSize: LAYER_TILE[k] };
+    return out;
+}
+
+/**
+ * Layer-wise merge. A patch that changes a layer's set without restating its maps
+ * clears the maps, so a stale URL from the previous set never draws under the
+ * new name.
+ */
+export function mergeTerrainTextures(base: TerrainTextures | undefined, patch: TerrainTexturesPatch | undefined): TerrainTextures {
+    const from = base ?? emptyTerrainTextures();
+    const out = {} as TerrainTextures;
+    for (const k of TERRAIN_LAYER_KEYS) {
+        const b = from[k] ?? { ...defaultTerrainTextureLayer, tileSize: LAYER_TILE[k] };
+        const p = patch?.[k];
+        if (!p) { out[k] = { ...b, maps: { ...b.maps } }; continue; }
+        const setChanged = p.set !== undefined && p.set !== b.set;
+        out[k] = {
+            ...b,
+            ...p,
+            maps: p.maps ? { ...p.maps } : setChanged ? {} : { ...b.maps },
+        };
+    }
+    return out;
+}
+
+function texturesOf(sets: Partial<Record<TerrainLayerKey, string>>, tiles: Partial<Record<TerrainLayerKey, number>> = {}): TerrainTextures {
+    const patch: TerrainTexturesPatch = {};
+    for (const k of TERRAIN_LAYER_KEYS) {
+        if (sets[k] !== undefined || tiles[k] !== undefined) patch[k] = { ...(sets[k] !== undefined ? { set: sets[k] } : {}), ...(tiles[k] !== undefined ? { tileSize: tiles[k] } : {}) };
+    }
+    return mergeTerrainTextures(emptyTerrainTextures(), patch);
+}
 
 /** Fields every terrain shares, whatever its landform. */
 export interface TerrainSurfaceConfig {
@@ -116,6 +218,16 @@ export interface TerrainSurfaceConfig {
     roughness: number;
     /** Specular strength. Rock is nearly matte; wet sand and snow are not. */
     specular: number;
+    /** Real surfaces per splat layer, from the texture library. A layer with no set
+     *  keeps its flat colour. */
+    textures: TerrainTextures;
+    /** Distance, in metres, out to which the textures are drawn. Past it each
+     *  layer fades into its flat far colour (a textured layer's own mean colour),
+     *  which costs nothing per pixel — the horizon stays as cheap as it was. */
+    textureDistance: number;
+    /** 0 = layers cross-fade; 1 = the layer whose own surface is higher wins, so
+     *  rock pushes up through grass along its cracks instead of fading in. */
+    textureHeightBlend: number;
 
     // ---- lighting ----
     /** Sky fill. Terrain is lit by the whole dome, not only the sun, and freezing
@@ -149,6 +261,18 @@ export type TerrainConfig = TerrainSurfaceConfig & {
     /** Name of the preset the numbers came from, or '' once any of them is edited.
      *  Purely a UI bookmark — the renderer never reads it. */
     preset?: string;
+    /** The shape (landform preset) last picked — a UI bookmark. The Basic tab's
+     *  Ruggedness slider is measured against this shape's own numbers. */
+    shape?: string;
+    /** The biome (ground look) last picked — a UI bookmark. The Rock & snow slider
+     *  is measured against this biome's snow line. */
+    biome?: string;
+    /** Basic-tab Ruggedness, 0..1, 0.5 = the shape as designed. A bookmark: the
+     *  numbers it drives (gain, ridge sharpness, erosion) are in the config. */
+    ruggedness?: number;
+    /** Basic-tab Rock & snow, 0..1, 0.5 = shape and biome as designed. A bookmark
+     *  for the slope-rock thresholds and the snow line it moves. */
+    coverage?: number;
 };
 
 /** Cost and extent knobs. */
@@ -237,6 +361,12 @@ const surfaceBase: Omit<TerrainSurfaceConfig, 'enabled'> = {
     detailSize: 9,
     roughness: 0.82,
     specular: 0.06,
+    textures: texturesOf(
+        { low: 'Grass001', mid: 'Gravel040', rock: 'Rock051', peak: 'Snow014' },
+        { low: 2.5, mid: 3, rock: 6, peak: 4 },
+    ),
+    textureDistance: 4000,
+    textureHeightBlend: 0.7,
 
     ambient: 1,
     bounce: 0.35,
@@ -251,6 +381,7 @@ export const defaultMountainsConfig: TerrainConfig = {
     terrainType: 'mountains',
     preset: '',
     enabled: true,
+    biome: 'Alpine meadow',
 };
 
 export const defaultHillsConfig: TerrainConfig = {
@@ -259,6 +390,7 @@ export const defaultHillsConfig: TerrainConfig = {
     terrainType: 'hills',
     preset: '',
     enabled: true,
+    biome: 'Green hills',
     elevation: 300,
     featureSize: 2200,
     octaves: 8,
@@ -280,6 +412,10 @@ export const defaultHillsConfig: TerrainConfig = {
     detailSize: 6,
     roughness: 0.9,
     specular: 0.03,
+    textures: texturesOf(
+        { low: 'Grass008', mid: 'Grass001', rock: 'Rock061', peak: 'Ground033' },
+        { low: 2.5, mid: 2.5, rock: 5, peak: 3 },
+    ),
     aerialPerspective: 0.00009,
 };
 
@@ -289,6 +425,7 @@ export const defaultDunesConfig: TerrainConfig = {
     terrainType: 'dunes',
     preset: '',
     enabled: true,
+    biome: 'Desert sand',
     elevation: 150,
     featureSize: 3000,
     octaves: 6,
@@ -314,6 +451,10 @@ export const defaultDunesConfig: TerrainConfig = {
     detailSize: 3.5,
     roughness: 0.55,
     specular: 0.16,
+    textures: texturesOf(
+        { low: 'Ground097', mid: 'Ground097', rock: 'Ground105', peak: 'Ground093C' },
+        { low: 4, mid: 5, rock: 4, peak: 4 },
+    ),
     ambient: 1.1,
     bounce: 0.55,
     shadowSoftness: 22,
@@ -326,6 +467,7 @@ export const defaultCanyonConfig: TerrainConfig = {
     terrainType: 'canyon',
     preset: '',
     enabled: true,
+    biome: 'Red rock',
     elevation: 700,
     featureSize: 2600,
     octaves: 8,
@@ -353,6 +495,10 @@ export const defaultCanyonConfig: TerrainConfig = {
     detailSize: 7,
     roughness: 0.86,
     specular: 0.05,
+    textures: texturesOf(
+        { low: 'Ground105', mid: 'Ground097', rock: 'Rock029', peak: 'Ground105' },
+        { low: 3, mid: 4, rock: 8, peak: 3 },
+    ),
     shadowSoftness: 8,
     aerialPerspective: 0.000075,
 };
@@ -435,6 +581,8 @@ export const TERRAIN_SCHEMA: TerrainPropertySchema[] = [
     { key: 'detailSize', animatable: false, label: 'Detail size', group: 'surface', min: 0.5, max: 60, step: 0.25, unit: 'm', description: 'Size of that detail. Below about a metre it aliases before it fades.' },
     { key: 'roughness', label: 'Roughness', group: 'surface', min: 0.05, max: 1, step: 0.005, description: 'Widens the specular lobe. Rock is nearly matte; wet sand and snow are not.' },
     { key: 'specular', label: 'Specular', group: 'surface', min: 0, max: 1, step: 0.005, description: 'Specular strength. The grazing sheen on sand at low sun comes from here.' },
+    { key: 'textureDistance', animatable: false, label: 'Texture distance', group: 'surface', min: 100, max: 12000, step: 50, unit: 'm', description: 'How far out the ground is drawn with real textures. Past it every layer fades to its flat far colour, so the horizon costs nothing extra.' },
+    { key: 'textureHeightBlend', animatable: false, label: 'Texture height blend', group: 'surface', min: 0, max: 1, step: 0.01, description: '0 cross-fades the layers; 1 lets the layer whose own surface is higher win, so rock pushes up through grass along its cracks.' },
 
     { key: 'ambient', label: 'Ambient', group: 'lighting', min: 0, max: 3, step: 0.01, description: 'Sky-dome fill, taken from the same atmosphere the sky and clouds use, so it darkens and warms as the sun sets instead of freezing.' },
     { key: 'bounce', label: 'Ground bounce', group: 'lighting', min: 0, max: 2, step: 0.01, description: 'Fill on downward-facing surfaces, tinted by the low colour. Keeps overhangs and north faces off pure black.' },
@@ -476,6 +624,11 @@ export interface ProceduralTerrainSettings {
      *  editable block. */
     config: TerrainConfig;
     quality: TerrainQualityConfig;
+    /** Per-domain keyframes; the `terrain` domain drives the surface's lighting and
+     *  colour knobs. The land shape is never animatable (see TERRAIN_SCHEMA). */
+    animations?: ObjectAnimations;
+    /** Per-domain pointer bindings; same `terrain` domain. */
+    mouseMove?: MouseMoveInteractions;
 }
 
 export const defaultProceduralTerrainSettings: ProceduralTerrainSettings = {
@@ -517,9 +670,13 @@ export function normalizeTerrain(raw: unknown): TerrainConfig | null {
     const terrainType = TERRAIN_TYPES.includes(raw.terrainType as TerrainType)
         ? (raw.terrainType as TerrainType)
         : 'hills';
+    const base = TERRAIN_DEFAULTS[terrainType];
     return {
-        ...TERRAIN_DEFAULTS[terrainType],
+        ...base,
         ...(raw as Partial<TerrainConfig>),
+        // Layer-wise, not replaced: a stored or preset block may name only some
+        // layers, and a partial layer must not lose the type's defaults.
+        textures: mergeTerrainTextures(base.textures, isRecord(raw.textures) ? (raw.textures as TerrainTexturesPatch) : undefined),
         type: 'terrain',
         terrainType,
     };
@@ -536,10 +693,13 @@ export function normalizeTerrainQuality(raw: unknown): TerrainQualityConfig {
 export function normalizeTerrainSettings(raw: unknown): ProceduralTerrainSettings {
     const source = isRecord(raw) ? raw : {};
     const config = normalizeTerrain(source.config);
-    return {
+    const settings: ProceduralTerrainSettings = {
         id: typeof source.id === 'string' ? source.id : defaultProceduralTerrainSettings.id,
         type: 'terrain',
         config: config ?? { ...defaultHillsConfig, enabled: false },
         quality: normalizeTerrainQuality(source.quality),
     };
+    if (isRecord(source.animations)) settings.animations = source.animations as unknown as ObjectAnimations;
+    if (isRecord(source.mouseMove)) settings.mouseMove = source.mouseMove as unknown as MouseMoveInteractions;
+    return settings;
 }

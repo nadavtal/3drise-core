@@ -8,6 +8,12 @@ export type * from './generativeEffects';
 
 export type * from './generativeParticles';
 
+export type * from './environmentObjects';
+
+export type * from './spaceObjects';
+export type * from './landObjects';
+export type * from './textObjects';
+
 export type * from './handlerSettings';
 
 export type * from './lights';
@@ -26,6 +32,8 @@ export type * from './text';
 
 export type * from './actions';
 
+export type * from './commands';
+
 export type * from './cursor';
 
 export type * from './shaderEffects';
@@ -37,8 +45,6 @@ export type * from './objectManager';
 export type * from './postprocessing';
 
 export type * from './types';
-
-export type * from './uiController';
 
 export type * from './users';
 

@@ -359,7 +359,9 @@ export enum AssetType {
     ANIMATION = "animation",
     ACTION = "action",
     PATH = "path",
-    SCREENSHOT = "screenshot"
+    SCREENSHOT = "screenshot",
+    /** A saved effect clip (template): the clip in `settings`, its preview in `url`. */
+    EFFECT_CLIP = "effect_clip"
 }
 export enum Privacy {
     PUBLIC = "public",

@@ -13,7 +13,10 @@
 import { loadTextureAsync } from '../utils/loadingManager';
 import { NoiseGenerator } from './NoiseGenerator';
 import MaterialRegistryAPI from '../services/MaterialRegistry';
-import { Texture } from "three";
+import { Texture, SRGBColorSpace } from "three";
+
+/** Texture slots that hold colour (sRGB) data; the rest (normal, roughness…) are linear. */
+const SRGB_TEXTURE_KEYS = new Set(['map', 'emissiveMap', 'specularColorMap', 'sheenColorMap']);
 
 class TextureResolverService {
     // Cache: URL string → loaded Texture
@@ -89,6 +92,21 @@ class TextureResolverService {
         }
         // Wait for all texture loads to complete
         await Promise.all(texturePromises);
+        // Per-material texture state on a copy (the loaded texture is cached and shared):
+        // tiling from settings.textureRepeat ([x, y] or a number), and sRGB for colour maps.
+        const rep = settings.textureRepeat;
+        const repeat = Array.isArray(rep) && rep.length === 2 ? rep : typeof rep === 'number' ? [rep, rep] : null;
+        for (const key of textureKeys) {
+            const tex = resolved[key];
+            if (!tex || !tex.isTexture || typeof settings[key] !== 'string') continue;
+            const srgb = SRGB_TEXTURE_KEYS.has(key);
+            if (!repeat && !srgb) continue;
+            const copy = tex.clone();
+            if (srgb) copy.colorSpace = SRGBColorSpace;
+            if (repeat) copy.repeat.set(Number(repeat[0]) || 1, Number(repeat[1]) || 1);
+            copy.needsUpdate = true;
+            resolved[key] = copy;
+        }
         return resolved;
     }
     /**

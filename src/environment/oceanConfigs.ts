@@ -18,6 +18,8 @@
  * one height field. `waterType` shapes the spectrum; `host` chooses the mesh.
  */
 
+import type { ObjectAnimations, MouseMoveInteractions } from '../types/objectSettings';
+
 /** The four water bodies the spectrum is shaped for. */
 export type WaterType = 'sea' | 'lake' | 'storm' | 'shore';
 
@@ -511,10 +513,10 @@ export interface OceanWaterSettings {
     quality: OceanQualityConfig;
     /** Object host only. */
     meshSettings?: OceanMeshSettings;
-    /** Per-domain keyframes. Object host only, like any other scene object. */
-    animations?: unknown;
-    /** Per-domain pointer interactions. Object host only. */
-    mouseMove?: unknown;
+    /** Per-domain keyframes; the `ocean` domain drives the water's config knobs. */
+    animations?: ObjectAnimations;
+    /** Per-domain pointer bindings; same `ocean` domain. */
+    mouseMove?: MouseMoveInteractions;
 }
 
 export const defaultOceanWaterSettings: OceanWaterSettings = {
@@ -678,7 +680,7 @@ export function normalizeOceanSettings(raw: unknown): OceanWaterSettings {
             scale: (Array.isArray(mesh.scale) ? mesh.scale : [1, 1, 1]) as [number, number, number],
         };
     }
-    if (source.animations) settings.animations = source.animations;
-    if (source.mouseMove) settings.mouseMove = source.mouseMove;
+    if (isRecord(source.animations)) settings.animations = source.animations as unknown as ObjectAnimations;
+    if (isRecord(source.mouseMove)) settings.mouseMove = source.mouseMove as unknown as MouseMoveInteractions;
     return settings;
 }

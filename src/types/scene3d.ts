@@ -8,7 +8,7 @@ import type { TextConfig } from "./text";
 import type { EffectTriggerMode } from "./effects";
 import type { PathConfig } from "./animations";
 import type { LightObjectConfig } from "./lights";
-import type { Interaction, MouseMoveInteraction, MouseMoveInteractions, ObjectAnimations, ObjectEffect } from "./objectSettings";
+import type { Interaction, MouseMoveInteraction, MouseMoveInteractions, ObjectAnimations, ObjectEffectClip } from "./objectSettings";
 import type { GenerativeEffectConfig, GenerativeEffectSettings, BubblesConfig, GlyphsConfig, SparklesBurstConfig } from "./generativeEffects";
 import { GalleryLayoutSettings } from "./gallery";
 import type { CloudsConfig, MoonSettings, RainConfig, WaterConfig } from "./environment";
@@ -94,8 +94,6 @@ export type AnchorSettings = {
     padding?: number;
 };
 
-export type PageTemplateId = string;
-
 export type BaseMeshData = BaseMeshOptions;
 
 export interface RequiredMeshOptions extends BaseMeshOptions {
@@ -166,7 +164,7 @@ export type ObjectEdges = {
 };
 
 export type CreatedObjectType = 'mesh' | 'model' | 'text' | 'group' | 'custom_primitive' | 
- 'particles' | 'grid' | 'path' | 'gallery' | 'effect' | 'light' | 'space' | 'environment';
+ 'particles' | 'grid' | 'path' | 'gallery' | 'effect' | 'light' | 'space' | 'environment' | 'land';
 export type ShapeName = 'heart' | 'box' | 'star' | 'polygon' | 'gear' | 'flower' | 'spade' | 'club' | 'diamond' | 'droplet' | 'lightning' | 'sparkle' | 'shield' | 'pawPrint' | 'superformula' | 'sphere' | 'cylinder' | 'cone' | 'torus' | 'plane' | 'ring' | 'arcPlane' | 'bentPlane' | 'bentPlaneInverse' | 'capsule' | 'icosahedron' | 'octahedron' | 'tetrahedron' | 'dodecahedron' | 'text' | 'point' | 'custom' | 'infinity';
 
 export interface GeometryShapeConfig {
@@ -250,8 +248,8 @@ export type GeneralObjectSettings = {
     materialSettings: MaterialSettings;
     rigidBodySettings?: RigidBodySettings;
     edgesSettings?: ObjectEdges;
-    /** Effects layered on the object (frost, metalize…) — see ObjectEffect. */
-    effects?: ObjectEffect[];
+    /** The object's effect clip — Base effects, steps, model parts, source template (ObjectEffectClip). */
+    effects?: ObjectEffectClip;
     /** Continuous effects - always running (animations, transform, color) */
     animations?: ObjectAnimations;
     /** Click / hover action interactions */
@@ -507,6 +505,10 @@ export interface TimeSettings {
     timescale: number;
     autoAnimate: boolean;
     syncWithRealTime: boolean;
+    /** Lunar phase, 0..1: 0 new moon (rides with the sun, unlit), 0.25 first
+     *  quarter, 0.5 full (rises at sunset, highest at midnight), 0.75 last
+     *  quarter. Default 0.5. */
+    moonPhase?: number;
 }
 
 export interface CanvasConfig {

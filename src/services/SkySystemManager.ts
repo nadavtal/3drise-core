@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import type { TimeSettings } from "../types/scene3d";
+import { sunDirectionFromAngles } from '../utils/sunUtils';
+import { SKY_PHASE_ELEVATIONS } from '../utils/skyPhase';
 export type TimeOfDayLabel = 'Sunrise' | 'Midday' | 'Sunset' | 'Nighttime';
 
 export interface SkyTimeState {
@@ -17,6 +19,13 @@ export interface SkyTimeState {
      *  schedule expensive work off a sun change (a cube-camera capture) use this
      *  to stand down and let the environment probe's own timer do it once. */
     advancing: boolean;
+    /** Unit vector toward the moon (sunUtils convention). */
+    moonDirection: THREE.Vector3;
+    moonElevation: number;
+    /** 0..1, see TimeSettings.moonPhase. */
+    moonPhase: number;
+    /** Lit fraction of the disc, 0 at new moon, 1 at full. */
+    moonIllumination: number;
 }
 
 
@@ -30,6 +39,11 @@ const HORIZON_OFFSET = 5;
 const MAX_NIGHT_DEPTH = 21;
 /** Real seconds between playback write-backs to the host. */
 const SYNC_INTERVAL_SECONDS = 0.25;
+const DEFAULT_MOON_PHASE = 0.5;
+const wrap01 = (v: number) => ((v % 1) + 1) % 1;
+const wrap24 = (h: number) => ((h % 24) + 24) % 24;
+/** Lit fraction of the moon's disc for a phase in 0..1. */
+export const moonIlluminationForPhase = (phase: number): number => (1 - Math.cos(2 * Math.PI * phase)) / 2;
 export class SkySystemManager {
     private static instance = null;
     private timeInHours = 12;
@@ -41,6 +55,9 @@ export class SkySystemManager {
     private sunElevation = 37;
     private sunAzimuth = 270;
     private sunDirection = new THREE.Vector3(0, 1, 0);
+    private moonPhase = DEFAULT_MOON_PHASE;
+    private moonElevation = 0;
+    private moonDirection = new THREE.Vector3(0, -1, 0);
     private enabled = false;
     private timescale = 60;
     private autoAnimate = false;
@@ -59,7 +76,7 @@ export class SkySystemManager {
      *  otherwise double-tick it and stomp its settings. */
     private driver: object | null = null;
     constructor() {
-        this.updateSunDirection();
+        this.recalculateState();
     }
     static getInstance(): SkySystemManager {
         if (!SkySystemManager.instance) {
@@ -88,6 +105,9 @@ export class SkySystemManager {
         return this.driver !== null;
     }
     setTimeSettings(settings: TimeSettings): void {
+        const moonPhase = wrap01(settings.moonPhase ?? DEFAULT_MOON_PHASE);
+        const phaseChanged = moonPhase !== this.moonPhase;
+        this.moonPhase = moonPhase;
         this.enabled = settings.enabled;
         this.timescale = settings.timescale;
         this.autoAnimate = settings.autoAnimate;
@@ -113,6 +133,9 @@ export class SkySystemManager {
             this.timeInHours = settings.timeOfDay;
             this.delta = 0;
             this.syncAccumulator = 0;
+            this.recalculateState();
+        }
+        else if (phaseChanged) {
             this.recalculateState();
         }
     }
@@ -160,14 +183,16 @@ export class SkySystemManager {
             elapsedTime: this.elapsedTime,
             autoAnimate: this.autoAnimate,
             advancing: this.isAdvancing(),
+            moonDirection: this.moonDirection,
+            moonElevation: this.moonElevation,
+            moonPhase: this.moonPhase,
+            moonIllumination: moonIlluminationForPhase(this.moonPhase),
         };
     }
     getStateByTime(timeOfDay: number): SkyTimeState {
         const state = this.calculateTimeState(timeOfDay);
-        const el = THREE.MathUtils.degToRad(state.sunElevation);
-        const az = THREE.MathUtils.degToRad(this.transformAzimuth(state.sunAzimuth));
-        const distance = 0.5;
-        const sunDirection = new THREE.Vector3(distance * Math.cos(el) * Math.sin(az), distance * Math.sin(el), distance * Math.cos(el) * Math.cos(az)).normalize();
+        const sunDirection = sunDirectionFromAngles(state.sunElevation, this.transformAzimuth(state.sunAzimuth), new THREE.Vector3());
+        const moon = this.calculateMoon(timeOfDay, new THREE.Vector3());
         return {
             timeInHours: timeOfDay,
             normalizedTime: state.normalizedTime,
@@ -180,6 +205,10 @@ export class SkySystemManager {
             elapsedTime: this.elapsedTime,
             autoAnimate: this.autoAnimate,
             advancing: this.isAdvancing(),
+            moonDirection: moon.direction,
+            moonElevation: moon.elevation,
+            moonPhase: this.moonPhase,
+            moonIllumination: moonIlluminationForPhase(this.moonPhase),
         };
     }
     getTime(): Date {
@@ -261,6 +290,18 @@ export class SkySystemManager {
         this.sunElevation = state.sunElevation;
         this.sunAzimuth = state.sunAzimuth;
         this.updateSunDirection();
+        this.moonElevation = this.calculateMoon(this.timeInHours, this.moonDirection).elevation;
+    }
+    /**
+     * The moon runs the sun's own daily arc, `moonPhase` of a day behind it:
+     * a new moon rides with the sun, a full moon is 12 h behind — rising at
+     * sunset, highest at midnight, setting at sunrise — which is where the real
+     * one is. Same curve, same convention, so the two can never cross wrongly.
+     */
+    private calculateMoon(timeInHours: number, out: THREE.Vector3): { elevation: number; direction: THREE.Vector3 } {
+        const m = this.calculateTimeState(wrap24(timeInHours - this.moonPhase * 24));
+        sunDirectionFromAngles(m.sunElevation, this.transformAzimuth(m.sunAzimuth), out);
+        return { elevation: m.sunElevation, direction: out };
     }
     /**
      * Sun elevation and azimuth for a given hour.
@@ -298,14 +339,14 @@ export class SkySystemManager {
             sunElevation = -HORIZON_OFFSET - Math.cos(Math.PI * (normalizedTime - 0.5)) * MAX_NIGHT_DEPTH;
             sunAzimuth = 360 + 180 * normalizedTime;
         }
+        // Labels follow the sun's height (skyPhase), the same keys the atmosphere
+        // and the stars turn on, so the label never says Midday under a red sky.
         let timeOfDay = 'Nighttime';
-        if (isDaytime) {
-            if (normalizedTime <= 0.25)
-                timeOfDay = 'Sunrise';
-            else if (normalizedTime <= 0.75)
-                timeOfDay = 'Midday';
-            else
-                timeOfDay = 'Sunset';
+        if (sunElevation >= SKY_PHASE_ELEVATIONS.day)
+            timeOfDay = 'Midday';
+        else if (sunElevation > SKY_PHASE_ELEVATIONS.twilight) {
+            const morning = isDaytime ? normalizedTime < 0.5 : timeInHours < 12;
+            timeOfDay = morning ? 'Sunrise' : 'Sunset';
         }
         return { normalizedTime, isDaytime, timeOfDay, sunElevation, sunAzimuth };
     }
@@ -316,13 +357,11 @@ export class SkySystemManager {
         const wrapped = (((270 - rawAzimuth) % 360) + 360) % 360;
         return wrapped - 180;
     }
+    /** Same convention as the Preetham sky (sunUtils), so the direction this
+     *  publishes is exactly where SkyController draws the disc for the same
+     *  elevation/azimuth. */
     private updateSunDirection() {
-        const el = THREE.MathUtils.degToRad(this.sunElevation);
-        const az = THREE.MathUtils.degToRad(this.transformAzimuth(this.sunAzimuth));
-        const distance = 0.5;
-        this.sunDirection
-            .set(distance * Math.cos(el) * Math.sin(az), distance * Math.sin(el), distance * Math.cos(el) * Math.cos(az))
-            .normalize();
+        sunDirectionFromAngles(this.sunElevation, this.transformAzimuth(this.sunAzimuth), this.sunDirection);
     }
 }
 export const skySystemManager: SkySystemManager = SkySystemManager.getInstance();

@@ -63,13 +63,13 @@ const fragmentShader = /*glsl*/ `
     // Sky gradient from horizon to zenith
     vec3 skyColor = mix(uSkyColorLow, uSkyColorHigh, clamp(direction.y * 0.5 + 0.5, 0.0, 1.0));
 
-    // Calculate sun direction from azimuth and elevation
+    // Sun direction from azimuth and elevation, same convention as core sunUtils
     float azimuth = radians(uSunAzimuth);
     float elevation = radians(uSunElevation);
     vec3 sunDirection = normalize(vec3(
-      cos(elevation) * sin(azimuth),
+      cos(elevation) * cos(azimuth),
       sin(elevation),
-      cos(elevation) * cos(azimuth)
+      cos(elevation) * sin(azimuth)
     ));
 
     // Sun disc with intensity falloff

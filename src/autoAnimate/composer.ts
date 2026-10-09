@@ -45,6 +45,12 @@ export interface GenerateOptions {
     analyze?: AnalyzeOptions;
     /** Start the sequence when the published project loads. */
     autoplay?: boolean;
+    /**
+     * Animate objects that still have temp ids. Safe since the save rewrites every temp id
+     * in a batch (data-center assignBatchIds + client tempIdRemap), clip tracks included —
+     * the scene agent creates and animates objects in one request.
+     */
+    includeUnsaved?: boolean;
 }
 
 export interface GenerateResult {
@@ -126,10 +132,11 @@ export function generateAnimation(input: SceneInput, options: GenerateOptions): 
     const hero = profile.heroId ? byId.get(profile.heroId) ?? null : null;
     const animated = new Set<string>();
     /** A new object may move unless it or one of its ancestors / descendants already does. */
+    const usable = (p: ObjectProfile) => p.saved || !!options.includeUnsaved;
     const canAnimate = (p: ObjectProfile) =>
-        p.saved && p.visible && !animated.has(p.id) && !ancestors(p).some(a => animated.has(a)) &&
+        usable(p) && p.visible && !animated.has(p.id) && !ancestors(p).some(a => animated.has(a)) &&
         ![...animated].some(id => ancestors(byId.get(id)!).includes(p.id));
-    if (hero && hero.saved) animated.add(hero.id);
+    if (hero && usable(hero)) animated.add(hero.id);
 
     const groups: Array<{ group: GroupProfile | null; name: string; members: ObjectProfile[] }> = [];
     for (const g of profile.groups) {
@@ -146,7 +153,7 @@ export function generateAnimation(input: SceneInput, options: GenerateOptions): 
         .filter(p => (p.role === 'standalone' || p.role === 'member') && canAnimate(p))
         .sort((a, b) => a.bounds.center[0] - b.bounds.center[0]);
     standalone.forEach(p => animated.add(p.id));
-    const lights = profile.objects.filter(p => p.role === 'light' && p.saved && p.capabilities.config.includes('intensity'));
+    const lights = profile.objects.filter(p => p.role === 'light' && usable(p) && p.capabilities.config.includes('intensity'));
     const center: V3 = hero ? hero.bounds.center : profile.bounds.center;
 
     // =========================================================================================
