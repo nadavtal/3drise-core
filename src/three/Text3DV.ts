@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { LetterV } from './LetterV';
-import type { Text3DConfig } from "../types/text";
+// legacy vanilla port: the old 2d / 3d text config shape (removed from the live types)
+type Text3DConfig = { text?: string; font?: string; renderMode?: 'text3d' | 'bitmap'; [k: string]: any };
 export interface Text3DVOptions {
     text: string;
     config: Text3DConfig;

@@ -2,17 +2,17 @@
 // TEXT OBJECTS — animated text looks (object type 'text', config.type picks the look)
 // =============================================================================
 //
-// Object type 'text' also hosts the legacy bitmap / 3D text (config.renderMode, no config.type). The looks
-// here are told apart by config.type (isTextObjectConfig): handwriting, neonTube, fourierSketch, frostGrowth, plasmaDischarge, burnAway, lightPainting, constellation, inkBleed, liquidMetal, embroidery, chalkboard.
+// Object type 'text' = the text looks, told apart by config.type (isTextObjectConfig): plain, handwriting, neonTube,
+// fourierSketch, frostGrowth, plasmaDischarge, burnAway, lightPainting, constellation, inkBleed, liquidMetal, embroidery, chalkboard.
 // Rendered by TextGenerator.tsx. Every look shares one font list, one set of draw / erase animations and
 // one playback model; only the look knobs differ. Everything is internal: moving, turning or scaling the
 // text is the parent's transform.
 //
-// The text is a constant running object (idle effects run on real time). `enabled` is the trigger:
+// The text is a constant running object (idle effects run on real time). `shown` is the trigger:
 // false -> true plays the draw animation, true -> false plays the erase animation and the text stays hidden.
 //
 
-export type TextObjectType = 'handwriting' | 'neonTube' | 'fourierSketch' | 'frostGrowth' | 'plasmaDischarge' | 'burnAway' | 'lightPainting' | 'constellation' | 'inkBleed' | 'liquidMetal' | 'embroidery' | 'chalkboard';
+export type TextObjectType = 'handwriting' | 'neonTube' | 'fourierSketch' | 'frostGrowth' | 'plasmaDischarge' | 'burnAway' | 'lightPainting' | 'constellation' | 'inkBleed' | 'liquidMetal' | 'embroidery' | 'chalkboard' | 'plain';
 
 export type TextDrawMethod = 'pen' | 'trace' | 'epicycle' | 'bothEnds' | 'wipe' | 'radial' | 'scatter' | 'dissolve' | 'fade' | 'none'
     // look-native draw methods
@@ -24,7 +24,7 @@ export type TextEase = 'easeInOut' | 'linear' | 'easeOut' | 'easeIn';
 
 export interface BaseTextObjectConfig {
     /** The trigger: on plays the draw animation, off plays the erase animation and keeps the text hidden. */
-    enabled: boolean;
+    shown: boolean;
     /** The words; a new line starts a second line (structural: rebuilds). */
     text: string;
     /** Typeface id (TEXT_FONTS); shared by every look (structural: rebuilds). */
@@ -357,4 +357,22 @@ export interface ChalkboardTextConfig extends BaseTextObjectConfig {
     color2: string;
 }
 
-export type TextObjectConfig = ({ type: 'handwriting' } & HandwritingTextConfig) | ({ type: 'neonTube' } & NeonTubeTextConfig) | ({ type: 'fourierSketch' } & FourierSketchTextConfig) | ({ type: 'frostGrowth' } & FrostGrowthTextConfig) | ({ type: 'plasmaDischarge' } & PlasmaDischargeTextConfig) | ({ type: 'burnAway' } & BurnAwayTextConfig) | ({ type: 'lightPainting' } & LightPaintingTextConfig) | ({ type: 'constellation' } & ConstellationTextConfig) | ({ type: 'inkBleed' } & InkBleedTextConfig) | ({ type: 'liquidMetal' } & LiquidMetalTextConfig) | ({ type: 'embroidery' } & EmbroideryTextConfig) | ({ type: 'chalkboard' } & ChalkboardTextConfig);
+/** Flat solid text from the font outlines with a weight axis, an optional outline and soft edges, anti-aliased from a signed distance field. */
+export interface PlainTextConfig extends BaseTextObjectConfig {
+    /** Colour of the face. */
+    color: string;
+    /** Bolder (right) or lighter (left) face: offsets every edge of the letters. */
+    weight: number;
+    /** Width of the outline drawn just outside the face (0 = none). */
+    outline: number;
+    /** Overall opacity. */
+    opacity: number;
+    /** Colour of the outline. */
+    color2: string;
+    /** Opacity of the face alone (0 with an outline = hollow letters). */
+    fill: number;
+    /** Width of the edge transition: 0 is crisp, more is a soft printed edge. */
+    softness: number;
+}
+
+export type TextObjectConfig = ({ type: 'handwriting' } & HandwritingTextConfig) | ({ type: 'neonTube' } & NeonTubeTextConfig) | ({ type: 'fourierSketch' } & FourierSketchTextConfig) | ({ type: 'frostGrowth' } & FrostGrowthTextConfig) | ({ type: 'plasmaDischarge' } & PlasmaDischargeTextConfig) | ({ type: 'burnAway' } & BurnAwayTextConfig) | ({ type: 'lightPainting' } & LightPaintingTextConfig) | ({ type: 'constellation' } & ConstellationTextConfig) | ({ type: 'inkBleed' } & InkBleedTextConfig) | ({ type: 'liquidMetal' } & LiquidMetalTextConfig) | ({ type: 'embroidery' } & EmbroideryTextConfig) | ({ type: 'chalkboard' } & ChalkboardTextConfig) | ({ type: 'plain' } & PlainTextConfig);

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import type { Text2DConfig } from "../types/text";
+// legacy vanilla port: the old 2d / 3d text config shape (removed from the live types)
+type Text2DConfig = { text?: string; font?: string; renderMode?: 'text3d' | 'bitmap'; [k: string]: any };
 export interface Text2DVOptions {
     text: string;
     config?: Partial<Text2DConfig>;

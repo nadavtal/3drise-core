@@ -5,7 +5,7 @@
 // Per type and per variant: the words the Add menu and the AI choose by (description,
 // tags), the display name, and the transform / material a variant starts with.
 // Configs live in the registry's DEFAULT_* tables (effects, particles, grids, lights,
-// environment, space); only mesh, gallery and text variants carry their config here,
+// environment, space); only mesh and gallery variants carry their config here,
 // because those families have no defaults table.
 //
 // `key` is permanent (it is what scenes store in config.type / shapeType / layout).
@@ -34,7 +34,7 @@ export const CATALOG_TYPES: CatalogTypeInfo[] = [
     {key: "particles", legacyId: "f7b5bfba-6a68-11f1-8573-00163e32d101", description: "A particle system arranged in a configurable shape. Use for swarms, sparks, dust, dotted shapes.", icon: "sparkles", order: 8, enabled: true},
     {key: "path", legacyId: "f7d663ca-6a68-11f1-8573-00163e32d101", description: "A 3D spline or path that other objects can follow.", icon: "draw-polygon", order: 9, enabled: false},
     {key: "space", legacyId: "f7f6f91b-6a68-11f1-8573-00163e32d101", description: "Elements from space", icon: "planet-ringed", order: 10, enabled: true},
-    {key: "text", legacyId: "e841a567-7fb1-49ac-9d90-eb26a414b07f", description: "2d text, 3d text and more", icon: "font", order: 11, enabled: true},
+    {key: "text", legacyId: "e841a567-7fb1-49ac-9d90-eb26a414b07f", description: "Flat text: plain labels and animated looks (handwriting, neon, ink, metal…)", icon: "font", order: 11, enabled: true},
     {key: "land", description: "Placeable patches of terrain - mountains, hills, dunes, canyon - sized and moved like any object, as many as you like. For the scene's one endless ground use the environment terrain.", icon: "mountain", order: 12, enabled: true, defaultVariant: "hills"},
 ];
 
@@ -67,6 +67,7 @@ export const CATALOG_VARIANTS: Record<string, CatalogVariantInfo[]> = {
         {key: "superformula", legacyId: "cd64b779-69da-4afa-98d5-683b48511568", name: "super formula", description: "Super formula mesh", tags: [], config: {type: "superformula", twist1: 0.3, twist2: 0.3, samples: 256, stretchX: 1, stretchY: 1, symmetry: 6, roundness: 0.3}},
         {key: "tetrahedron", legacyId: "636570a9-6a6f-11f1-8573-00163e32d101", name: "tetrahedron", description: "4-sided polyhedron (triangular pyramid). Use for d4 dice, simple pyramids, sharp spikes.", tags: ["tetrahedron", "d4", "4-sided", "pyramid", "spike", "triangular-pyramid"], config: {type: "tetrahedron", detail: 0, radius: 0.5}},
         {key: "torus", legacyId: "62a28904-6a6f-11f1-8573-00163e32d101", name: "torus", description: "Donut shape — a ring with thickness. Use for donuts, rings, tubes-as-loops.", tags: ["torus", "donut", "doughnut", "ring-thick", "loop"], config: {tube: 0.2, type: "torus", radius: 0.5, radialSegments: 16, tubularSegments: 100}},
+        {key: "text", legacyId: "992fe6fa-0d34-4d07-a600-0acee0c881fa", name: "3d text", description: "A word or line extruded into a solid with bevelled edges, from the same fonts as the text looks; takes any material. Use for logos, signs, titles and chunky labels.", tags: ["text", "3d-text", "extruded", "letters", "logo", "sign", "title"], config: {type: "text", text: "Hello", font: "inter", size: 1, height: 0.2, letterSpacing: 0, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.015, bevelSegments: 3}},
     ],
     grid: [
         {key: "advancedGrid", legacyId: "71h8sjh8-6a6f-gu85-8573-00163e32d101", name: "advanced grid", description: "A Grid with shader material , animation and noise effects.", tags: ["grid"]},
@@ -196,8 +197,7 @@ export const CATALOG_VARIANTS: Record<string, CatalogVariantInfo[]> = {
         {key: "stars", legacyId: "695c418b-6a6f-11f1-8573-00163e32d101", name: "stars", description: "Stars scattered in the sky", tags: ["stars", "sky", "celestial", "night", "background"], transform: {scale: [500, 500, 500]}, material: {materialType: "particles"}},
     ],
     text: [
-        {key: "2dText", legacyId: "6e49e604-3007-4505-bd87-5e31b1393d94", name: "2d text", description: "2d 'bitmap' text", tags: ["text"], config: {text: "Hello", renderMode: "bitmap"}},
-        {key: "3dText", legacyId: "992fe6fa-0d34-4d07-a600-0acee0c881fa", name: "3d text", description: "3d text", tags: ["text"], config: {text: "Hello", renderMode: "text3d"}},
+        {key: "plain", legacyId: "6e49e604-3007-4505-bd87-5e31b1393d94", name: "Plain", description: "Flat solid text from the font outlines with a weight axis, an optional outline and soft edges, anti-aliased from a signed distance field. Use for labels, captions, prices, menus and titles.", tags: ["plain", "label", "caption", "solid", "flat", "sans", "title", "text"]},
         {key: "handwriting", name: "Handwriting", description: "A pen writes the text in single strokes, slowing in tight curves where the ink pools and drying from wet sheen to rest colour; a faint sheen drifts over the dry ink. Use for signatures, titles and invitations.", tags: ["handwriting", "ink", "pen", "stroke", "script", "signature", "text"]},
         {key: "neonTube", name: "Neon Tube", description: "Letter outlines as glass neon tubing: a gas discharge ignites each contour, stuttering before it settles into a steady hum with slow breathing and the odd micro-dip. Use for signs, nightlife and retro titles.", tags: ["neon", "tube", "glow", "sign", "outline", "retro", "text"]},
         {key: "fourierSketch", name: "Fourier Sketch", description: "Each letter is traced by a chain of rotating circles whose radii are its Fourier coefficients; more terms sharpen the form, and glints keep circling the finished contours. Use for science, math and generative titles.", tags: ["fourier", "epicycle", "circles", "sketch", "trace", "maths", "text"]},

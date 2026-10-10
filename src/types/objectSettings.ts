@@ -232,6 +232,8 @@ export interface OperationEffect {
     playback?: EffectPlayback;
     /** Targeting a group: a physical effect moves the whole group ('group', default) or each child on its own spot ('each'). Visual effects on a group always go to each child. */
     scope?: 'group' | 'each';
+    /** false = switched off in its list: kept, but the command is skipped. Absent = on. */
+    enabled?: boolean;
 }
 
 /**

@@ -1,15 +1,14 @@
 import type { EffectSpread, EffectSteps, ObjectEffect, ObjectEffectClip } from '../types/objectSettings';
-import { isTextObjectConfig } from '../data/textDefaults';
 
 /**
  * Visual effects layer GLSL onto three's standard materials, so they take only objects drawn with
- * them: meshes, models and the legacy 2d / 3d text. Every other scene object (particles, grids, text
- * looks, lights, weather, space, generative effects…) takes physical (transform) effects only, for now —
+ * them: meshes (3d text included) and models. Every other scene object (particles, grids, text, lights,
+ * weather, space, generative effects…) takes physical (transform) effects only, for now —
  * they move the object's group, whatever draws inside it.
  */
 export function objectTakesVisualEffects(o: { type?: string; config?: unknown } | null | undefined): boolean {
     // a group never draws an effect itself: its visual effects go to each child that takes them
-    return o?.type === 'mesh' || o?.type === 'model' || o?.type === 'group' || (o?.type === 'text' && !isTextObjectConfig(o.config));
+    return o?.type === 'mesh' || o?.type === 'model' || o?.type === 'group';
 }
 
 /** A group's stagger when its clip sets none (see EffectSpread). */

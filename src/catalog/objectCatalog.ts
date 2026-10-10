@@ -8,8 +8,7 @@
 //
 //   registry families  effect, particles, grid, light, environment, space, text
 //                      → one variant per key of the defaults table (config = that default)
-//   curated families   mesh, gallery → the entries in catalogInfo (configs there); text is both: its curated 2d / 3d
-//                      entries (they carry a config) stay, then one variant per animated look in the registry
+//   curated families   mesh, gallery → the entries in catalogInfo (configs there)
 //   no variants        group, model, path
 //
 // Output keeps the shapes the client already uses (ObjectTypeItem /
@@ -50,8 +49,7 @@ export interface CatalogObjectVariant {
     defaultSettings: { config: Record<string, unknown>; transform?: Record<string, unknown>; material?: Record<string, unknown> };
 }
 
-/** `keepCurated`: catalog entries that carry their own config (the legacy 2d / 3d text) stay ahead of the registry's keys. */
-type Family = { defaults: Record<string, Record<string, unknown>>; labels: Record<string, string>; keepCurated?: boolean };
+type Family = { defaults: Record<string, Record<string, unknown>>; labels: Record<string, string> };
 
 /** Families whose variants ARE the keys of a registry defaults table. */
 const REGISTRY_FAMILIES: Record<string, Family> = {
@@ -62,7 +60,7 @@ const REGISTRY_FAMILIES: Record<string, Family> = {
     space: { defaults: DEFAULT_SPACE_OBJECTS as any, labels: SPACE_OBJECT_LABELS },
     environment: { defaults: DEFAULT_ENVIRONMENT_OBJECTS as any, labels: ENVIRONMENT_OBJECT_LABELS },
     land: { defaults: DEFAULT_LAND_OBJECTS as any, labels: LAND_OBJECT_LABELS },
-    text: { defaults: DEFAULT_TEXT_OBJECTS as any, labels: TEXT_OBJECT_LABELS, keepCurated: true },
+    text: { defaults: DEFAULT_TEXT_OBJECTS as any, labels: TEXT_OBJECT_LABELS },
 };
 
 /** 'paw print' → 'Paw Print', 'tunnelPyramid' → 'Tunnel Pyramid'. */
@@ -113,7 +111,6 @@ export function objectCatalog(): { types: CatalogObjectType[]; variants: Catalog
         const infoBy = new Map(infos.map(i => [i.key, i]));
         const family = REGISTRY_FAMILIES[type];
         if (family) {
-            if (family.keepCurated) for (const info of infos) if (info.config && !(info.key in family.defaults)) push(type, info.key, titleCase(info.name), info, info.config);
             // Catalog order first (what was curated), then any key only the registry has.
             const keys = [...infos.map(i => i.key).filter(k => k in family.defaults),
                 ...Object.keys(family.defaults).filter(k => !infoBy.has(k))];

@@ -25,6 +25,11 @@
 // `runEffects` is false — the editor's patch preview) and undoes them on
 // `reverted` / `reset`.
 //
+// Layers: a non-action owner of patches (the animation timeline's discrete tracks) sets
+// them with `setLayer(id, patches)`. Same stacks, same merge, same per-element
+// subscription — but silent: no applied / reverted events, not in the applied list, so
+// nothing treats a layer as an action (panel badges, code API, effects).
+//
 // Nothing here is persisted. `reset()` on project load.
 //
 import type { ActionSequence } from '../types/actions';
@@ -57,6 +62,8 @@ class SceneActions {
     private stateListeners = new Map<string, Set<Listener>>();
     private eventListeners = new Set<(event: SceneActionsEvent) => void>();
     private version = 0;
+    /** Layer id -> JSON of what it last set (setLayer is called every frame; only changes commit). */
+    private layers = new Map<string, string>();
 
     /** Apply an action. Re-applying moves its patches to the top of each stack. */
     applyAction(action: ActionSequence, options: ApplyActionOptions = {}): void {
@@ -101,11 +108,33 @@ class SceneActions {
         return Array.from(this.applied.keys());
     }
 
+    /**
+     * Set a layer's patches (state -> patch), replacing what it set before; null or {}
+     * removes it. A no-op when nothing changed, so it can be called every frame. A
+     * changed layer moves to the top of each stack it is on.
+     */
+    setLayer(layerId: string, patches: Record<string, SettingsPatch> | null): void {
+        const entries = Object.entries(patches ?? {}).filter(([state, patch]) => state && patch && Object.keys(patch).length > 0);
+        const json = entries.length ? JSON.stringify(entries) : '';
+        if ((this.layers.get(layerId) ?? '') === json) return;
+        const key = `layer:${layerId}`;
+        const touched = this.removeEntries(key);
+        for (const [state, patch] of entries) {
+            const stack = this.stacks.get(state) ?? [];
+            stack.push({ actionId: key, patch });
+            this.stacks.set(state, stack);
+            touched.add(state);
+        }
+        if (json) this.layers.set(layerId, json); else this.layers.delete(layerId);
+        this.commit(touched);
+    }
+
     /** Drop every patch (project load, "reset" in the editor). */
     reset(): void {
         const touched = new Set(this.stacks.keys());
         const actions = Array.from(this.applied.values());
         this.stacks.clear();
+        this.layers.clear();
         this.applied.clear();
         this.commit(touched, { type: 'reset', actions });
     }
@@ -153,7 +182,8 @@ class SceneActions {
         return touched;
     }
 
-    private commit(touched: Set<string>, event: SceneActionsEvent): void {
+    /** `event` absent: a layer change (silent). */
+    private commit(touched: Set<string>, event?: SceneActionsEvent): void {
         for (const state of touched) {
             const stack = this.stacks.get(state);
             this.merged.set(state, stack ? composeSettingsPatches(stack.map(e => e.patch)) : undefined);
@@ -165,6 +195,7 @@ class SceneActions {
                 try { l(); } catch (err) { console.error('[SceneActions] listener failed', err); }
             });
         }
+        if (!event) return;
         this.eventListeners.forEach(l => {
             try { l(event); } catch (err) { console.error('[SceneActions] event listener failed', err); }
         });

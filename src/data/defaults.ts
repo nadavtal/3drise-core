@@ -11,18 +11,6 @@ export const DEFAULTS_CONFIGS = {
         turbulence: 0,
         splash: false,
     },
-    text: {
-        text: 'New Text',
-        font: 'Arial',
-        renderMode: 'bitmap',
-        fontSize: 1,
-        maxWidth: 10,
-        lineHeight: 1,
-        letterSpacing: 0,
-        textAlign: 'center',
-        anchorX: 'center',
-        anchorY: 'middle',
-    },
     grid: {
         cellSize: 1,
         cellThickness: 1,

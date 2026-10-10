@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
-import type { TextConfig } from "../types/text";
+// legacy vanilla port: the old 2d / 3d text config shape (removed from the live types)
+type TextConfig = { text?: string; font?: string; renderMode?: 'text3d' | 'bitmap'; [k: string]: any };
 export interface LetterVOptions {
     char: string;
     config: TextConfig;

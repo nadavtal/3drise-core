@@ -8,11 +8,13 @@
 // property registry lists them as set-only.
 //
 import type { ShapeName, GeometryShapeConfig, DisplayMode, ModeConfig, ModeGroup } from '../../types/scene3d';
+import { TEXT_FONTS } from '../../data/textDefaults';
 
 export type ControlOf<K extends string> =
   | { type: 'range'; key: K; label: string; min: number; max: number; step: number; default: number; digits?: number; unit?: string; format?: (v: number) => string }
   | { type: 'toggle'; key: K; label: string; default: boolean }
-  | { type: 'text'; key: K; label: string; default: string };
+  | { type: 'text'; key: K; label: string; default: string }
+  | { type: 'select'; key: K; label: string; options: string[]; optionLabels?: string[]; default: string };
 
 const int = <K extends string>(key: K, label: string, min: number, max: number, def: number): ControlOf<K> =>
   ({ type: 'range', key, label, min, max, step: 1, default: def });
@@ -21,6 +23,8 @@ const num = <K extends string>(key: K, label: string, min: number, max: number, 
 const ang = <K extends string>(key: K, label: string, def: number): ControlOf<K> =>
   ({ type: 'range', key, label, min: 0, max: Math.PI * 2, step: 0.05, default: def, digits: 2, unit: 'rad' });
 const str = <K extends string>(key: K, label: string, def: string): ControlOf<K> => ({ type: 'text', key, label, default: def });
+const sel = <K extends string>(key: K, label: string, options: string[], optionLabels: string[], def: string): ControlOf<K> => ({ type: 'select', key, label, options, optionLabels, default: def });
+const tog = <K extends string>(key: K, label: string, def: boolean): ControlOf<K> => ({ type: 'toggle', key, label, default: def });
 
 type OptKey = keyof GeometryShapeConfig & string;
 const CURVE = int<OptKey>('curveSegments', 'Curve detail', 6, 160, 64);
@@ -61,7 +65,12 @@ export const SHAPE_CONTROLS: Record<ShapeName, ControlOf<OptKey>[]> = {
   arcPlane: [num('radius', 'Radius', 0.2, 3, 0.01, 1), num('width', 'Band width', 0.02, 1, 0.01, 0.2), ang('startAngle', 'Start angle', 0), ang('endAngle', 'End angle', Math.PI), int('segments', 'Segments', 3, 128, 32)],
   bentPlane: [num('radius', 'Radius', 0.2, 5, 0.01, 2), num('height', 'Height', 0.1, 3, 0.01, 1), ang('arc', 'Arc', Math.PI / 2), int('widthSegments', 'Width segments', 1, 64, 32), int('heightSegments', 'Height segments', 1, 64, 1)],
   bentPlaneInverse: [num('radius', 'Radius', 0.2, 5, 0.01, 2), num('height', 'Height', 0.1, 3, 0.01, 1), ang('arc', 'Arc', Math.PI / 2), int('widthSegments', 'Width segments', 1, 64, 32), int('heightSegments', 'Height segments', 1, 64, 1)],
-  text: [str('text', 'Text', 'Hello'), num('size', 'Size', 0.2, 3, 0.01, 1), num('height', 'Depth', 0.05, 1, 0.01, 0.2)],
+  // the string extruded into a solid from the packed outline fonts (the text looks' font list)
+  text: [
+    str('text', 'Text', 'Hello'), sel('font', 'Font', TEXT_FONTS.map((f) => f.id), TEXT_FONTS.map((f) => f.label), 'inter'),
+    num('size', 'Size', 0.2, 3, 0.01, 1), num('height', 'Depth', 0.02, 1, 0.01, 0.2), num('letterSpacing', 'Letter spacing', -0.1, 0.5, 0.005, 0),
+    tog('bevelEnabled', 'Bevel', true), num('bevelThickness', 'Bevel depth', 0, 0.1, 0.002, 0.02), num('bevelSize', 'Bevel size', 0, 0.1, 0.002, 0.015), int('bevelSegments', 'Bevel segments', 1, 8, 3),
+  ],
   point: [num('size', 'Size', 0.02, 0.5, 0.01, 0.1)],
   custom: [],
 };

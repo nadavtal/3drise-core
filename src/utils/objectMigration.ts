@@ -2,6 +2,7 @@ import type { CreatedObjectSettings } from '../types/scene3d';
 import { migrateSpaceObject } from './spaceMigration';
 import { migrateGridObject } from './gridMigration';
 import { migrateEnvironmentObject } from './environmentMigration';
+import { migrateTextObject } from './textMigration';
 
 /**
  * Every load-time migration of saved scene objects, in one pass. Each step is
@@ -10,5 +11,5 @@ import { migrateEnvironmentObject } from './environmentMigration';
  * whose saved shape changes adds its step here.
  */
 export function migrateObject<T extends CreatedObjectSettings>(obj: T): T {
-    return migrateEnvironmentObject(migrateGridObject(migrateSpaceObject(obj)));
+    return migrateTextObject(migrateEnvironmentObject(migrateGridObject(migrateSpaceObject(obj))));
 }

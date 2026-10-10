@@ -385,9 +385,6 @@ export const getType = (property: string, value: any): any => {
         return property === 'font';
         // && property.toLowerCase().includes('type');
     };
-    const isRenderMode = () => {
-        return property === 'renderMode';
-    };
     const isGeometry = () => {
         return property.toLowerCase().includes('geometry');
         // && property.toLowerCase().includes('type');
@@ -421,9 +418,6 @@ export const getType = (property: string, value: any): any => {
     }
     if (isAnchor(value)) {
         return "anchor";
-    }
-    if (isRenderMode()) {
-        return "renderMode";
     }
     if (isLayout()) {
         return "layout";

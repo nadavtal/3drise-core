@@ -28,7 +28,6 @@ export type * from './particles';
 
 export type * from './scene3d';
 
-export type * from './text';
 
 export type * from './actions';
 

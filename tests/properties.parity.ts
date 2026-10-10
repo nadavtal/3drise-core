@@ -22,7 +22,7 @@ import {
     LIGHT_PROPERTIES, SHADOW_PROPERTIES, PARTICLES_PROPERTIES, EFFECT_PROPERTIES, GRID_PROPERTIES,
     skyOptionalProperties, cloudDeckOptionalProperties, cirrusOptionalProperties,
     oceanSurfaceOptionalProperties, terrainOptionalProperties, rainOptionalProperties, cloudsOptionalProperties,
-    textOptionalProperties, plainOptionalProperties, pathOptionalProperties, edgesOptionalProperties,
+    plainOptionalProperties, pathOptionalProperties, edgesOptionalProperties,
     SHAPE_CONTROLS, MODE_CONTROLS,
     MATERIAL_PROPERTY_BOUNDS,
     type OptionalProperty, type PropertySpec, type PropertyElement,
@@ -94,8 +94,8 @@ for (const [t, domain, rows, legacy] of [['rain', 'rain', rainOptionalProperties
     rowsMatch(`${t} object`, 'object', obj, rows as OptionalProperty[], 'config.');
 }
 
-// Text / plain / mesh: controller rows, nothing animatable through config
-for (const [t, rows] of [['text', textOptionalProperties], ['plain', plainOptionalProperties], ['path', pathOptionalProperties]] as const) {
+// Plain / path: controller rows, nothing animatable through config
+for (const [t, rows] of [['plain', plainOptionalProperties], ['path', pathOptionalProperties]] as const) {
     const obj = { id: 'x', type: t, meshSettings: {}, config: {} };
     rowsMatch(`${t} object`, 'object', obj, rows, 'config.');
     check(`${t} object: no animatable config`, () => assert.deepEqual(names(getAnimatableSpecs('object', obj), 'config.'), []));
@@ -177,14 +177,16 @@ check('self-managed material: light / particles / effect / grid / environment / 
     }
 });
 
-check('text: a look draws its own material, the legacy 2d / 3d text keeps it', () => {
+check('text: every look draws its own material; mesh text takes one', () => {
     for (const look of Object.keys(DEFAULT_TEXT_OBJECTS)) {
         const obj = { id: 'x', type: 'text', meshSettings: {}, materialSettings: SAMPLE_MATERIALS.standard, config: { ...(DEFAULT_TEXT_OBJECTS as any)[look] } };
         assert.equal(getPropertySpecs('object', obj).filter(s => s.domain === 'material').length, 0, look);
     }
-    const legacy = { id: 'x', type: 'text', meshSettings: {}, materialSettings: SAMPLE_MATERIALS.standard, config: { text: 'Hello', renderMode: 'bitmap' } };
-    assert.ok(getPropertySpecs('object', legacy).some(s => s.domain === 'material'), 'legacy text keeps its material');
-    assert.ok(!getPropertySpecs('object', legacy).some(s => s.domain === 'text'), 'legacy text is not in the text family');
+    const mesh = { id: 'x', type: 'mesh', meshSettings: {}, materialSettings: SAMPLE_MATERIALS.standard, config: { type: 'text', text: 'Hello', font: 'inter' } };
+    const specs = getPropertySpecs('object', mesh);
+    assert.ok(specs.some(s => s.domain === 'material'), 'mesh text keeps its material');
+    assert.ok(specs.some(s => s.key === 'config.font' && s.options?.some(o => o.value === 'inter')), 'mesh text lists the fonts');
+    assert.ok(!specs.some(s => s.domain === 'text'), 'mesh text is not in the text family');
 });
 
 check('getAnimatableProperties(transform): the three vectors', () => {

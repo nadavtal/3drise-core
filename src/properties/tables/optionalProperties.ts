@@ -34,6 +34,7 @@ export const skyOptionalProperties: OptionalProperty[] = [
 // The sky's built-in stars (SkyStars): keyed under `stars.` on SkySettings. count and
 // milkyWay rebuild the dome, so they are structural; the rest are uniforms.
 export const skyStarsOptionalProperties: OptionalProperty[] = [
+    { name: 'visible', label: 'Visible', description: 'Show the night sky. With a sky on they come out after dark; with no sky they are a stand-alone layer', type: 'boolean', animatable: false, default: true },
     { name: 'brightness', label: 'Brightness', description: 'How bright the stars are once it is dark', type: 'number', min: 0, max: 4, step: 0.05, default: 1 },
     { name: 'count', label: 'Count', description: 'How many stars fill the sky', type: 'number', min: 500, max: 20000, step: 100, animatable: false, default: 4000 },
     { name: 'size', label: 'Size', description: 'Size of the star points', type: 'number', min: 0.3, max: 3, step: 0.05, default: 1 },

@@ -5,6 +5,7 @@
 //   getPropertySpecs(element, settings)    every property that applies to this element
 //   getAnimatableSpecs(element, settings)  the ones that can be driven per frame right now
 //   getTrackSpecs(element, settings)       the ones an animation clip keys (timeline, AI)
+//   getDiscreteTrackSpecs(element, settings) structural ones a clip sets at its keys
 //   getPropertySpec(element, settings, key)
 //   describeProperties(element, settings)  specs + current values (scene analysis, AI)
 //   isPropertyLive(element, spec, settings) its layer is on (edges, cloud deck / cirrus)
@@ -21,7 +22,7 @@
 //   environment      ENVIRONMENT_PROPERTIES[type]; animatable = ENVIRONMENT_OBJECTS_ANIMATABLE (snow, rain…)
 //   land             LAND_PROPERTIES[type];       animatable = LAND_OBJECTS_ANIMATABLE (mountains, hills, dunes, canyon)
 //   space            SPACE_PROPERTIES[type];      animatable = SPACE_OBJECTS_ANIMATABLE (stars, earth, solarSystem, shootingStars)
-//   text             TEXT_PROPERTIES[type];       animatable = TEXT_OBJECTS_ANIMATABLE (handwriting, neonTube, fourierSketch; the legacy 2d / 3d text has no config.type)
+//   text             TEXT_PROPERTIES[type];       animatable = TEXT_OBJECTS_ANIMATABLE (plain, handwriting, neonTube, …)
 //   rain / clouds    the scene-level rain element (RainSettings) / legacy clouds object;  animatable = RAIN_ANIMATABLE_KEYS / CLOUD_ANIMATABLE_PROPERTIES
 //   text/plain/path  their controller lists (config knobs, structural)
 //   mesh (shapes)    SHAPE_CONTROLS[config.type] + MODE_CONTROLS[modeConfig.mode] (structural)
@@ -50,14 +51,14 @@ import { GRIDS_ANIMATABLE } from '../data/gridsDefaults';
 import { ENVIRONMENT_OBJECTS_ANIMATABLE } from '../data/environmentDefaults';
 import { LAND_OBJECTS_ANIMATABLE } from '../data/landDefaults';
 import { SPACE_OBJECTS_ANIMATABLE } from '../data/spaceDefaults';
-import { TEXT_OBJECTS_ANIMATABLE, isTextObjectConfig } from '../data/textDefaults';
+import { TEXT_OBJECTS_ANIMATABLE } from '../data/textDefaults';
 import { CLOUD_ANIMATABLE_PROPERTIES } from '../environment/cloudConfigs';
 import {
     type OptionalProperty,
-    skyOptionalProperties, skyStarsOptionalProperties, cloudDeckOptionalProperties, cirrusOptionalProperties,
+    skyOptionalProperties, skyStarsOptionalProperties, cloudDeckOptionalProperties, cirrusOptionalProperties, thunderOptionalProperties,
     oceanSurfaceOptionalProperties, terrainOptionalProperties,
     rainOptionalProperties, cloudsOptionalProperties,
-    textOptionalProperties, plainOptionalProperties,
+    plainOptionalProperties,
     pathOptionalProperties, edgesOptionalProperties,
 } from './tables/optionalProperties';
 import { SHAPE_CONTROLS, MODE_CONTROLS, type ControlOf } from './tables/geometryProperties';
@@ -93,15 +94,11 @@ const MATERIAL_STRUCTURAL = new Set([
  * Objects that own their shader: their materialSettings (if any) never reach the
  * renderer, so they have no material properties. They animate through config.
  */
-export const SELF_MANAGED_MATERIAL_TYPES = new Set(['effect', 'grid', 'light', 'particles', 'environment', 'space', 'land']);
+export const SELF_MANAGED_MATERIAL_TYPES = new Set(['effect', 'grid', 'light', 'particles', 'environment', 'space', 'land', 'text']);
 
-/**
- * True when the object draws with its own shaders: a whole object type from the set above, or a text look.
- * Object type 'text' also hosts the legacy bitmap / 3D text, which keeps its material, so text is decided per
- * object (config.type), not by type. Use this, never the set alone, wherever the material panel is decided.
- */
+/** True when the object draws with its own shaders (the object types above): it gets no material specs. */
 export const selfManagesMaterial = (obj: { type?: string; config?: unknown } | null | undefined): boolean =>
-    !!obj && (SELF_MANAGED_MATERIAL_TYPES.has(obj.type as string) || (obj.type === 'text' && isTextObjectConfig(obj.config)));
+    !!obj && SELF_MANAGED_MATERIAL_TYPES.has(obj.type as string);
 
 const CAMERA_SPECS: PropertySpec[] = [
     { key: 'position', name: 'position', label: 'Position', kind: 'vec3', domain: 'camera', animatable: true },
@@ -254,6 +251,7 @@ function controlSpecs(controls: ControlOf<string>[] | undefined, prefix: string,
             animatable: false,
             default: c.default,
         };
+        if (c.type === 'select') spec.options = c.options.map((value, i) => (c.optionLabels?.[i] ? { value, label: c.optionLabels[i] } : { value }));
         if (c.type === 'range') {
             spec.min = c.min;
             spec.max = c.max;
@@ -316,7 +314,7 @@ function familyOf(obj: any): Family | null {
         if (type === 'space' && (SPACE_OBJECTS_ANIMATABLE as Record<string, unknown>)[t]) return space();
         // Land objects only under their own object type: their keys are landform names ('hills'…).
         if (type === 'land' && (LAND_OBJECTS_ANIMATABLE as Record<string, unknown>)[t]) return land();
-        // Text looks only under the text object type, and only with a config.type: the legacy 2d / 3d text (no config.type) falls through to its own list below.
+        // Text looks only under the text object type (plain, handwriting, …).
         if (type === 'text' && (TEXT_OBJECTS_ANIMATABLE as Record<string, unknown>)[t]) return text();
         if (t === 'rain') return { domain: 'rain', list: rainOptionalProperties, animatable: new Map(RAIN_ANIMATABLE_KEYS.map(k => [k, propertyLabel(k)])) };
         if (t === 'clouds') return { domain: 'clouds', list: cloudsOptionalProperties, animatable: new Map(CLOUD_ANIMATABLE_PROPERTIES.map(k => [k, propertyLabel(k)])) };
@@ -326,7 +324,6 @@ function familyOf(obj: any): Family | null {
         if (GRIDS_ANIMATABLE[t]) return grid();
         if ((GENERATIVE_PARTICLES_ANIMATABLE as Record<string, unknown>)[t]) return particles();
     }
-    if (type === 'text') return { domain: 'config', list: textOptionalProperties, animatable: null };
     if (type === 'plain') return { domain: 'config', list: plainOptionalProperties, animatable: null };
     if (type === 'path') return { domain: 'config', list: pathOptionalProperties, animatable: null };
     return null;
@@ -355,6 +352,15 @@ function configSpecs(obj: any): PropertySpec[] {
         if (seen.has(name)) continue;
         const kind = kindOfValue(name, obj?.config?.[name]) ?? 'number';
         out.push({ key: `${prefix}${name}`, name, label: label || propertyLabel(name), kind, domain, animatable: true });
+    }
+    // Text's draw / erase trigger (config.shown: on plays the draw animation, off the erase).
+    // Its controller shows it as the Shown button; the per-look tables don't list it.
+    if (domain === 'text' && !seen.has('shown')) {
+        out.push({
+            key: `${prefix}shown`, name: 'shown', label: 'Shown',
+            description: 'The draw / erase trigger: switching it on plays the draw animation, off plays the erase animation (the text then stays hidden)',
+            kind: 'boolean', domain, animatable: false, default: true,
+        });
     }
     if (domain === 'light') {
         for (const p of (SHADOW_PROPERTIES as Record<string, OptionalProperty[]>)[obj.config.type] ?? []) {
@@ -390,6 +396,7 @@ function environmentSpecs(element: Exclude<PropertyElement, 'object' | 'camera'>
             return [
                 ...envSpecs(cloudDeckOptionalProperties(settings?.config?.deckType), 'config.', 'clouds'),
                 ...envSpecs(cirrusOptionalProperties, 'cirrus.', 'cirrus'),
+                ...envSpecs(thunderOptionalProperties, 'thunder.', 'thunder'),
             ];
         case 'ocean':
             return envSpecs(oceanSurfaceOptionalProperties(settings?.config?.waterType, settings?.config?.host), 'config.', 'ocean');
@@ -417,7 +424,12 @@ export function getPropertySpecs(element: PropertyElement, settings: any): Prope
  */
 export function isPropertyLive(element: PropertyElement, spec: PropertySpec, settings: any): boolean {
     if (spec.domain === 'edges') return settings?.edgesSettings?.enabled !== false;
-    if (element === 'clouds') return spec.domain === 'cirrus' ? !!settings?.cirrus?.enabled : !!settings?.config?.enabled;
+    if (element === 'clouds') {
+        if (spec.domain === 'cirrus') return !!settings?.cirrus?.enabled;
+        // Lightning needs cloud to strike in: the deck, and the thunder block itself.
+        if (spec.domain === 'thunder') return !!settings?.config?.enabled && (spec.name === 'enabled' || !!settings?.thunder?.enabled);
+        return !!settings?.config?.enabled;
+    }
     if (spec.domain === 'stars') return settings?.stars?.visible !== false;
     return true;
 }
@@ -440,6 +452,33 @@ export function getTrackSpecs(element: PropertyElement, settings: any): Property
     const specs = getAnimatableSpecs(element, settings);
     if (element !== 'object') return specs;
     return specs.filter(s => s.domain === 'transform' || s.domain === 'material' || s.domain === 'edges' || TRACK_CONFIG_DOMAINS.has(s.domain));
+}
+
+/**
+ * Text settings that configure HOW it draws / erases / replays — read only when a draw or
+ * erase starts, so keying them changes nothing you'd see. The timeline drives text with
+ * Shown (config.enabled) instead; these stay panel settings.
+ */
+const TEXT_LIFECYCLE = new Set([
+    'drawMethod', 'drawDuration', 'drawEase', 'drawStagger', 'drawAngle',
+    'eraseMethod', 'eraseDuration', 'eraseEase', 'eraseStagger', 'eraseAngle',
+    'autoPlay', 'loop', 'yoyo', 'holdTime', 'hiddenTime',
+]);
+
+/** Kinds a structural (discrete) track can hold: a key value the timeline can edit. */
+const DISCRETE_KINDS: ReadonlySet<PropertyKind> = new Set<PropertyKind>(['number', 'boolean', 'string', 'select', 'color', 'vec3', 'vec2']);
+
+/**
+ * Structural properties a clip can key as DISCRETE tracks (timeline): not writable per
+ * frame, so the clip sets them at its keys — the runtime lays the values at the playhead
+ * over the element's settings through the SceneActions patch layer, like an action, and
+ * the element re-renders. Every domain qualifies (it goes through the settings path, not
+ * a live handle); textures don't (no key editor for them). Not filtered by
+ * isPropertyLive: the switch that turns a layer on is itself one of these.
+ */
+export function getDiscreteTrackSpecs(element: PropertyElement, settings: any): PropertySpec[] {
+    return getPropertySpecs(element, settings).filter(s =>
+        !s.animatable && DISCRETE_KINDS.has(s.kind) && !(s.domain === 'text' && TEXT_LIFECYCLE.has(s.name)));
 }
 
 export function getPropertySpec(element: PropertyElement, settings: any, key: string): PropertySpec | undefined {

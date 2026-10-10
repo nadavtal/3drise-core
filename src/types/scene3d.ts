@@ -4,7 +4,6 @@ import { Object3D } from "three";
 import type { ParticledConfig } from "./particles";
 import type { OperationTypes } from "./actions";
 import type { RigidBodyTypeString } from "@react-three/rapier";
-import type { TextConfig } from "./text";
 import type { EffectTriggerMode } from "./effects";
 import type { PathConfig } from "./animations";
 import type { LightObjectConfig } from "./lights";
@@ -203,6 +202,10 @@ export interface GeometryShapeConfig {
     tube?: number;
     size?: number;
     text?: string;
+    /** text shape: packed outline font id, extra letter advance (em) */
+    font?: string;
+    letterSpacing?: number;
+    bevelEnabled?: boolean;
     vertices?: number[];
     indices?: number[];
     normals?: number[];

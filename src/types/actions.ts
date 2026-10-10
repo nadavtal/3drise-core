@@ -66,7 +66,6 @@ export interface ActionSequence {
      * command on apply and stop on revert. Patches are applied first.
      */
     commands: SceneCommand[];
-    assetId?: string | null;
     /** Runtime only */
     isDirty?: boolean;
 }
