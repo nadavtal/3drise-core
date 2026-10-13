@@ -544,50 +544,53 @@ export interface TerrainPropertySchema {
     description: string;
     advanced?: boolean;
     /** false = structural: set only (controllers, action patches), never driven per
-     *  frame (timeline, mouse-move, AI clips). Absent = numbers / colours animate. */
+     *  frame (timeline, mouse-move, AI clips) — the integer counts (octaves, strata).
+     *  Absent = numbers / colours animate: every shape and surface knob is a uniform
+     *  read by the vertex / fragment shader each frame, so a clip can grow a mountain
+     *  or move the sea level smoothly. */
     animatable?: boolean;
     /** Only show for these terrain types. Absent means all. */
     types?: TerrainType[];
 }
 
 export const TERRAIN_SCHEMA: TerrainPropertySchema[] = [
-    { key: 'elevation', animatable: false, label: 'Elevation', group: 'form', min: 5, max: 6000, step: 5, unit: 'm', description: 'Peak height above sea level. Every height-keyed splat threshold is a fraction of this, so raising it does not move the snow line.' },
-    { key: 'seaLevel', animatable: false, label: 'Sea level', group: 'form', min: -2000, max: 2000, step: 5, unit: 'm', description: 'World Y the terrain is built around — where flat ground sits, and where a placed object meets it.' },
-    { key: 'featureSize', animatable: false, label: 'Feature size', group: 'form', min: 200, max: 40000, step: 50, unit: 'm', description: 'Horizontal size of the primary landform. The one knob that decides whether this reads as a mountain range or a gravel pile.' },
+    { key: 'elevation', label: 'Elevation', group: 'form', min: 5, max: 6000, step: 5, unit: 'm', description: 'Peak height above sea level. Every height-keyed splat threshold is a fraction of this, so raising it does not move the snow line.' },
+    { key: 'seaLevel', label: 'Sea level', group: 'form', min: -2000, max: 2000, step: 5, unit: 'm', description: 'World Y the terrain is built around — where flat ground sits, and where a placed object meets it.' },
+    { key: 'featureSize', label: 'Feature size', group: 'form', min: 200, max: 40000, step: 50, unit: 'm', description: 'Horizontal size of the primary landform. The one knob that decides whether this reads as a mountain range or a gravel pile.' },
     { key: 'octaves', animatable: false, label: 'Octaves', group: 'form', min: 3, max: 12, step: 1, description: 'fBm detail levels. Past ~10 the extra octaves are finer than the closest clipmap cell and only cost; distant rings drop them automatically.' },
-    { key: 'lacunarity', animatable: false, label: 'Lacunarity', group: 'form', min: 1.7, max: 2.6, step: 0.01, advanced: true, description: 'Frequency step per octave. Slightly off 2.0 breaks the grid alignment that otherwise shows as a faint square lattice.' },
-    { key: 'gain', animatable: false, label: 'Gain', group: 'form', min: 0.25, max: 0.72, step: 0.005, description: 'Amplitude step per octave. Below 0.5 smooth and rolling, above it jagged and fractal.' },
-    { key: 'ridgeSharpness', animatable: false, label: 'Ridge sharpness', group: 'form', min: 0, max: 1, step: 0.005, description: '0 gives rounded billow hills, 1 knife ridges. The strongest single cue between a mountain and a dune field.' },
-    { key: 'warpStrength', animatable: false, label: 'Domain warp', group: 'form', min: 0, max: 1, step: 0.005, description: 'Bends ridge lines into curved, branching shapes. At 0 the silhouette reads as noise rather than landscape.' },
-    { key: 'warpSize', animatable: false, label: 'Warp size', group: 'form', min: 0.1, max: 2, step: 0.01, advanced: true, description: 'Scale of the warp field relative to feature size. Above ~1 it drifts the terrain instead of bending it.' },
-    { key: 'erosion', animatable: false, label: 'Erosion', group: 'form', min: 0, max: 1, step: 0.005, description: 'Damps octaves where slope is already steep — flattens valley floors, sharpens flanks. The cheapest approximation of erosion there is.' },
+    { key: 'lacunarity', label: 'Lacunarity', group: 'form', min: 1.7, max: 2.6, step: 0.01, advanced: true, description: 'Frequency step per octave. Slightly off 2.0 breaks the grid alignment that otherwise shows as a faint square lattice.' },
+    { key: 'gain', label: 'Gain', group: 'form', min: 0.25, max: 0.72, step: 0.005, description: 'Amplitude step per octave. Below 0.5 smooth and rolling, above it jagged and fractal.' },
+    { key: 'ridgeSharpness', label: 'Ridge sharpness', group: 'form', min: 0, max: 1, step: 0.005, description: '0 gives rounded billow hills, 1 knife ridges. The strongest single cue between a mountain and a dune field.' },
+    { key: 'warpStrength', label: 'Domain warp', group: 'form', min: 0, max: 1, step: 0.005, description: 'Bends ridge lines into curved, branching shapes. At 0 the silhouette reads as noise rather than landscape.' },
+    { key: 'warpSize', label: 'Warp size', group: 'form', min: 0.1, max: 2, step: 0.01, advanced: true, description: 'Scale of the warp field relative to feature size. Above ~1 it drifts the terrain instead of bending it.' },
+    { key: 'erosion', label: 'Erosion', group: 'form', min: 0, max: 1, step: 0.005, description: 'Damps octaves where slope is already steep — flattens valley floors, sharpens flanks. The cheapest approximation of erosion there is.' },
     { key: 'terraces', animatable: false, label: 'Strata', group: 'form', min: 0, max: 40, step: 1, types: ['canyon', 'mountains'], description: 'Sedimentary banding step count. 0 is off. Most of what makes a mesa read as a mesa.' },
-    { key: 'terraceSharpness', animatable: false, label: 'Strata hardness', group: 'form', min: 0, max: 1, step: 0.01, types: ['canyon', 'mountains'], description: '0 is a smooth ramp between bands, 1 a near-vertical riser.' },
-    { key: 'plateau', animatable: false, label: 'Plateau', group: 'form', min: 0, max: 1, step: 0.005, types: ['canyon'], description: 'Fraction of the height range flattened into mesa tops.' },
-    { key: 'valleyDepth', animatable: false, label: 'Incision depth', group: 'form', min: 0, max: 1.5, step: 0.005, types: ['canyon'], description: 'Depth of the carved channel network as a fraction of elevation. At 0 the mesas have nothing between them.' },
-    { key: 'valleyWidth', animatable: false, label: 'Incision width', group: 'form', min: 0.03, max: 1, step: 0.005, types: ['canyon'], description: 'Narrow cuts slot canyons; wide ones cut broad washes.' },
-    { key: 'bearing', animatable: false, label: 'Wind bearing', group: 'form', min: 0, max: 360, step: 1, unit: 'deg', types: ['dunes'], description: 'Dunes are transverse to the wind, so this rotates the whole crest train.' },
-    { key: 'duneWavelength', animatable: false, label: 'Dune wavelength', group: 'form', min: 40, max: 2000, step: 5, unit: 'm', types: ['dunes'], description: 'Crest-to-crest distance of the dune train.' },
-    { key: 'duneAsymmetry', animatable: false, label: 'Slip face', group: 'form', min: 0, max: 1, step: 0.005, types: ['dunes'], description: 'Lee-slope steepening. At 0 the dunes are sine waves; real ones have a long windward ramp and a short face at the angle of repose.' },
+    { key: 'terraceSharpness', label: 'Strata hardness', group: 'form', min: 0, max: 1, step: 0.01, types: ['canyon', 'mountains'], description: '0 is a smooth ramp between bands, 1 a near-vertical riser.' },
+    { key: 'plateau', label: 'Plateau', group: 'form', min: 0, max: 1, step: 0.005, types: ['canyon'], description: 'Fraction of the height range flattened into mesa tops.' },
+    { key: 'valleyDepth', label: 'Incision depth', group: 'form', min: 0, max: 1.5, step: 0.005, types: ['canyon'], description: 'Depth of the carved channel network as a fraction of elevation. At 0 the mesas have nothing between them.' },
+    { key: 'valleyWidth', label: 'Incision width', group: 'form', min: 0.03, max: 1, step: 0.005, types: ['canyon'], description: 'Narrow cuts slot canyons; wide ones cut broad washes.' },
+    { key: 'bearing', label: 'Wind bearing', group: 'form', min: 0, max: 360, step: 1, unit: 'deg', types: ['dunes'], description: 'Dunes are transverse to the wind, so this rotates the whole crest train.' },
+    { key: 'duneWavelength', label: 'Dune wavelength', group: 'form', min: 40, max: 2000, step: 5, unit: 'm', types: ['dunes'], description: 'Crest-to-crest distance of the dune train.' },
+    { key: 'duneAsymmetry', label: 'Slip face', group: 'form', min: 0, max: 1, step: 0.005, types: ['dunes'], description: 'Lee-slope steepening. At 0 the dunes are sine waves; real ones have a long windward ramp and a short face at the angle of repose.' },
 
-    { key: 'slopeRockStart', animatable: false, label: 'Rock from slope', group: 'surface', min: 0, max: 1, step: 0.005, description: 'Slope at which rock starts showing through. Splatting rock by slope rather than height is what makes a cliff read as a cliff at any altitude.' },
-    { key: 'slopeRockEnd', animatable: false, label: 'Bare rock at slope', group: 'surface', min: 0, max: 1, step: 0.005, description: 'Slope at which the surface is fully bare rock.' },
-    { key: 'peakLevel', animatable: false, label: 'Peak line', group: 'surface', min: 0, max: 1, step: 0.005, description: 'Height fraction where the peak layer (snow, salt, bleached stone) begins.' },
-    { key: 'peakBlend', animatable: false, label: 'Peak blend', group: 'surface', min: 0.01, max: 0.5, step: 0.005, description: 'Width of that transition. A hard line is physically right for temperature but reads as a decal.' },
-    { key: 'peakSlopeFalloff', animatable: false, label: 'Peak slope falloff', group: 'surface', min: 0, max: 3, step: 0.01, description: 'Peak coverage lost per unit slope. Snow does not sit on a vertical face; without this a summit looks dipped in paint.' },
-    { key: 'macroVariation', animatable: false, label: 'Macro variation', group: 'surface', min: 0, max: 1, step: 0.005, description: 'Large-scale albedo break-up. Without it a splat layer is one flat colour across kilometres and reads as untextured.' },
-    { key: 'macroSize', animatable: false, label: 'Macro size', group: 'surface', min: 200, max: 12000, step: 50, unit: 'm', description: 'Size of that variation.' },
-    { key: 'detailStrength', animatable: false, label: 'Detail bump', group: 'surface', min: 0, max: 1.5, step: 0.005, description: 'High-frequency normal detail added per fragment — bumps far below the mesh resolution.' },
-    { key: 'detailSize', animatable: false, label: 'Detail size', group: 'surface', min: 0.5, max: 60, step: 0.25, unit: 'm', description: 'Size of that detail. Below about a metre it aliases before it fades.' },
+    { key: 'slopeRockStart', label: 'Rock from slope', group: 'surface', min: 0, max: 1, step: 0.005, description: 'Slope at which rock starts showing through. Splatting rock by slope rather than height is what makes a cliff read as a cliff at any altitude.' },
+    { key: 'slopeRockEnd', label: 'Bare rock at slope', group: 'surface', min: 0, max: 1, step: 0.005, description: 'Slope at which the surface is fully bare rock.' },
+    { key: 'peakLevel', label: 'Peak line', group: 'surface', min: 0, max: 1, step: 0.005, description: 'Height fraction where the peak layer (snow, salt, bleached stone) begins.' },
+    { key: 'peakBlend', label: 'Peak blend', group: 'surface', min: 0.01, max: 0.5, step: 0.005, description: 'Width of that transition. A hard line is physically right for temperature but reads as a decal.' },
+    { key: 'peakSlopeFalloff', label: 'Peak slope falloff', group: 'surface', min: 0, max: 3, step: 0.01, description: 'Peak coverage lost per unit slope. Snow does not sit on a vertical face; without this a summit looks dipped in paint.' },
+    { key: 'macroVariation', label: 'Macro variation', group: 'surface', min: 0, max: 1, step: 0.005, description: 'Large-scale albedo break-up. Without it a splat layer is one flat colour across kilometres and reads as untextured.' },
+    { key: 'macroSize', label: 'Macro size', group: 'surface', min: 200, max: 12000, step: 50, unit: 'm', description: 'Size of that variation.' },
+    { key: 'detailStrength', label: 'Detail bump', group: 'surface', min: 0, max: 1.5, step: 0.005, description: 'High-frequency normal detail added per fragment — bumps far below the mesh resolution.' },
+    { key: 'detailSize', label: 'Detail size', group: 'surface', min: 0.5, max: 60, step: 0.25, unit: 'm', description: 'Size of that detail. Below about a metre it aliases before it fades.' },
     { key: 'roughness', label: 'Roughness', group: 'surface', min: 0.05, max: 1, step: 0.005, description: 'Widens the specular lobe. Rock is nearly matte; wet sand and snow are not.' },
     { key: 'specular', label: 'Specular', group: 'surface', min: 0, max: 1, step: 0.005, description: 'Specular strength. The grazing sheen on sand at low sun comes from here.' },
-    { key: 'textureDistance', animatable: false, label: 'Texture distance', group: 'surface', min: 100, max: 12000, step: 50, unit: 'm', description: 'How far out the ground is drawn with real textures. Past it every layer fades to its flat far colour, so the horizon costs nothing extra.' },
-    { key: 'textureHeightBlend', animatable: false, label: 'Texture height blend', group: 'surface', min: 0, max: 1, step: 0.01, description: '0 cross-fades the layers; 1 lets the layer whose own surface is higher win, so rock pushes up through grass along its cracks.' },
+    { key: 'textureDistance', label: 'Texture distance', group: 'surface', min: 100, max: 12000, step: 50, unit: 'm', description: 'How far out the ground is drawn with real textures. Past it every layer fades to its flat far colour, so the horizon costs nothing extra.' },
+    { key: 'textureHeightBlend', label: 'Texture height blend', group: 'surface', min: 0, max: 1, step: 0.01, description: '0 cross-fades the layers; 1 lets the layer whose own surface is higher win, so rock pushes up through grass along its cracks.' },
 
     { key: 'ambient', label: 'Ambient', group: 'lighting', min: 0, max: 3, step: 0.01, description: 'Sky-dome fill, taken from the same atmosphere the sky and clouds use, so it darkens and warms as the sun sets instead of freezing.' },
     { key: 'bounce', label: 'Ground bounce', group: 'lighting', min: 0, max: 2, step: 0.01, description: 'Fill on downward-facing surfaces, tinted by the low colour. Keeps overhangs and north faces off pure black.' },
     { key: 'sunShadow', label: 'Self shadow', group: 'lighting', min: 0, max: 1, step: 0.01, description: 'Strength of the analytic shadow marched down the sun vector. This is what puts a mountain shadow in its own valley, with no shadow-map resolution to run out of.' },
-    { key: 'shadowSoftness', animatable: false, label: 'Shadow softness', group: 'lighting', min: 1, max: 60, step: 0.5, description: 'Penumbra width of that shadow. Larger reads as a hazier day.' },
+    { key: 'shadowSoftness', label: 'Shadow softness', group: 'lighting', min: 1, max: 60, step: 0.5, description: 'Penumbra width of that shadow. Larger reads as a hazier day.' },
     { key: 'aerialPerspective', label: 'Aerial perspective', group: 'lighting', min: 0, max: 0.0004, step: 0.000002, unit: '1/m', description: 'Rate distant terrain fades into the sky behind it. The main cue for how large the landscape reads, and what makes the horizon a horizon rather than a cut-out.' },
 ];
 

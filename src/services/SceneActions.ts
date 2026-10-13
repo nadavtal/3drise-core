@@ -108,6 +108,13 @@ class SceneActions {
         return Array.from(this.applied.keys());
     }
 
+    /** Every stack entry per element (actions and layers), bottom to top — diagnostics. */
+    inspect(): Record<string, Array<{ owner: string; patch: SettingsPatch }>> {
+        const out: Record<string, Array<{ owner: string; patch: SettingsPatch }>> = {};
+        for (const [state, stack] of this.stacks) out[state] = stack.map(e => ({ owner: e.actionId, patch: e.patch }));
+        return out;
+    }
+
     /**
      * Set a layer's patches (state -> patch), replacing what it set before; null or {}
      * removes it. A no-op when nothing changed, so it can be called every frame. A
@@ -127,6 +134,27 @@ class SceneActions {
         }
         if (json) this.layers.set(layerId, json); else this.layers.delete(layerId);
         this.commit(touched);
+    }
+
+    /**
+     * Who else sets the same settings on `state` as `patch` (shared or nested leaf paths):
+     * action ids, and `layer:<id>` for layers. For clash reports — nothing is resolved.
+     */
+    overlaps(state: string, patch: SettingsPatch, exceptOwner?: string): string[] {
+        const mine = leafPaths(patch);
+        if (!mine.length) return [];
+        const out: string[] = [];
+        for (const e of this.stacks.get(state) ?? []) {
+            if (e.actionId === exceptOwner || out.includes(e.actionId)) continue;
+            const theirs = leafPaths(e.patch);
+            if (mine.some(a => theirs.some(b => a === b || a.startsWith(`${b}.`) || b.startsWith(`${a}.`)))) out.push(e.actionId);
+        }
+        return out;
+    }
+
+    /** True while a layer has patches on (setLayer with something). */
+    hasLayer(layerId: string): boolean {
+        return this.layers.has(layerId);
     }
 
     /** Drop every patch (project load, "reset" in the editor). */
@@ -200,6 +228,12 @@ class SceneActions {
             try { l(event); } catch (err) { console.error('[SceneActions] event listener failed', err); }
         });
     }
+}
+
+/** 'materialSettings.color', 'config.nodeOverrides.Door.rotation' — arrays are leaves. */
+function leafPaths(patch: any, prefix = ''): string[] {
+    if (!patch || typeof patch !== 'object' || Array.isArray(patch)) return prefix ? [prefix] : [];
+    return Object.entries(patch).flatMap(([k, v]) => leafPaths(v, prefix ? `${prefix}.${k}` : k));
 }
 
 const sceneActions = new SceneActions();

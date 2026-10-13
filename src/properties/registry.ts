@@ -83,10 +83,11 @@ import type {
 export const RAIN_ANIMATABLE_KEYS = ['color', 'size', 'opacity', 'speed', 'windStrength', 'windDirection', 'turbulence'] as const;
 
 /** Material keys that are engine bookkeeping, never a property. */
-const MATERIAL_INTERNAL = new Set(['handlers', 'apply', 'uHasTexture', 'u_time', 'u_mouse', 'u_resolution']);
-/** Material keys that are settable but never per frame (identity, render state). */
+const MATERIAL_INTERNAL = new Set(['handlers', 'uHasTexture', 'u_time', 'u_mouse', 'u_resolution']);
+/** Material keys that are settable but never per frame (identity, render state). `apply`: whether the
+ *  3drise material is applied at all (off = a model keeps its own GLB materials) — a switch like the rest. */
 const MATERIAL_STRUCTURAL = new Set([
-    'materialType', 'materialVariant', 'materialName', 'name', 'side', 'visible', 'map',
+    'apply', 'materialType', 'materialVariant', 'materialName', 'name', 'side', 'visible', 'map',
     'wireframe', 'transparent', 'flatShading',
 ]);
 

@@ -527,6 +527,12 @@ export interface CanvasConfig {
     };
 }
 
+/** A scene object the orbit controls follow: the object's id, optionally one of its model parts (node name). */
+export interface OrbitTargetObject {
+    id: string;
+    node?: string;
+}
+
 export interface ControlsConfig {
     enabled?: boolean;
     enableZoom?: boolean;
@@ -534,7 +540,28 @@ export interface ControlsConfig {
     enableRotate?: boolean;
     autoRotate?: boolean;
     autoRotateSpeed?: number;
+    /** The fixed point the camera orbits around (used when no `targetObject` is set). */
     target: Vector3Array;
+    /**
+     * Orbit around (look at) a scene object, or one of a model's parts, instead of the
+     * fixed point. The orbit point tracks the object's centre every frame; the camera
+     * position is not moved by it — only where the camera looks.
+     */
+    targetObject?: OrbitTargetObject | null;
+    /**
+     * The camera travels with this object: every frame the camera (and the orbit point)
+     * moves by as much as the object moved, keeping the distance and angle.
+     * Edited in the camera's General tab; kept in `controls` because it is saved with them.
+     */
+    followObject?: OrbitTargetObject | null;
+    /**
+     * World-space camera height limits (metres, world Y) — not relative to the target.
+     * Applied last every frame, after the user, orbit targets, Follow and animations,
+     * so e.g. `minHeight: 1` keeps the camera above the sea whatever moves it.
+     * null / missing = no limit.
+     */
+    minHeight?: number | null;
+    maxHeight?: number | null;
     zoomSpeed?: number;
     panSpeed?: number;
     rotateSpeed?: number;

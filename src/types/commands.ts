@@ -7,6 +7,7 @@
 // See the project doc claude/triggers-engine-plan.md.
 //
 import type { EffectClipUse, OperationEffect } from './objectSettings';
+import type { ActionTarget } from './actions';
 
 /** Switch something on / off: an action, an effect clip, a held effect. */
 export type SceneStateCommand = 'apply' | 'revert' | 'toggle';
@@ -26,6 +27,12 @@ export type SceneCommand =
     | { id: string; kind: 'effectClip'; use: EffectClipUse; command: SceneStateCommand }
     /** `ref`: ActionSequence id. */
     | { id: string; kind: 'action'; ref: string; command: SceneStateCommand }
+    /**
+     * An inline change: an action's `targets` (element + settings patch) without the action —
+     * no name, key or listing. On = the patches are laid over the elements (a silent
+     * SceneActions layer `change:<id>`), off = removed. A timeline's Change cue.
+     */
+    | { id: string; kind: 'change'; targets: ActionTarget[]; label?: string; command: SceneStateCommand }
     /** `ref`: AnimationClip id. */
     | { id: string; kind: 'animationClip'; ref: string; command: ScenePlaybackCommand; options?: ScenePlayOptions }
     /** `ref`: AnimationSequence id. */

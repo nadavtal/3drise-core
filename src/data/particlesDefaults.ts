@@ -15,6 +15,7 @@ export const DEFAULT_GENERATIVE_PARTICLES: Record<GenerativeParticlesType, Gener
     magneticBottle: { type: 'magneticBottle', enabled: true, intensity: 1, speed: 1, opacity: 0.9, size: 1, color: '#5fd6ff', particleCount: 48, shape: { type: 'cone', radius: 0.5, height: 1, radialSegments: 32 }, windings: 0.6, pitchSpread: 0.3, lineLife: 6, lineDensity: 1, counterColor: '#ff6fb3', glow: 1, seed: 1, quality: 'medium', pointerMode: 'drift', pointerStrength: 1, pointerRadius: 1, pointerColor: '#fff0c8', trailMode: 'comet', trailLength: 0.8, trailOpacity: 0.8, trailColor: '#8f7bff', trailShare: 1 },
     shapeBurst: { type: 'shapeBurst', enabled: true, intensity: 1, speed: 1, opacity: 0.9, size: 1, color: '#45d1ff', particleCount: 180, shape: { type: 'icosahedron', radius: 0.5, detail: 0 }, interval: 2.8, formSpeed: 2.4, fieldStrength: 1, holdTime: 1.2, dissolve: 0.3, counterColor: '#ff5aa8', heatColor: '#fff6e0', headSize: 1.4, seed: 1, quality: 'medium', pointerMode: 'detonate', pointerStrength: 1, pointerRadius: 1, pointerColor: '#ffffff', trailMode: 'comet', trailLength: 0.4, trailOpacity: 0.8, trailColor: '#6a5cff', trailShare: 0.5 },
     shapeFlow: { type: 'shapeFlow', enabled: true, intensity: 1, speed: 1, opacity: 0.9, size: 1, color: '#3f7bff', particleCount: 2400, shape: { type: 'sphere', radius: 0.5, segments: 32, rings: 32 }, flowSpeed: 1, windPitch: 0, rake: 'sheet', lanes: 44, streamWidth: 0.85, turbulence: 0.9, fastColor: '#ff6a3d', headSize: 1, seed: 1, quality: 'medium', pointerMode: 'obstacle', pointerStrength: 1, pointerRadius: 1, pointerColor: '#ffffff', trailMode: 'comet', trailLength: 1.2, trailOpacity: 0.7, trailColor: '#1b2a6b', trailShare: 1 },
+    fireworks: { type: 'fireworks', enabled: true, intensity: 1, speed: 1, opacity: 1, size: 1, color: '#ff3b30', secondColor: '#43e86b', accentColor: '#3f7dff', sparkColor: '#ffc27a', particleCount: 14000, shellType: 'mix', launchRate: 1, burstSize: 1, burstHeight: 1, burnTime: 1, spread: 1, wind: 0.15, smoke: 0.6, randomFire: true, fireOnClick: false, formation: 'none', formationCount: 9, formationSize: 1, textMode: 'letters', text: 'HAPPY NEW YEAR', textSize: 1, seed: 1, quality: 'medium', pointerMode: 'aim', pointerStrength: 1, pointerRadius: 1, pointerColor: '#fff1c9', trailMode: 'comet', trailLength: 1.2, trailOpacity: 0.7, trailColor: '#ffae6b', trailShare: 1 },
 };
 
 export const GENERATIVE_PARTICLES_LABELS: Record<GenerativeParticlesType, string> = {
@@ -29,6 +30,7 @@ export const GENERATIVE_PARTICLES_LABELS: Record<GenerativeParticlesType, string
     magneticBottle: 'Magnetic Bottle',
     shapeBurst: 'Shape Burst',
     shapeFlow: 'Shape Flow',
+    fireworks: 'Fireworks',
 };
 
 /** Knobs the animation / mouse-move systems may drive per frame (see GENERATIVE_ANIMATABLE). */
@@ -243,6 +245,31 @@ export const GENERATIVE_PARTICLES_ANIMATABLE: Record<GenerativeParticlesType, { 
     { value: 'trailLength', label: 'Trail Length' },
     { value: 'trailOpacity', label: 'Trail Opacity' },
     { value: 'trailColor', label: 'Trail Color' },
+  ],
+  fireworks: [
+      { value: 'intensity', label: 'Intensity' },
+      { value: 'speed', label: 'Speed' },
+      { value: 'opacity', label: 'Opacity' },
+      { value: 'color', label: 'Color' },
+      { value: 'textSize', label: 'Text Size' },
+      { value: 'formationCount', label: 'Formation Count' },
+      { value: 'formationSize', label: 'Formation Size' },
+      { value: 'launchRate', label: 'Launch Rate' },
+      { value: 'burstSize', label: 'Burst Size' },
+      { value: 'burstHeight', label: 'Burst Height' },
+      { value: 'burnTime', label: 'Burn Time' },
+      { value: 'spread', label: 'Spread' },
+      { value: 'wind', label: 'Wind' },
+      { value: 'smoke', label: 'Smoke' },
+      { value: 'secondColor', label: 'Second Color' },
+      { value: 'accentColor', label: 'Accent Color' },
+      { value: 'sparkColor', label: 'Spark Color' },
+      { value: 'pointerStrength', label: 'Pointer Strength' },
+      { value: 'pointerRadius', label: 'Pointer Radius' },
+      { value: 'pointerColor', label: 'Pointer Color' },
+      { value: 'trailLength', label: 'Trail Length' },
+      { value: 'trailOpacity', label: 'Trail Opacity' },
+      { value: 'trailColor', label: 'Trail Color' },
   ],
 };
 

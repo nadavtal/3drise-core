@@ -18,6 +18,22 @@ export interface OptionalProperty {
     unit?: string;
     /** Value the panel shows when the settings do not carry one yet. */
     default?: unknown;
+    /** Controller tab the row lives on, overriding the panel's own grouping (e.g. a particles 'shells' tab). */
+    tab?: string;
+    /** The panel shows the row only while every condition holds: `{ key, is }` (equal) or `{ key, not }` (different),
+     *  read from the current values over the defaults. Display only — the knob keeps its value either way. */
+    showWhen?: PropertyCondition[];
+}
+
+export interface PropertyCondition {
+    key: string;
+    is?: unknown;
+    not?: unknown;
+}
+
+/** Whether a row's showWhen holds for these values (rows without one are always shown). */
+export function isPropertyShown(def: OptionalProperty, values: Record<string, unknown>): boolean {
+    return !def.showWhen || def.showWhen.every((c) => ('is' in c ? values[c.key] === c.is : values[c.key] !== c.not));
 }
 
 // The sky panel's own ranges (SkyControllerUi renders from these). Elevation goes

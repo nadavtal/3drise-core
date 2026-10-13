@@ -6,7 +6,7 @@
 
 import type { ObjectAnimations } from "./objectSettings";
 
-export type GenerativeParticlesType = 'tidalStream' | 'brownianDust' | 'bioluminescentWake' | 'electronOrbitals' | 'grinderSparks' | 'chladniSand' | 'faradayPowder' | 'neonRain' | 'magneticBottle' | 'shapeBurst' | 'shapeFlow';
+export type GenerativeParticlesType = 'tidalStream' | 'brownianDust' | 'bioluminescentWake' | 'electronOrbitals' | 'grinderSparks' | 'chladniSand' | 'faradayPowder' | 'neonRain' | 'magneticBottle' | 'shapeBurst' | 'shapeFlow' | 'fireworks';
 
 /** Shared by every particle object: 'none' turns trails off. */
 export type ParticleTrailMode = 'none' | 'streak' | 'comet' | 'echo';
@@ -551,6 +551,55 @@ export interface ShapeFlowParticlesConfig extends BaseGenerativeParticlesConfig 
     trailShare?: number;
 }
 
+export interface FireworksParticlesConfig extends BaseGenerativeParticlesConfig {
+    /** Spark pool for tails and willows (CPU simulated), 2000..30000. */
+    particleCount?: number;
+    /** What the shells do: a mixed show, or one kind of shell. */
+    shellType?: 'mix' | 'peony' | 'chrysanthemum' | 'willow' | 'palm' | 'ring' | 'crossette' | 'crackle' | 'strobe' | 'brocade' | 'timeRain' | 'fish' | 'fallingLeaves' | 'heart' | 'shapedStar' | 'kamuro' | 'horsetail' | 'multiBreak' | 'saturn' | 'pistil' | 'text';
+    /** How the text is fired: one shell for the whole word, or one shell per letter (best for longer text). */
+    textMode?: 'word' | 'letters';
+    /** The text the shells write (up to 32 characters; letters wrap into lines of 8). */
+    text?: string;
+    /** Size of the written text, 0.3..1.6. */
+    textSize?: number;
+    /** Fire salvos whose bursts draw a shape in the sky (each launch becomes a whole salvo). */
+    formation?: 'none' | 'line' | 'arc' | 'v' | 'circle' | 'triangle' | 'square' | 'star' | 'heart';
+    /** Shells in each formation salvo, 3..24. */
+    formationCount?: number;
+    /** Width of the formation, 0.3..1.6. */
+    formationSize?: number;
+    /** Shells fired per second, 0..4. */
+    launchRate?: number;
+    /** Lift charge: how fast the stars are thrown, so how wide the bursts open, 0.3..2. */
+    burstSize?: number;
+    /** How high the shells rise before they break, 0.2..2. */
+    burstHeight?: number;
+    /** How long stars burn: short pops to long, hanging willows, 0.3..3. */
+    burnTime?: number;
+    /** Width of the mortar rack, 0..1.6. */
+    spread?: number;
+    /** Crosswind carrying stars and smoke (negative = the other way), -1..1. */
+    wind?: number;
+    /** Smoke left by the bursts, lit by later ones, 0..1. */
+    smoke?: number;
+    /** Shells launch on their own at the launch rate (off: only clicks fire, with Fire on click). */
+    randomFire?: boolean;
+    /** A click in the scene fires one shell that breaks where you clicked: on an object or out in the sky. */
+    fireOnClick?: boolean;
+    /** Second star colour (barium green). */
+    secondColor?: string;
+    /** Third star colour (copper blue). */
+    accentColor?: string;
+    /** Tint of the charcoal sparks and gold stars. */
+    sparkColor?: string;
+    /** Show seed: a different sequence with the same character, 1..999. */
+    seed?: number;
+    /** Detail level: scales particle counts and trail caps. */
+    quality?: 'low' | 'medium' | 'high';
+    /** What the cursor does: off, aims the shells, blows a gust through the show, or feeds oxygen to falling stars. */
+    pointerMode?: 'none' | 'aim' | 'wind' | 'reignite';
+}
+
 export type GenerativeParticlesConfig = ({
     type: 'tidalStream';
 } & TidalStreamParticlesConfig) | ({
@@ -573,7 +622,7 @@ export type GenerativeParticlesConfig = ({
     type: 'shapeBurst';
 } & ShapeBurstParticlesConfig) | ({
     type: 'shapeFlow';
-} & ShapeFlowParticlesConfig);
+} & ShapeFlowParticlesConfig) | ({ type: 'fireworks' } & FireworksParticlesConfig);
 
 export interface GenerativeParticlesSettings {
     /** Scene object id (the controller's live-edit path finds the object by it). */
