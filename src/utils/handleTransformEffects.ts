@@ -36,14 +36,19 @@ const log = (message, ...args) => {
 /**
  * Animate a single transform property (position, rotation, scale).
  */
-export function animateTransformProperty(object: Object3D, property: "position" | "rotation" | "scale", start: Vector3Array, to: Vector3Array, timeProgress: number, animationType: string, animationSpeed: number): void {
+export function animateTransformProperty(object: Object3D, property: "position" | "rotation" | "scale", start: Vector3Array, to: Vector3Array, timeProgress: number, animationType: string, animationSpeed: number, frames = 1): void {
     if (animationType === "keyframe") {
-        // Keyframe mode: add incremental change
+        // Keyframe (continuous) mode: add an incremental change. `frames` is the
+        // frame's duration in 60 Hz frames, so the speed is per SECOND — what a
+        // 60 fps screen always showed — instead of per rendered frame, which made
+        // a phone at 30-40 fps spin slower and stutter on every dropped frame, and
+        // a 120 Hz screen spin twice as fast.
         const currentValue = object[property].toArray();
+        const k = animationSpeed * 0.001 * frames;
         const newValue = [
-            currentValue[0] + to[0] * animationSpeed * 0.001,
-            currentValue[1] + to[1] * animationSpeed * 0.001,
-            currentValue[2] + to[2] * animationSpeed * 0.001,
+            currentValue[0] + to[0] * k,
+            currentValue[1] + to[1] * k,
+            currentValue[2] + to[2] * k,
         ];
         object[property].set(...(newValue as [number, number, number]));
     }
@@ -63,8 +68,12 @@ export function animateTransformProperty(object: Object3D, property: "position" 
  * Process all active transform animations for an object.
  * Handles position, rotation, and scale animations.
  */
-export function handleTransformAnimations(ctx: TransformAnimationContext, animations: AnimationOptions[], currentTime: number, hovered: boolean): void {
+export function handleTransformAnimations(ctx: TransformAnimationContext, animations: AnimationOptions[], currentTime: number, hovered: boolean, delta?: number): void {
     const { object, meshSettings, pathIsActive } = ctx;
+    // Frame duration in 60 Hz frames, for continuous (keyframe) animations. Capped
+    // at 0.1 s so a backgrounded tab does not jump a whole spin when it returns.
+    // Without a delta (older callers) one frame, the old per-frame behaviour.
+    const frames = delta === undefined ? 1 : Math.min(Math.max(delta, 0), 0.1) * 60;
     // console.log("handleTransformAnimations called with animations:", animations);
     animations.forEach((animation) => {
         const { property, ease, duration, loop = false, to, yoyo = false, active, type = "interpolation", objectIds, triggerMode = "always", } = animation;
@@ -114,7 +123,7 @@ export function handleTransformAnimations(ctx: TransformAnimationContext, animat
             return;
         // Apply animation to each target
         targetsToAnimate.forEach((target) => {
-            animateTransformProperty(target, property, start, (to as any), timeProgress, type, animationSpeed);
+            animateTransformProperty(target, property, start, (to as any), timeProgress, type, animationSpeed, frames);
         });
     });
 }

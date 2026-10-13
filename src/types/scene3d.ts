@@ -530,7 +530,8 @@ export interface CanvasConfig {
 /** A scene object the orbit controls follow: the object's id, optionally one of its model parts (node name). */
 export interface OrbitTargetObject {
     id: string;
-    node?: string;
+    /** A model part's node name; null = the whole object (explicit, so an action patch replaces a part pick). */
+    node?: string | null;
 }
 
 export interface ControlsConfig {
