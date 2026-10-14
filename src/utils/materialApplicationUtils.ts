@@ -33,15 +33,23 @@ export const SELF_OWNED_MATERIAL_KEY = '__ownsItsMaterial';
  * with EDGES_GROUP_KEY, GEREATIVE_EFFECTS_KEY or SELF_OWNED_MATERIAL_KEY — unless obj itself
  * carries that mark (so an edges group or generative effects group can still
  * apply its own material via useMaterialApplication).
+ * `stopAtObjects`: also stop at the roots of child scene objects — an object's material
+ * never reaches the objects parented under it (they apply their own).
  */
-export function traverseSkippingEdgesAndEffects(obj: Object3D, isRoot: boolean, callback: (node: Object3D) => void): void {
+export function traverseSkippingEdgesAndEffects(obj: Object3D, isRoot: boolean, callback: (node: Object3D) => void, stopAtObjects = false): void {
     if (!isRoot && (obj.userData[EDGES_GROUP_KEY] || obj.userData[GEREATIVE_EFFECTS_KEY] || obj.userData[SELF_OWNED_MATERIAL_KEY] || obj.userData[IMAGE_KEY]) )
+        return;
+    // Another scene object (a child object of this one) owns its own material.
+    if (!isRoot && stopAtObjects && isSceneObjectRoot(obj))
         return;
     callback(obj);
     for (const child of obj.children) {
-        traverseSkippingEdgesAndEffects(child, false, callback);
+        traverseSkippingEdgesAndEffects(child, false, callback, stopAtObjects);
     }
 }
+
+/** The root of a scene object (the viewer's AnimatedObject tags it with its id and type). */
+export const isSceneObjectRoot = (obj: Object3D): boolean => !!obj.userData?.id && !!obj.userData?.objectType;
 // Known color property names on Three.js materials
 const COLOR_PROPERTIES = new Set([
     'color', 'emissive', 'specular', 'sheenColor', 'specularColor', 'attenuationColor'

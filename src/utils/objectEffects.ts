@@ -11,6 +11,41 @@ export function objectTakesVisualEffects(o: { type?: string; config?: unknown } 
     return o?.type === 'mesh' || o?.type === 'model' || o?.type === 'group';
 }
 
+/**
+ * A group's material goes to its children the way its visual effects do: a group has no surface,
+ * so applying a material to it applies it to every object inside it (any depth) that takes visual
+ * effects — meshes and models; objects drawing their own shaders (particles, grids, text, lights…)
+ * keep theirs. `targets` (child ids, any depth) narrows it: a chosen nested group stands for
+ * what is inside it. Each child keeps the material in its own settings.
+ */
+export function groupMaterialTargets<T extends { id: string; type?: string; parentId?: string | null; config?: unknown }>(
+    objects: readonly T[], groupId: string, targets?: readonly string[] | null,
+): T[] {
+    const byParent = new Map<string, T[]>();
+    for (const o of objects) {
+        if (!o.parentId) continue;
+        const list = byParent.get(o.parentId);
+        if (list) list.push(o); else byParent.set(o.parentId, [o]);
+    }
+    const out: T[] = [];
+    const seen = new Set<string>();
+    const takes = (o: T) => o.type !== 'group' && objectTakesVisualEffects(o);
+    const add = (o: T) => { if (!seen.has(o.id) && takes(o)) { seen.add(o.id); out.push(o); } };
+    const walk = (id: string) => { for (const c of byParent.get(id) ?? []) { add(c); walk(c.id); } };
+    if (!targets?.length) { walk(groupId); return out; }
+    // only targets inside this group
+    const inside = new Set<string>();
+    const mark = (id: string) => { for (const c of byParent.get(id) ?? []) { inside.add(c.id); mark(c.id); } };
+    mark(groupId);
+    for (const id of targets) {
+        if (!inside.has(id)) continue;
+        const o = objects.find(x => x.id === id);
+        if (!o) continue;
+        if (o.type === 'group') walk(o.id); else add(o);
+    }
+    return out;
+}
+
 /** A group's stagger when its clip sets none (see EffectSpread). */
 export const DEFAULT_EFFECT_SPREAD: Required<EffectSpread> = { order: 'tree', total: 0.6, out: 'reverse' };
 

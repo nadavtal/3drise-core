@@ -21,6 +21,11 @@ export interface TransformAnimationContext {
     pathIsActive: boolean;
     /** Groups / models: rows scoped each / targets run through it (see animationTargets.ts). Absent = every row on the object itself. */
     targets?: AnimationTargetState;
+    /**
+     * A timeline clip driving a row's `to` (by its index in the list): laid over the authored value
+     * while the clip runs — live, never written to the settings. Absent / undefined = the row's own.
+     */
+    liveTo?: (index: number) => Vector3Array | undefined;
 }
 
 
@@ -78,7 +83,9 @@ export function handleTransformAnimations(ctx: TransformAnimationContext, animat
     // Without a delta (older callers) one frame, the old per-frame behaviour.
     const frames = delta === undefined ? 1 : Math.min(Math.max(delta, 0), 0.1) * 60;
     // console.log("handleTransformAnimations called with animations:", animations);
-    animations.forEach((animation) => {
+    animations.forEach((row, index) => {
+        const live = ctx.liveTo?.(index);
+        const animation = live ? { ...row, to: live } : row;
         const { property, ease, duration, loop = false, to, yoyo = false, active, type = "interpolation", triggerMode = "always", } = animation;
         if (!active)
             return;
