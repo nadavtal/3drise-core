@@ -332,6 +332,27 @@ export type SceneDataType = 'scene' | 'ui' | 'text' | 'project' | 'presets' | 's
 
 export type GeometryType = 'none' | 'heart' | 'box' | 'sphere' | 'cylinder' | 'cone' | 'torus' | 'plane' | 'ring' | 'arc' | 'bentPlane' | 'bentPlaneInverse' | 'icosahedron' | 'octahedron' | 'tetrahedron' | 'dodecahedron' | 'capsule' | 'text' | 'custom' | 'grid' | 'point' | 'heart';
 
+/** What an animation (or, later, an effect) on a group or model reaches. See AnimationOptions.scope. */
+export type TargetScope = 'self' | 'each' | 'targets';
+
+/**
+ * One target inside a group or model.
+ *   group  `id` = a child object's id (any depth); `nodes` narrows a model child to its nodes (names)
+ *   model  `id` = a node name (ModelTree's selection key)
+ */
+export interface PartTarget {
+    id: string;
+    nodes?: string[];
+}
+
+/** How each / targets reach their targets one after another. */
+export interface TargetStagger {
+    /** Who goes first: tree order, along an axis of the object, centre → out, or random (seeded, the same every time). */
+    order?: 'tree' | 'x' | 'y' | 'z' | 'radial' | 'random';
+    /** Seconds from the first target to the last (a fixed total, however many targets). 0 / absent = together. */
+    total?: number;
+}
+
 export interface AnimationOptions {
     triggerMode?: EffectTriggerMode;
     property: string;
@@ -351,8 +372,19 @@ export interface AnimationOptions {
     offset?: Vector3Array;
     /** Whether to preserve the object's original position/rotation relative to the path (default: false) */
     keepOriginalTransform?: boolean;
-    /** IDs of child objects to animate (if empty/undefined, animates parent object) */
-    objectIds?: string[];
+    /**
+     * Groups and models: what the animation moves.
+     *   self     the object as one piece (default) — `to` is the absolute value
+     *   each     every part on its own (group: every leaf child, full depth; model: every mesh)
+     *   targets  only `targets`, each on its own
+     * On each / targets a transform `to` is RELATIVE to each target's own rest value
+     * (position / rotation added, scale multiplied). Other object types ignore it.
+     */
+    scope?: TargetScope;
+    /** scope 'targets': group → child objects (any depth, a model child optionally narrowed to nodes); model → { id: nodeName }. */
+    targets?: PartTarget[];
+    /** each / targets: the targets start one after another. */
+    stagger?: TargetStagger;
     onStart?: () => void;
     onUpdate?: (progress: number) => void;
     onComplete?: () => void;

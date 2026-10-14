@@ -12,11 +12,14 @@ import { createDefaultEffectState, } from "./utils";
 import { applyAllColorEffects } from "./frameAnimations";
 import { Object3D } from "three";
 import { AnimationOptions, ColorEffectV2, EffectState, MaterialSettings } from "../types";
+import { effectiveScope, type AnimationTargetState } from "./animationTargets";
 export interface MaterialAnimationContext {
     object: Object3D;
     materialSettings: MaterialSettings;
     /** Cache of start values for animations (property -> value) */
     startValuesCache: Record<string, any>;
+    /** Groups / models: rows scoped each / targets run through it (see animationTargets.ts). */
+    targets?: AnimationTargetState;
 }
 
 
@@ -108,7 +111,34 @@ export function handleMaterialAnimations(ctx: MaterialAnimationContext, animatio
         if (property === "position" || property === "rotation" || property === "scale") {
             return;
         }
+        const scope = ctx.targets ? effectiveScope(ctx.object, animation) : 'self';
+        if (scope !== 'self') {
+            animateMaterialTargets(ctx.targets!, animation, scope, currentTime, hovered);
+            return;
+        }
         animateMaterialProperty(ctx, animation, currentTime, hovered);
+    });
+}
+
+/** A row scoped each / targets: each target from its own value to `to` (absolute), `delay` later each (stagger). */
+function animateMaterialTargets(state: AnimationTargetState, animation: AnimationOptions, scope: 'each' | 'targets', currentTime: number, hovered: boolean): void {
+    const { property, to, duration, ease, loop = false, yoyo = false } = animation;
+    if (to === undefined)
+        return;
+    const { objs, delays } = state.targetsOf(animation, scope);
+    if (animation.triggerMode === "hover" && !hovered) {
+        for (const o of objs) state.hold(o, 'm', property);
+        return;
+    }
+    const easing = ease ? (gsapEasingMap[ease] || ease) : null;
+    objs.forEach((target, i) => {
+        const rest = state.materialRest(target, property);
+        const from = animation.from !== undefined ? animation.from : rest;
+        if (from === null || from === undefined)
+            return;
+        let t = calculateTimeProgress(currentTime - delays[i] * 1000, duration, yoyo, loop);
+        if (easing) t = applyEasing(easing, t);
+        state.writeMaterial(target, property, interpolateValue(property, from, to, t));
     });
 }
 // =============================================================================

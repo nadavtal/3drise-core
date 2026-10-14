@@ -14,10 +14,13 @@ import { createDefaultEffectState } from "./utils";
 import type { AnimationOptions, Vector3Array } from "../types/scene3d";
 import type { TransformEffectV2 } from "../types/objectSettings";
 import type { EffectState } from "../types/effects";
+import { effectiveScope, type AnimationTargetState } from "./animationTargets";
 export interface TransformAnimationContext {
     object: Object3D;
     meshSettings: any;
     pathIsActive: boolean;
+    /** Groups / models: rows scoped each / targets run through it (see animationTargets.ts). Absent = every row on the object itself. */
+    targets?: AnimationTargetState;
 }
 
 
@@ -76,19 +79,22 @@ export function handleTransformAnimations(ctx: TransformAnimationContext, animat
     const frames = delta === undefined ? 1 : Math.min(Math.max(delta, 0), 0.1) * 60;
     // console.log("handleTransformAnimations called with animations:", animations);
     animations.forEach((animation) => {
-        const { property, ease, duration, loop = false, to, yoyo = false, active, type = "interpolation", objectIds, triggerMode = "always", } = animation;
+        const { property, ease, duration, loop = false, to, yoyo = false, active, type = "interpolation", triggerMode = "always", } = animation;
         if (!active)
             return;
+        // Only handle transform properties
+        if (property !== "position" && property !== "rotation" && property !== "scale") {
+            return;
+        }
+        const scope = ctx.targets ? effectiveScope(object, animation) : 'self';
+        if (scope !== 'self') {
+            animateTargets(ctx.targets!, animation, property, scope, currentTime, hovered, frames);
+            return;
+        }
         if (triggerMode === "hover" && !hovered)
             return;
         // Skip position/rotation if path animation is active (path controls these)
-        if (pathIsActive &&
-            (property === "position" || property === "rotation") &&
-            (!objectIds || objectIds.length === 0)) {
-            return;
-        }
-        // Only handle transform properties
-        if (property !== "position" && property !== "rotation" && property !== "scale") {
+        if (pathIsActive && (property === "position" || property === "rotation")) {
             return;
         }
         // Calculate animation progress
@@ -99,34 +105,48 @@ export function handleTransformAnimations(ctx: TransformAnimationContext, animat
             timeProgress = applyEasing(easingFunctionName, timeProgress);
         }
         const animationSpeed = 1000 / duration;
-        // Determine which objects to animate
-        const targetsToAnimate = [];
-        if (objectIds && objectIds.length > 0) {
-            // Animate specific children by name
-            // Every match, not getObjectByName's first: a model repeated by
-            // meshSettings.layout has the same part name once per copy.
-            const names = new Set(objectIds);
-            object.traverse((child) => {
-                if (child.name && names.has(child.name)) {
-                    targetsToAnimate.push(child);
-                }
-            });
-            log("animating specific targets", { objectIds, found: targetsToAnimate.length });
-        }
-        else {
-            // Animate the parent object
-            targetsToAnimate.push(object);
-        }
         // Get start value from meshSettings
         const start = meshSettings[property];
         if (!start || !to)
             return;
-        // Apply animation to each target
-        targetsToAnimate.forEach((target) => {
-            animateTransformProperty(target, property, start, (to as any), timeProgress, type, animationSpeed, frames);
-        });
+        animateTransformProperty(object, property, start, (to as any), timeProgress, type, animationSpeed, frames);
     });
 }
+
+/**
+ * A row scoped each / targets: every target on its own, `to` relative to the target's rest
+ * (position / rotation added, scale multiplied), each target `delay` later (stagger).
+ */
+function animateTargets(state: AnimationTargetState, animation: AnimationOptions, property: "position" | "rotation" | "scale", scope: 'each' | 'targets', currentTime: number, hovered: boolean, frames: number): void {
+    const { ease, duration, loop = false, to, yoyo = false, type = "interpolation", triggerMode = "always" } = animation;
+    const { objs, delays } = state.targetsOf(animation, scope);
+    if (triggerMode === "hover" && !hovered) {
+        for (const o of objs) state.hold(o, 't', property);
+        return;
+    }
+    if (!Array.isArray(to) || to.length < 3)
+        return;
+    const isScale = property === "scale";
+    const animationSpeed = 1000 / duration;
+    const easing = ease ? (gsapEasingMap[ease] || ease) : null;
+    objs.forEach((target, i) => {
+        if (type === "keyframe") {
+            // Continuous: the same increment per frame on each target (a stagger has nothing to offset).
+            state.touchTransform(target, property);
+            animateTransformProperty(target, property, [0, 0, 0], to as Vector3Array, 0, "keyframe", animationSpeed, frames);
+            return;
+        }
+        let t = calculateTimeProgress(currentTime - delays[i] * 1000, duration, yoyo, loop);
+        if (easing) t = applyEasing(easing, t);
+        const rest = state.transformRest(target, property);
+        const v = rest.map((r, k) => {
+            const d = Number(to[k]) || 0;
+            return isScale ? r * MathUtils.lerp(1, d, t) : r + MathUtils.lerp(0, d, t);
+        }) as [number, number, number];
+        state.writeTransform(target, property, v);
+    });
+}
+
 // =============================================================================
 // HANDLE TRANSFORM EFFECT
 // =============================================================================
