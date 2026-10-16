@@ -403,6 +403,8 @@ export interface HarmonicShellConfig extends BaseGenerativeEffectConfig {
     nodalLines?: number;
     /** Rim and nodal-line colour. */
     rimColor?: string;
+    /** 0..1 how much the soap-film bands take on `color` (0: the natural rainbow film). */
+    tint?: number;
 }
 
 export interface GalaxyConfig extends BaseGenerativeEffectConfig {

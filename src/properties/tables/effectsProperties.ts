@@ -310,6 +310,7 @@ export const harmonicShellEffectProperties: OptionalProperty[] = [
   { name: 'nodalLines',     description: 'Brightness of the lines where the harmonic crosses zero', type: 'number', min: 0, max: 1, step: 0.01 },
   { name: 'color',          description: 'Base tint under the iridescence',                     type: 'color'   },
   { name: 'rimColor',       description: 'Rim and nodal-line colour',                           type: 'color'   },
+  { name: 'tint',           description: 'How much the soap-film bands take on the base colour', type: 'number', min: 0,   max: 1,    step: 0.01 },
 ];
 
 // =============================================================================

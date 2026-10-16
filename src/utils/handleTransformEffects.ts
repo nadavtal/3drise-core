@@ -26,6 +26,12 @@ export interface TransformAnimationContext {
      * while the clip runs — live, never written to the settings. Absent / undefined = the row's own.
      */
     liveTo?: (index: number) => Vector3Array | undefined;
+    /**
+     * A timeline clip has taken this property over (the object itself: target null; a group's /
+     * model's child: that child). The clip has full control while it is active: the row stops on
+     * that target — nothing is added, nothing is restored — and runs again once the clip ends.
+     */
+    takenOver?: (target: Object3D | null, property: 'position' | 'rotation' | 'scale') => boolean;
 }
 
 
@@ -95,9 +101,10 @@ export function handleTransformAnimations(ctx: TransformAnimationContext, animat
         }
         const scope = ctx.targets ? effectiveScope(object, animation) : 'self';
         if (scope !== 'self') {
-            animateTargets(ctx.targets!, animation, property, scope, currentTime, hovered, frames);
+            animateTargets(ctx.targets!, animation, property, scope, currentTime, hovered, frames, ctx.takenOver);
             return;
         }
+        if (ctx.takenOver?.(null, property)) return;   // a clip drives it: the clip has full control
         if (triggerMode === "hover" && !hovered)
             return;
         // Skip position/rotation if path animation is active (path controls these)
@@ -124,7 +131,7 @@ export function handleTransformAnimations(ctx: TransformAnimationContext, animat
  * A row scoped each / targets: every target on its own, `to` relative to the target's rest
  * (position / rotation added, scale multiplied), each target `delay` later (stagger).
  */
-function animateTargets(state: AnimationTargetState, animation: AnimationOptions, property: "position" | "rotation" | "scale", scope: 'each' | 'targets', currentTime: number, hovered: boolean, frames: number): void {
+function animateTargets(state: AnimationTargetState, animation: AnimationOptions, property: "position" | "rotation" | "scale", scope: 'each' | 'targets', currentTime: number, hovered: boolean, frames: number, takenOver?: TransformAnimationContext['takenOver']): void {
     const { ease, duration, loop = false, to, yoyo = false, type = "interpolation", triggerMode = "always" } = animation;
     const { objs, delays } = state.targetsOf(animation, scope);
     if (triggerMode === "hover" && !hovered) {
@@ -137,6 +144,8 @@ function animateTargets(state: AnimationTargetState, animation: AnimationOptions
     const animationSpeed = 1000 / duration;
     const easing = ease ? (gsapEasingMap[ease] || ease) : null;
     objs.forEach((target, i) => {
+        // a clip drives this target: leave it to the clip (held — not put back to its rest either)
+        if (takenOver?.(target, property)) { state.hold(target, 't', property); return; }
         if (type === "keyframe") {
             // Continuous: the same increment per frame on each target (a stagger has nothing to offset).
             state.touchTransform(target, property);

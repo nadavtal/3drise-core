@@ -45,6 +45,7 @@
 //
 import type { CreatedObjectSettings } from '../types/scene3d';
 import { LIGHTS_ANIMATABLE } from '../data/lightsDefaults';
+import { getDefaultLightShadow } from '../data/lightShadowDefaults';
 import { GENERATIVE_PARTICLES_ANIMATABLE } from '../data/particlesDefaults';
 import { EFFECTS_ANIMATABLE } from '../data/effectsDefaults';
 import { GRIDS_ANIMATABLE } from '../data/gridsDefaults';
@@ -364,8 +365,12 @@ function configSpecs(obj: any): PropertySpec[] {
         });
     }
     if (domain === 'light') {
+        // Defaults from the same table the renderer resolves with (point-type lights: off, 256).
+        const shadowDefaults = (getDefaultLightShadow(obj.config.type) ?? {}) as Record<string, unknown>;
         for (const p of (SHADOW_PROPERTIES as Record<string, OptionalProperty[]>)[obj.config.type] ?? []) {
-            out.push({ ...fromOptional(p, 'config.shadow.', 'shadow', false), group: 'shadow' });
+            const spec = fromOptional(p, 'config.shadow.', 'shadow', false);
+            if (spec.default === undefined && shadowDefaults[p.name] !== undefined) spec.default = shadowDefaults[p.name] as PropertySpec['default'];
+            out.push({ ...spec, group: 'shadow' });
         }
     }
     return out;

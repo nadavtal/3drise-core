@@ -12,6 +12,7 @@ export * from './spaceDefaults';
 export * from './landDefaults';
 export * from './textDefaults';
 export * from './shadowDefaults';
+export * from './lightShadowDefaults';
 export * from './defaults';
 export * from './shaders';
 export { shapeConfig } from './shapeConfig';
