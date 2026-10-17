@@ -405,6 +405,36 @@ export interface HarmonicShellConfig extends BaseGenerativeEffectConfig {
     rimColor?: string;
     /** 0..1 how much the soap-film bands take on `color` (0: the natural rainbow film). */
     tint?: number;
+    /** What the shell becomes: nothing (the sphere), a word, a shape, or another scene object. */
+    target?: 'none' | 'text' | 'shape' | 'object';
+    /** The word (target text), up to 24 characters. */
+    text?: string;
+    /** Typeface of the word: sans, display, serif, mono. */
+    font?: string;
+    /** The shape (target shape). */
+    shape?: 'star' | 'heart' | 'ring' | 'hexagon' | 'triangle' | 'cross';
+    /** Scene object id the shell wraps (target object). */
+    targetObject?: string;
+    /** 0..1 how far the shell has become its target; animate it for the transition. */
+    morph?: number;
+    /** Depth of a word or shape, as a fraction of the bounding radius. */
+    depth?: number;
+    /** How much the harmonics keep rippling on the target (0: still). */
+    breath?: number;
+    /** How far from the target's surface a pixel may be before it fades (hides the webbing between letters). */
+    webCut?: number;
+    /** Scene object ids that show the shell when they cross it (the inside look, the seam, the warp) — at runtime, nothing saved on them. Empty: off. */
+    insideObjects?: string[];
+    /** The inside look: the shell's soap film, or the object tinted with the shell colour. */
+    insideLook?: 'film' | 'ghost';
+    /** 0..1 scan bands drifting through the inside. */
+    insideBands?: number;
+    /** 0..1 the membrane glow where an object crosses the shell. */
+    insideSeam?: number;
+    /** 0..1.5 how much the inside of an object follows the membrane (needs vertices to bend). */
+    insideWarp?: number;
+    /** 0..1 how stiff an object's centre is under the warp. */
+    insideCore?: number;
 }
 
 export interface GalaxyConfig extends BaseGenerativeEffectConfig {

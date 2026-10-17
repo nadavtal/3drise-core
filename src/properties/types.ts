@@ -10,7 +10,8 @@
 // the data stays where it is maintained and every consumer reads the same answer.
 //
 
-export type PropertyKind = 'number' | 'color' | 'boolean' | 'select' | 'vec3' | 'vec2' | 'string' | 'texture';
+/** `objects`: a list of scene object ids (picked from the scene; set from a script as an array). */
+export type PropertyKind = 'number' | 'color' | 'boolean' | 'select' | 'vec3' | 'vec2' | 'string' | 'texture' | 'objects';
 
 /** What a property belongs to. Objects are all 'object'; the kind of object is read from its settings. */
 export type PropertyElement = 'object' | 'camera' | 'sky' | 'clouds' | 'ocean' | 'terrain';

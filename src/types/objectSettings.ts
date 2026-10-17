@@ -193,7 +193,7 @@ export type OperationName =
     | 'jelly' | 'flip' | 'spin' | 'swirl' | 'moveToFront'
     | 'float' | 'sway' | 'bounce' | 'wobble' | 'pulse' | 'shake' | 'rotate' | 'grow'
     | 'glow' | 'rimLight' | 'dissolve' | 'emberAsh' | 'particleSwarm' | 'hologram' | 'shatter'
-    | 'sandErosion' | 'teleport' | 'inkBloom' | 'flock' | 'metalize' | 'liquidMetal' | 'frost' | 'heatCracks' | 'petrify' | 'portal' | 'voxelize' | 'unweave' | 'petalPeel' | 'fade' | 'visibility' | 'displayImage'
+    | 'sandErosion' | 'teleport' | 'inkBloom' | 'flock' | 'metalize' | 'liquidMetal' | 'frost' | 'heatCracks' | 'petrify' | 'portal' | 'voxelize' | 'unweave' | 'petalPeel' | 'inShell' | 'fade' | 'visibility' | 'displayImage'
     | 'zoom' | 'frame' | 'focus' | 'orbit'
     | (string & {});
 

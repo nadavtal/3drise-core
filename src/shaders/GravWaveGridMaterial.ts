@@ -116,6 +116,10 @@ const vertex = /* glsl */ `
 
   float gwCycle(){ return max(u_chirpTime, 4.0); }
 
+  // The ringdown decays are written 1.0 / exp(x / k), not exp(-x / k): the Vulkan driver of
+  // the Galaxy S26 (Xclipse 960, ANGLE on Vulkan, Oct 2026) drops the negation inside this
+  // branch, so the decays ran as growths - the dots flew apart after merging and the merger
+  // glow grew for the rest of the cycle. Same maths, verified correct there and everywhere else.
   // State of the binary s seconds into a cycle: orbital phase, orbital
   // angular frequency, separation, wave envelope (~ omega^(2/3)), and how
   // present the new binary is (it fades in while the old remnant fades out).
@@ -137,11 +141,11 @@ const vertex = /* glsl */ `
       float x  = s - Ti;
       float wm = GW_W0 * pow(GW_R, -0.375);
       float wq = wm * GW_QNM;
-      float e  = 1.0 - exp(-x / 0.15);
+      float e  = 1.0 - 1.0 / exp(x / 0.15);
       phi  = 1.6 * GW_W0 * ts * (1.0 - pow(GW_R, 0.625)) + wq * x - (wq - wm) * 0.15 * e;
       w    = mix(wm, wq, e);
-      a    = GW_A0 * pow(GW_R, 0.25) * exp(-x / 0.12);
-      env  = pow(GW_R, -0.25) * exp(-x / GW_TD) * (1.0 - smoothstep(0.9 * T, T, s));
+      a    = GW_A0 * pow(GW_R, 0.25) * (1.0 / exp(x / 0.12));
+      env  = pow(GW_R, -0.25) * (1.0 / exp(x / GW_TD)) * (1.0 - smoothstep(0.9 * T, T, s));
       live = 1.0;
     }
   }
@@ -276,6 +280,10 @@ const fragment = /* glsl */ `
 
   float gwCycle(){ return max(u_chirpTime, 4.0); }
 
+  // The ringdown decays are written 1.0 / exp(x / k), not exp(-x / k): the Vulkan driver of
+  // the Galaxy S26 (Xclipse 960, ANGLE on Vulkan, Oct 2026) drops the negation inside this
+  // branch, so the decays ran as growths - the dots flew apart after merging and the merger
+  // glow grew for the rest of the cycle. Same maths, verified correct there and everywhere else.
   // State of the binary s seconds into a cycle: orbital phase, orbital
   // angular frequency, separation, wave envelope (~ omega^(2/3)), and how
   // present the new binary is (it fades in while the old remnant fades out).
@@ -297,11 +305,11 @@ const fragment = /* glsl */ `
       float x  = s - Ti;
       float wm = GW_W0 * pow(GW_R, -0.375);
       float wq = wm * GW_QNM;
-      float e  = 1.0 - exp(-x / 0.15);
+      float e  = 1.0 - 1.0 / exp(x / 0.15);
       phi  = 1.6 * GW_W0 * ts * (1.0 - pow(GW_R, 0.625)) + wq * x - (wq - wm) * 0.15 * e;
       w    = mix(wm, wq, e);
-      a    = GW_A0 * pow(GW_R, 0.25) * exp(-x / 0.12);
-      env  = pow(GW_R, -0.25) * exp(-x / GW_TD) * (1.0 - smoothstep(0.9 * T, T, s));
+      a    = GW_A0 * pow(GW_R, 0.25) * (1.0 / exp(x / 0.12));
+      env  = pow(GW_R, -0.25) * (1.0 / exp(x / GW_TD)) * (1.0 - smoothstep(0.9 * T, T, s));
       live = 1.0;
     }
   }
@@ -416,7 +424,7 @@ const fragment = /* glsl */ `
     halo += live * (m1 * exp(-d1 / 0.6) + m2 * exp(-d2 / 0.6));
     halo += (1.0 - live) * exp(-d0 / 0.6);
     float xm = s - 0.7 * T;
-    float flash = xm > 0.0 ? exp(-xm / 0.5) : exp(xm / 0.6) * 0.25;
+    float flash = xm > 0.0 ? 1.0 / exp(xm / 0.5) : exp(xm / 0.6) * 0.25;
     float bloom = flash * exp(-r * r / 6.0);
 
     // The crests of h+ are the two trailing arms of the emission pattern;

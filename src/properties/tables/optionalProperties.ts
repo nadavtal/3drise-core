@@ -2,7 +2,8 @@
 export interface OptionalProperty {
     name: string;
     description: string;
-    type: 'number' | 'string' | 'boolean' | 'color' | 'vector3' | 'vector2' | 'select';
+    /** `object`: one scene object id, `objects`: a list of them — picked from the scene tree (stored as id strings). */
+    type: 'number' | 'string' | 'boolean' | 'color' | 'vector3' | 'vector2' | 'select' | 'object' | 'objects';
     min?: number;
     max?: number;
     step?: number;

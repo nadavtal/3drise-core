@@ -311,6 +311,23 @@ export const harmonicShellEffectProperties: OptionalProperty[] = [
   { name: 'color',          description: 'Base tint under the iridescence',                     type: 'color'   },
   { name: 'rimColor',       description: 'Rim and nodal-line colour',                           type: 'color'   },
   { name: 'tint',           description: 'How much the soap-film bands take on the base colour', type: 'number', min: 0,   max: 1,    step: 0.01 },
+  // the target: what the shell becomes when `morph` runs to 1
+  { name: 'target',         description: 'What the shell becomes: nothing, a word, a shape, or another scene object', type: 'select', options: ['none', 'text', 'shape', 'object'], optionLabels: ['Sphere', 'Text', 'Shape', 'Object'], animatable: false },
+  { name: 'text',           description: 'The word the shell becomes (up to 24 characters)',     type: 'string', showWhen: [{ key: 'target', is: 'text' }], animatable: false },
+  { name: 'font',           description: 'Typeface of the word',                                 type: 'select', options: ['sans', 'display', 'serif', 'mono'], optionLabels: ['Sans', 'Display', 'Serif', 'Mono'], showWhen: [{ key: 'target', is: 'text' }], animatable: false },
+  { name: 'shape',          description: 'The shape the shell becomes',                          type: 'select', options: ['star', 'heart', 'ring', 'hexagon', 'triangle', 'cross'], optionLabels: ['Star', 'Heart', 'Ring', 'Hexagon', 'Triangle', 'Cross'], showWhen: [{ key: 'target', is: 'shape' }], animatable: false },
+  { name: 'targetObject',   description: 'Id of the scene object the shell wraps (target: object)', type: 'string', showWhen: [{ key: 'target', is: 'object' }], animatable: false },
+  { name: 'morph',          description: 'How far the shell has become its target; animate it for the transition', type: 'number', min: 0, max: 1, step: 0.01, showWhen: [{ key: 'target', not: 'none' }] },
+  { name: 'depth',          description: 'Depth of a word or shape, as a fraction of the bounding radius', type: 'number', min: 0.05, max: 1, step: 0.01, showWhen: [{ key: 'target', not: 'none' }] },
+  { name: 'breath',         description: 'How much the harmonics keep rippling on the target',   type: 'number', min: 0,   max: 0.5,  step: 0.01, showWhen: [{ key: 'target', not: 'none' }] },
+  { name: 'webCut',         description: 'Distance from the target surface where stray pixels fade (hides the webbing between letters)', type: 'number', min: 0.005, max: 0.1, step: 0.005, showWhen: [{ key: 'target', not: 'none' }] },
+  // what the shell does to objects that cross it (runtime only, nothing saved on them)
+  { name: 'insideObjects',  label: 'Inside', description: 'Objects that show the shell when they cross it: the inside takes the film, the crossing glows, the inside sways with the membrane (nothing is saved on them)', type: 'objects', animatable: false },
+  { name: 'insideLook',     description: 'The inside look: the shell\'s soap film, or the object tinted with the shell colour', type: 'select', options: ['film', 'ghost'], optionLabels: ['Soap film', 'Ghost tint'], animatable: false },
+  { name: 'insideBands',    description: 'Scan bands drifting through the inside',                 type: 'number', min: 0, max: 1,   step: 0.01 },
+  { name: 'insideSeam',     description: 'The membrane glow where an object crosses the shell',    type: 'number', min: 0, max: 1,   step: 0.01 },
+  { name: 'insideWarp',     description: 'How much the inside of an object follows the membrane (needs a mesh with enough vertices to bend)', type: 'number', min: 0, max: 1.5, step: 0.01 },
+  { name: 'insideCore',     description: 'How stiff an object\'s centre is under the warp',        type: 'number', min: 0, max: 1,   step: 0.01 },
 ];
 
 // =============================================================================

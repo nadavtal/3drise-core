@@ -138,6 +138,7 @@ const HEX = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
 export function kindOfValue(key: string, v: unknown): PropertyKind | null {
     if (Array.isArray(v)) {
         if (v.every(n => typeof n === 'number')) return v.length === 3 ? 'vec3' : v.length === 2 ? 'vec2' : null;
+        if (v.every(n => typeof n === 'string')) return 'objects';
         return null;
     }
     if (typeof v === 'number') return 'number';
@@ -153,6 +154,8 @@ export function kindOfValue(key: string, v: unknown): PropertyKind | null {
 const OPTIONAL_KIND: Record<OptionalProperty['type'], PropertyKind> = {
     number: 'number', string: 'string', boolean: 'boolean', color: 'color',
     vector3: 'vec3', vector2: 'vec2', select: 'select',
+    object: 'string',   // a scene object id (picked in the studio, stored as a string)
+    objects: 'objects', // a list of scene object ids (structural; never a track)
 };
 
 const toOptions = (p: OptionalProperty): PropertyOption[] | undefined =>
