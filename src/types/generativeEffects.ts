@@ -412,7 +412,7 @@ export interface HarmonicShellConfig extends BaseGenerativeEffectConfig {
     /** Typeface of the word: sans, display, serif, mono. */
     font?: string;
     /** The shape (target shape). */
-    shape?: 'star' | 'heart' | 'ring' | 'hexagon' | 'triangle' | 'cross';
+    shape?: 'star' | 'heart' | 'ring' | 'hexagon' | 'triangle' | 'cross' | 'disc' | 'square' | 'diamond' | 'pentagon' | 'octagon' | 'sparkle' | 'hexstar' | 'crescent' | 'drop' | 'bolt' | 'arrow' | 'cloud' | 'flower' | 'gear' | 'shield' | 'leaf' | 'capsule' | 'infinity' | 'chevron' | 'hourglass' | 'clover' | 'spade' | 'sun' | 'halfmoon';
     /** Scene object id the shell wraps (target object). */
     targetObject?: string;
     /** 0..1 how far the shell has become its target; animate it for the transition. */
