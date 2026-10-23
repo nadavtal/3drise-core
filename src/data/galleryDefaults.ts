@@ -111,7 +111,7 @@ export const GALLERY_OBJECTS_ANIMATABLE: Record<GalleryObjectType, { value: stri
         { value: 'wave', label: 'Wave' },
         { value: 'slant', label: 'Slant' },
         { value: 'lift', label: 'Lift' },
-        { value: 'particleSize', label: 'Particle size' },
+        { value: 'particleSize', label: 'Dot size' },
         { value: 'faded', label: 'Faded' },
         { value: 'grain', label: 'Grain' },
         { value: 'pointerStrength', label: 'Pointer strength' },

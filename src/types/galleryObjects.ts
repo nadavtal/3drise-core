@@ -152,7 +152,7 @@ export interface ParticleShiftGalleryConfig extends BaseGalleryObjectConfig {
     opacity: number;
     /** Width / height of every picture; pictures are cover-fitted (structural: rebuilds). */
     aspect: number;
-    /** Particles across a picture (structural: rebuilds). */
+    /** Particles (and halftone dots) across a picture (structural: rebuilds). */
     grains: number;
     /** Where the pictures sit: a row, a wave, a ring, a helix around the viewer, a tunnel into depth, a stack, a fan or a constellation. */
     layout: 'row' | 'wave' | 'ring' | 'helix' | 'tunnel' | 'stack' | 'fan' | 'constellation';
@@ -178,13 +178,13 @@ export interface ParticleShiftGalleryConfig extends BaseGalleryObjectConfig {
     slant: number;
     /** How far the particles rise off the picture as the wave passes. */
     lift: number;
-    /** Size of the resting particles. */
+    /** Size of the halftone dots of the waiting pictures. */
     particleSize: number;
-    /** Brightness of the inactive particles. */
+    /** Brightness of the waiting pictures. */
     faded: number;
     /** Overall particle size. */
     grain: number;
-    /** What the cursor does: off, or turns the area it passes back into particles. */
+    /** What the cursor does: off, or turns the area it passes back into a halftone of the picture. */
     pointerMode: 'none' | 'shift';
     /** Strength of the cursor effect. */
     pointerStrength: number;
