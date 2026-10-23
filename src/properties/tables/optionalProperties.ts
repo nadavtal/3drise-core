@@ -756,7 +756,7 @@ export const cloudQualityOptionalProperties: OptionalProperty[] = [
 import { getLayoutSettingsFields } from '../../utils/GalleryLayouts';
 import type { GalleryLayout } from '../../types/gallery';
 
-const GALLERY_FIELD_DEFS: Record<string, OptionalProperty> = {
+export const GALLERY_FIELD_DEFS: Record<string, OptionalProperty> = {
     columns: { name: 'columns', description: 'Number of columns in the grid', type: 'number', min: 1, max: 12, step: 1 },
     spacing: { name: 'spacing', description: 'Distance between adjacent frames', type: 'number', min: 0.5, max: 10, step: 0.1 },
     startX: { name: 'startX', description: 'Horizontal offset of the first frame', type: 'number', min: -20, max: 20, step: 0.5 },

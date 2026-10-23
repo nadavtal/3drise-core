@@ -3,6 +3,8 @@ import { migrateSpaceObject } from './spaceMigration';
 import { migrateGridObject } from './gridMigration';
 import { migrateEnvironmentObject } from './environmentMigration';
 import { migrateTextObject } from './textMigration';
+import { migrateGalleryObject } from './galleryMigration';
+import { migrateImageObject } from './imageMigration';
 
 /**
  * Every load-time migration of saved scene objects, in one pass. Each step is
@@ -11,5 +13,5 @@ import { migrateTextObject } from './textMigration';
  * whose saved shape changes adds its step here.
  */
 export function migrateObject<T extends CreatedObjectSettings>(obj: T): T {
-    return migrateTextObject(migrateEnvironmentObject(migrateGridObject(migrateSpaceObject(obj))));
+    return migrateImageObject(migrateGalleryObject(migrateTextObject(migrateEnvironmentObject(migrateGridObject(migrateSpaceObject(obj))))));
 }

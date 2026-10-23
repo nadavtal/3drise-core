@@ -19,6 +19,8 @@ import {
     DEFAULT_SPACE_OBJECTS, SPACE_PROPERTIES,
     DEFAULT_LAND_OBJECTS, LAND_PROPERTIES,
     DEFAULT_TEXT_OBJECTS, TEXT_PROPERTIES,
+    DEFAULT_IMAGE_OBJECTS, IMAGE_PROPERTIES,
+    DEFAULT_GALLERY_OBJECTS, GALLERY_PROPERTIES, galleryTakesMaterial,
     LIGHT_PROPERTIES, SHADOW_PROPERTIES, PARTICLES_PROPERTIES, EFFECT_PROPERTIES, GRID_PROPERTIES,
     skyOptionalProperties, cloudDeckOptionalProperties, cirrusOptionalProperties,
     oceanSurfaceOptionalProperties, terrainOptionalProperties, rainOptionalProperties, cloudsOptionalProperties,
@@ -58,7 +60,7 @@ function rowsMatch(label: string, element: PropertyElement, settings: any, rows:
 // Generative families + lights: animatable == the generated tables (getGenerativeAnimatable)
 // -----------------------------------------------------------------------------
 
-const families: Array<[string, 'light' | 'particles' | 'effect' | 'grid' | 'environment' | 'space' | 'land' | 'text', Record<string, any>, Record<string, OptionalProperty[]>]> = [
+const families: Array<[string, 'light' | 'particles' | 'effect' | 'grid' | 'environment' | 'space' | 'land' | 'text' | 'image' | 'gallery', Record<string, any>, Record<string, OptionalProperty[]>]> = [
     ['light', 'light', DEFAULT_LIGHTS, LIGHT_PROPERTIES as any],
     ['particles', 'particles', DEFAULT_GENERATIVE_PARTICLES, PARTICLES_PROPERTIES as any],
     ['effect', 'effect', DEFAULT_GENERATIVE_EFFECTS, EFFECT_PROPERTIES as any],
@@ -67,12 +69,14 @@ const families: Array<[string, 'light' | 'particles' | 'effect' | 'grid' | 'envi
     ['space', 'space', DEFAULT_SPACE_OBJECTS, SPACE_PROPERTIES as any],
     ['land', 'land', DEFAULT_LAND_OBJECTS, LAND_PROPERTIES as any],
     ['text', 'text', DEFAULT_TEXT_OBJECTS, TEXT_PROPERTIES as any],
+    ['image', 'image', DEFAULT_IMAGE_OBJECTS, IMAGE_PROPERTIES as any],
+    ['gallery', 'gallery', DEFAULT_GALLERY_OBJECTS, GALLERY_PROPERTIES as any],
 ];
 
 for (const [objType, domain, defaults, lists] of families) {
     for (const t of Object.keys(defaults)) {
         const obj = { id: 'x', type: objType, meshSettings: {}, config: { ...(defaults[t] ?? {}), type: t } };
-        const family = ({ light: 'lights', particles: 'particles', effect: 'effects', grid: 'grids', environment: 'environment', space: 'space', land: 'land', text: 'text' } as const)[domain];
+        const family = ({ light: 'lights', particles: 'particles', effect: 'effects', grid: 'grids', environment: 'environment', space: 'space', land: 'land', text: 'text', image: 'image', gallery: 'gallery' } as const)[domain];
         check(`${objType}/${t}: animatable config == generated table`, () => {
             const expected = sorted(getGenerativeAnimatable(family, obj.config).map(p => p.value));
             assert.deepEqual(names(getAnimatableSpecs('object', obj), 'config.'), expected);
@@ -174,6 +178,15 @@ check('self-managed material: light / particles / effect / grid / environment / 
     for (const type of ['light', 'particles', 'effect', 'grid', 'environment', 'space', 'land']) {
         const obj = { id: 'x', type, meshSettings: {}, materialSettings: SAMPLE_MATERIALS.standard, config: { type: 'none' } };
         assert.equal(getPropertySpecs('object', obj).filter(s => s.domain === 'material').length, 0, type);
+    }
+});
+
+check('gallery: the layout gallery keeps its material, other variants draw their own', () => {
+    for (const key of Object.keys(DEFAULT_GALLERY_OBJECTS)) {
+        const obj = { id: 'x', type: 'gallery', meshSettings: {}, materialSettings: SAMPLE_MATERIALS.standard, config: { ...(DEFAULT_GALLERY_OBJECTS as any)[key] } };
+        const material = getPropertySpecs('object', obj).filter(s => s.domain === 'material').length;
+        assert.equal(material > 0, galleryTakesMaterial(obj.config), `${key} material`);
+        assert.ok(getPropertySpecs('object', obj).some(s => s.domain === 'gallery'), `${key} is in the gallery family`);
     }
 });
 

@@ -40,6 +40,8 @@ export * from './gridMigration';
 export * from './environmentMigration';
 export * from './objectMigration';
 export * from './textMigration';
+export * from './galleryMigration';
+export * from './imageMigration';
 export * from './environmentUtils';
 export * from './MaterialCompiler';
 export * from './nodeOverrides';

@@ -124,6 +124,16 @@ export interface TextObjectEffects {
     animations?: AnimationOptions[];
 }
 
+/** Keyframe animations for an image variant's config knobs (type 'image', config.type set: shards, …). */
+export interface ImageObjectEffects {
+    animations?: AnimationOptions[];
+}
+
+/** Keyframe animations for a gallery variant's config knobs (type 'gallery', config.type set: carousel, …). */
+export interface GalleryObjectEffects {
+    animations?: AnimationOptions[];
+}
+
 export interface RainEffects {
     /** Keyframe animations for rain config properties */
     animations?: AnimationOptions[];
@@ -157,6 +167,10 @@ export interface ObjectAnimations {
     land?: LandObjectEffects;
     /** Text domain: an animated text look's own config knobs (type 'text', config.type set). */
     text?: TextObjectEffects;
+    /** Image domain: an image variant's own config knobs (type 'image', config.type set). */
+    image?: ImageObjectEffects;
+    /** Gallery domain: a gallery variant's own config knobs (type 'gallery', config.type set). */
+    gallery?: GalleryObjectEffects;
     /** Sky domain: the sky's turbidity / rayleigh / mie / elevation / azimuth. */
     sky?: SkyEffects;
     /** Ocean domain: the water's config knobs (OceanWaterSettings). */
@@ -443,6 +457,10 @@ export interface MouseMoveInteractions {
     land?: MouseMoveDomain;
     /** Text domain: an animated text look's own config knobs. */
     text?: MouseMoveDomain;
+    /** Image domain: an image variant's own config knobs. */
+    image?: MouseMoveDomain;
+    /** Gallery domain: a gallery variant's own config knobs. */
+    gallery?: MouseMoveDomain;
     /** Sky domain: the sky's Preetham / sun knobs. */
     sky?: MouseMoveDomain;
     /** Ocean domain: the water's config knobs. */

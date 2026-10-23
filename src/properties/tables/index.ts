@@ -7,5 +7,7 @@ export * from './environmentProperties';
 export * from './spaceProperties';
 export * from './landProperties';
 export * from './textProperties';
+export * from './imageProperties';
+export * from './galleryProperties';
 export * from './materialBounds';
 export * from './geometryProperties';

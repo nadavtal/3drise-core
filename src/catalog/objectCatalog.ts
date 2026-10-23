@@ -6,9 +6,9 @@
 // own: variants come from the registry's defaults tables (a key added there shows
 // up here), words and starting transform / material from ./catalogInfo.
 //
-//   registry families  effect, particles, grid, light, environment, space, text
+//   registry families  effect, particles, grid, light, environment, space, text, image, gallery
 //                      → one variant per key of the defaults table (config = that default)
-//   curated families   mesh, gallery → the entries in catalogInfo (configs there)
+//   curated families   mesh → the entries in catalogInfo (configs there)
 //   no variants        group, model, path
 //
 // Output keeps the shapes the client already uses (ObjectTypeItem /
@@ -22,6 +22,8 @@ import { DEFAULT_SPACE_OBJECTS, SPACE_OBJECT_LABELS } from '../data/spaceDefault
 import { DEFAULT_ENVIRONMENT_OBJECTS, ENVIRONMENT_OBJECT_LABELS } from '../data/environmentDefaults';
 import { DEFAULT_LAND_OBJECTS, LAND_OBJECT_LABELS } from '../data/landDefaults';
 import { DEFAULT_TEXT_OBJECTS, TEXT_OBJECT_LABELS } from '../data/textDefaults';
+import { DEFAULT_IMAGE_OBJECTS, IMAGE_OBJECT_LABELS } from '../data/imageDefaults';
+import { DEFAULT_GALLERY_OBJECTS, GALLERY_OBJECT_LABELS } from '../data/galleryDefaults';
 import { CATALOG_TYPES, CATALOG_VARIANTS, type CatalogVariantInfo } from './catalogInfo';
 
 export interface CatalogObjectType {
@@ -61,6 +63,8 @@ const REGISTRY_FAMILIES: Record<string, Family> = {
     environment: { defaults: DEFAULT_ENVIRONMENT_OBJECTS as any, labels: ENVIRONMENT_OBJECT_LABELS },
     land: { defaults: DEFAULT_LAND_OBJECTS as any, labels: LAND_OBJECT_LABELS },
     text: { defaults: DEFAULT_TEXT_OBJECTS as any, labels: TEXT_OBJECT_LABELS },
+    image: { defaults: DEFAULT_IMAGE_OBJECTS as any, labels: IMAGE_OBJECT_LABELS },
+    gallery: { defaults: DEFAULT_GALLERY_OBJECTS as any, labels: GALLERY_OBJECT_LABELS },
 };
 
 /** 'paw print' → 'Paw Print', 'tunnelPyramid' → 'Tunnel Pyramid'. */

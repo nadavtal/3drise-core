@@ -13,6 +13,8 @@ export type * from './environmentObjects';
 export type * from './spaceObjects';
 export type * from './landObjects';
 export type * from './textObjects';
+export type * from './imageObjects';
+export type * from './galleryObjects';
 
 export type * from './handlerSettings';
 

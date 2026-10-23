@@ -6,6 +6,8 @@ import { ENVIRONMENT_OBJECTS_ANIMATABLE } from "../data/environmentDefaults";
 import { SPACE_OBJECTS_ANIMATABLE } from "../data/spaceDefaults";
 import { LAND_OBJECTS_ANIMATABLE } from "../data/landDefaults";
 import { TEXT_OBJECTS_ANIMATABLE } from "../data/textDefaults";
+import { IMAGE_OBJECTS_ANIMATABLE } from "../data/imageDefaults";
+import { GALLERY_OBJECTS_ANIMATABLE } from "../data/galleryDefaults";
 
 // =============================================================================
 // GENERATIVE ANIMATABLE REGISTRY — which config knobs may be driven per frame
@@ -28,7 +30,7 @@ export interface AnimatableConfigProperty {
     label: string;
 }
 
-export type GenerativeFamily = 'particles' | 'lights' | 'effects' | 'grids' | 'environment' | 'space' | 'land' | 'text';
+export type GenerativeFamily = 'particles' | 'lights' | 'effects' | 'grids' | 'environment' | 'space' | 'land' | 'text' | 'image' | 'gallery';
 
 // Partial: grids list only the types converted to the config pattern so far (effects list all).
 const FAMILIES: Record<GenerativeFamily, Partial<Record<string, AnimatableConfigProperty[]>>> = {
@@ -46,6 +48,10 @@ const FAMILIES: Record<GenerativeFamily, Partial<Record<string, AnimatableConfig
     land: LAND_OBJECTS_ANIMATABLE,
     // Animated text looks (type 'text', config.type set): handwriting, neonTube, fourierSketch. The legacy bitmap / 3D text is not in this table.
     text: TEXT_OBJECTS_ANIMATABLE,
+    // Image variants (type 'image', config.type set): one picture at a time from config.imageUrls, the variant animates every change.
+    image: IMAGE_OBJECTS_ANIMATABLE,
+    // Gallery variants (type 'gallery', config.type set): layout (frames on a layout, nothing animatable of its own), carousel, …
+    gallery: GALLERY_OBJECTS_ANIMATABLE,
 };
 
 /** The animatable knobs of one generative object, by family and config.type. */

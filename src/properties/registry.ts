@@ -23,6 +23,8 @@
 //   land             LAND_PROPERTIES[type];       animatable = LAND_OBJECTS_ANIMATABLE (mountains, hills, dunes, canyon)
 //   space            SPACE_PROPERTIES[type];      animatable = SPACE_OBJECTS_ANIMATABLE (stars, earth, solarSystem, shootingStars)
 //   text             TEXT_PROPERTIES[type];       animatable = TEXT_OBJECTS_ANIMATABLE (plain, handwriting, neonTube, …)
+//   image            IMAGE_PROPERTIES[type];      animatable = IMAGE_OBJECTS_ANIMATABLE (shards, …)
+//   gallery          GALLERY_PROPERTIES[type];    animatable = GALLERY_OBJECTS_ANIMATABLE (layout, …; the layout gallery's frames take the material)
 //   rain / clouds    the scene-level rain element (RainSettings) / legacy clouds object;  animatable = RAIN_ANIMATABLE_KEYS / CLOUD_ANIMATABLE_PROPERTIES
 //   text/plain/path  their controller lists (config knobs, structural)
 //   mesh (shapes)    SHAPE_CONTROLS[config.type] + MODE_CONTROLS[modeConfig.mode] (structural)
@@ -53,6 +55,8 @@ import { ENVIRONMENT_OBJECTS_ANIMATABLE } from '../data/environmentDefaults';
 import { LAND_OBJECTS_ANIMATABLE } from '../data/landDefaults';
 import { SPACE_OBJECTS_ANIMATABLE } from '../data/spaceDefaults';
 import { TEXT_OBJECTS_ANIMATABLE } from '../data/textDefaults';
+import { IMAGE_OBJECTS_ANIMATABLE } from '../data/imageDefaults';
+import { GALLERY_OBJECTS_ANIMATABLE, isGalleryObjectConfig, galleryTakesMaterial } from '../data/galleryDefaults';
 import { CLOUD_ANIMATABLE_PROPERTIES } from '../environment/cloudConfigs';
 import {
     type OptionalProperty,
@@ -71,6 +75,8 @@ import { ENVIRONMENT_PROPERTIES } from './tables/environmentProperties';
 import { LAND_PROPERTIES } from './tables/landProperties';
 import { SPACE_PROPERTIES } from './tables/spaceProperties';
 import { TEXT_PROPERTIES } from './tables/textProperties';
+import { IMAGE_PROPERTIES } from './tables/imageProperties';
+import { GALLERY_PROPERTIES } from './tables/galleryProperties';
 import { MATERIAL_PROPERTY_BOUNDS } from './tables/materialBounds';
 import type {
     DescribedProperty, PropertyDomain, PropertyElement, PropertyKind, PropertyOption, PropertySpec,
@@ -96,11 +102,15 @@ const MATERIAL_STRUCTURAL = new Set([
  * Objects that own their shader: their materialSettings (if any) never reach the
  * renderer, so they have no material properties. They animate through config.
  */
-export const SELF_MANAGED_MATERIAL_TYPES = new Set(['effect', 'grid', 'light', 'particles', 'environment', 'space', 'land', 'text']);
+export const SELF_MANAGED_MATERIAL_TYPES = new Set(['effect', 'grid', 'light', 'particles', 'environment', 'space', 'land', 'text', 'image']);
 
-/** True when the object draws with its own shaders (the object types above): it gets no material specs. */
+/**
+ * True when the object draws with its own shaders (the object types above), or a gallery variant that does: the
+ * layout gallery's frames take a material, so gallery is decided per object (config.type, galleryTakesMaterial).
+ * Such an object gets no material specs.
+ */
 export const selfManagesMaterial = (obj: { type?: string; config?: unknown } | null | undefined): boolean =>
-    !!obj && SELF_MANAGED_MATERIAL_TYPES.has(obj.type as string);
+    !!obj && (SELF_MANAGED_MATERIAL_TYPES.has(obj.type as string) || (obj.type === 'gallery' && isGalleryObjectConfig(obj.config) && !galleryTakesMaterial(obj.config)));
 
 const CAMERA_SPECS: PropertySpec[] = [
     { key: 'position', name: 'position', label: 'Position', kind: 'vec3', domain: 'camera', animatable: true },
@@ -300,6 +310,8 @@ function familyOf(obj: any): Family | null {
     const space = () => ({ domain: 'space' as const, list: (SPACE_PROPERTIES as Record<string, OptionalProperty[]>)[t!] ?? [], animatable: tableOf((SPACE_OBJECTS_ANIMATABLE as Record<string, any>)[t!]) });
     const land = () => ({ domain: 'land' as const, list: (LAND_PROPERTIES as Record<string, OptionalProperty[]>)[t!] ?? [], animatable: tableOf((LAND_OBJECTS_ANIMATABLE as Record<string, any>)[t!]) });
     const text = () => ({ domain: 'text' as const, list: (TEXT_PROPERTIES as Record<string, OptionalProperty[]>)[t!] ?? [], animatable: tableOf((TEXT_OBJECTS_ANIMATABLE as Record<string, any>)[t!]) });
+    const image = () => ({ domain: 'image' as const, list: (IMAGE_PROPERTIES as Record<string, OptionalProperty[]>)[t!] ?? [], animatable: tableOf((IMAGE_OBJECTS_ANIMATABLE as Record<string, any>)[t!]) });
+    const gallery = () => ({ domain: 'gallery' as const, list: (GALLERY_PROPERTIES as Record<string, OptionalProperty[]>)[t!] ?? [], animatable: tableOf((GALLERY_OBJECTS_ANIMATABLE as Record<string, any>)[t!]) });
 
     // Environment elements seen through the object view, so the Animation and
     // MouseMove panels (getAnimatableProperties) work on them like on any object.
@@ -321,6 +333,9 @@ function familyOf(obj: any): Family | null {
         if (type === 'land' && (LAND_OBJECTS_ANIMATABLE as Record<string, unknown>)[t]) return land();
         // Text looks only under the text object type (plain, handwriting, …).
         if (type === 'text' && (TEXT_OBJECTS_ANIMATABLE as Record<string, unknown>)[t]) return text();
+        if (type === 'image' && (IMAGE_OBJECTS_ANIMATABLE as Record<string, unknown>)[t]) return image();
+        // Gallery variants only under the gallery object type (layout, carousel, …).
+        if (type === 'gallery' && (GALLERY_OBJECTS_ANIMATABLE as Record<string, unknown>)[t]) return gallery();
         if (t === 'rain') return { domain: 'rain', list: rainOptionalProperties, animatable: new Map(RAIN_ANIMATABLE_KEYS.map(k => [k, propertyLabel(k)])) };
         if (t === 'clouds') return { domain: 'clouds', list: cloudsOptionalProperties, animatable: new Map(CLOUD_ANIMATABLE_PROPERTIES.map(k => [k, propertyLabel(k)])) };
         // Older objects carry a generative config under another object type.
@@ -450,11 +465,11 @@ export function getAnimatableSpecs(element: PropertyElement, settings: any): Pro
 
 /**
  * Object config families the animation timeline keys. The V2 applier drives
- * `config.*` through the object's live config handle, which these seven register;
+ * `config.*` through the object's live config handle, which these nine register;
  * rain and the legacy cloud object have per-frame knobs for the keyframe /
  * mouse-move systems only.
  */
-export const TRACK_CONFIG_DOMAINS: ReadonlySet<PropertyDomain> = new Set<PropertyDomain>(['light', 'particles', 'effect', 'grid', 'environment', 'space', 'land', 'text']);
+export const TRACK_CONFIG_DOMAINS: ReadonlySet<PropertyDomain> = new Set<PropertyDomain>(['light', 'particles', 'effect', 'grid', 'environment', 'space', 'land', 'text', 'image', 'gallery']);
 
 /** What an animation clip can key on this element (timeline track picker, AI clips). */
 export function getTrackSpecs(element: PropertyElement, settings: any): PropertySpec[] {

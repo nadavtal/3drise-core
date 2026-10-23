@@ -11,6 +11,8 @@ export * from './environmentDefaults';
 export * from './spaceDefaults';
 export * from './landDefaults';
 export * from './textDefaults';
+export * from './imageDefaults';
+export * from './galleryDefaults';
 export * from './shadowDefaults';
 export * from './lightShadowDefaults';
 export * from './defaults';

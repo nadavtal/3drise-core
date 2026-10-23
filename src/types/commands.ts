@@ -36,7 +36,9 @@ export type SceneCommand =
     /** `ref`: AnimationClip id. */
     | { id: string; kind: 'animationClip'; ref: string; command: ScenePlaybackCommand; options?: ScenePlayOptions }
     /** `ref`: AnimationSequence id. */
-    | { id: string; kind: 'animationSequence'; ref: string; command: ScenePlaybackCommand; options?: ScenePlayOptions };
+    | { id: string; kind: 'animationSequence'; ref: string; command: ScenePlaybackCommand; options?: ScenePlayOptions }
+    /** `ref`: a gallery object's id, or '@all' (every gallery) / '@view' (the one in view). `goTo` takes `index`. An event: no on / off state. */
+    | { id: string; kind: 'gallery'; ref: string; command: 'next' | 'prev' | 'goTo' | 'pause' | 'resume'; index?: number };
 
 export type SceneCommandKind = SceneCommand['kind'];
 
@@ -47,7 +49,8 @@ export interface SceneCommandList {
 }
 
 /** What fired a command. */
-export type TriggerHost = 'interaction' | 'action' | 'sequence' | 'clip' | 'code' | 'agent' | 'studio';
+/** `key`: a keyboard key binding (sceneSettings.keyPadSettings.bindings). */
+export type TriggerHost = 'interaction' | 'action' | 'sequence' | 'clip' | 'code' | 'agent' | 'studio' | 'key';
 
 export interface TriggerSource {
     host: TriggerHost;
