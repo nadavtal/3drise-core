@@ -24,6 +24,11 @@ import { DEFAULT_LAND_OBJECTS, LAND_OBJECT_LABELS } from '../data/landDefaults';
 import { DEFAULT_TEXT_OBJECTS, TEXT_OBJECT_LABELS } from '../data/textDefaults';
 import { DEFAULT_IMAGE_OBJECTS, IMAGE_OBJECT_LABELS } from '../data/imageDefaults';
 import { DEFAULT_GALLERY_OBJECTS, GALLERY_OBJECT_LABELS } from '../data/galleryDefaults';
+import { DEFAULT_URBAN_OBJECTS, URBAN_OBJECT_LABELS } from '../data/urbanDefaults';
+import { DEFAULT_VEGETATION_OBJECTS, VEGETATION_OBJECT_LABELS } from '../data/vegetationDefaults';
+import { DEFAULT_SPORTS_OBJECTS, SPORTS_OBJECT_LABELS } from '../data/sportsDefaults';
+import { DEFAULT_WATER_OBJECTS, WATER_OBJECT_LABELS } from '../data/waterDefaults';
+import { DEFAULT_WATER_BODIES, WATER_BODY_LABELS } from '../data/oceanDefaults';
 import { CATALOG_TYPES, CATALOG_VARIANTS, type CatalogVariantInfo } from './catalogInfo';
 
 export interface CatalogObjectType {
@@ -65,6 +70,14 @@ const REGISTRY_FAMILIES: Record<string, Family> = {
     text: { defaults: DEFAULT_TEXT_OBJECTS as any, labels: TEXT_OBJECT_LABELS },
     image: { defaults: DEFAULT_IMAGE_OBJECTS as any, labels: IMAGE_OBJECT_LABELS },
     gallery: { defaults: DEFAULT_GALLERY_OBJECTS as any, labels: GALLERY_OBJECT_LABELS },
+    urban: { defaults: DEFAULT_URBAN_OBJECTS as any, labels: URBAN_OBJECT_LABELS },
+    vegetation: { defaults: DEFAULT_VEGETATION_OBJECTS as any, labels: VEGETATION_OBJECT_LABELS },
+    sports: { defaults: DEFAULT_SPORTS_OBJECTS as any, labels: SPORTS_OBJECT_LABELS },
+    // Placed water bodies (pool, pond, lake, canal): the ocean surface's object host — one shader, variants are
+    // config patches over the lake type; config.type stays 'ocean' (the surface's own discriminator).
+    // The same object type also holds the moving-water variants (waterfall, fountain, stream): their own
+    // constructions, registered by the integrator in waterDefaults.ts.
+    water: { defaults: { ...DEFAULT_WATER_BODIES, ...DEFAULT_WATER_OBJECTS } as any, labels: { ...WATER_BODY_LABELS, ...WATER_OBJECT_LABELS } },
 };
 
 /** 'paw print' → 'Paw Print', 'tunnelPyramid' → 'Tunnel Pyramid'. */

@@ -452,6 +452,8 @@ export interface StaggerSpec {
     targets: string[];
     /** Seconds between consecutive members. */
     offset: number;
+    /** Extra seconds per object id, on top of its place in the stagger (optional, per member). */
+    delays?: Record<string, number> | null;
     order?: StaggerOrder | null;
     /** distanceFrom: [x,y,z]; null = scene centre. */
     origin?: number[] | null;
@@ -500,7 +502,7 @@ export function expandStagger(spec: StaggerSpec, objects: Record<string, Stagger
     const makeId = opts.makeId ?? defaultId;
     const n = ids.length;
     return ids.map((id, i) => {
-        const shift = i * Math.max(0, spec.offset);
+        const shift = i * Math.max(0, spec.offset) + Math.max(0, spec.delays?.[id] ?? 0);
         let keys: GenKeyframe[];
         if (spec.track.gen) {
             keys = bakeTrack(spec.track.gen, { ...opts, base: objects[id].base, i, n, makeId });

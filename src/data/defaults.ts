@@ -19,10 +19,8 @@ export const DEFAULTS_CONFIGS = {
         sectionThickness: 1.5,
         sectionColor: '#ffffff',
     },
-    water: {
-        planeSize: [100, 100],
-        planeSegments: 64,
-    },
+    // (the legacy flat-plane `water` object is gone: `water` is now the placed
+    // water body, whose defaults live in data/oceanDefaults.ts)
     stars: {
         rotateSpeed: 0.1,
         count: 5000,
@@ -67,9 +65,6 @@ export const DEFAULTS_TRANSFORM: {
             rain: {
                 scale: [number, number, number];
             };
-            water: {
-                rotation: [number, number, number];
-            };
             stars: {
                 scale: [number, number, number];
             };
@@ -82,16 +77,11 @@ export const DEFAULTS_TRANSFORM: {
             };
         } = {
     rain: { scale: [100, 100, 100] },
-    water: { rotation: [-Math.PI / 2, 0, 0] },
     stars: { scale: [500, 500, 500] },
     shootingStars: { scale: [500, 500, 500] },
     clouds: { position: [0, 100, 0], rotation: [-Math.PI / 2, Math.PI, 0] },
 };
 export const DEFAULTS_MATERIAL: {
-            water: {
-                materialType: "water";
-                materialVariant: string;
-            };
             stars: {
                 materialType: "particles";
             };
@@ -100,11 +90,6 @@ export const DEFAULTS_MATERIAL: {
                 materialVariant: string;
             };
         } = {
-    water: {
-        materialType: 'water',
-        materialVariant: 'Lake',
-        ...MaterialRegistryAPI.getVariantDefinition('Lake').defaultSettings,
-    },
     stars: {
         materialType: 'particles',
     },

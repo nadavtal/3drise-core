@@ -1,6 +1,8 @@
 import { BoxGeometry, BufferGeometry, CapsuleGeometry, Color, ConeGeometry, CylinderGeometry, DodecahedronGeometry, Float32BufferAttribute, IcosahedronGeometry, LineBasicMaterial, Mesh, MeshStandardMaterial, OctahedronGeometry, PlaneGeometry, RingGeometry, Shape, ShapeGeometry, SphereGeometry, TetrahedronGeometry, TorusGeometry, ExtrudeGeometry, } from 'three';
 import type { BaseMeshOptions, MeshGeometryConfig } from "../types/mesh";
 import type { MaterialSettings } from "../types/materials";
+import { TorusKnotGeometry } from 'three';
+import { buildParametricGeometry, isParametricShape, PARAMETRIC_SHAPE_DEFAULTS, type ParametricShapeConfig } from '../geometry/parametricGeometry';
 export type CreatedMeshByTypeResult = {
     mesh: Mesh;
     config: MeshGeometryConfig;
@@ -259,7 +261,19 @@ const createCapsule = (options, mesh) => {
 };
 const getMeshGeometryConfig = (meshData) => {
     const type = (meshData.type || 'box');
+    // parametric recipes: the config IS the geometry config (defaults filled); one builder with the viewer's shapeGenerators
+    if (isParametricShape(type)) return { ...PARAMETRIC_SHAPE_DEFAULTS[type], ...meshData, type };
     switch (type) {
+        case 'torusKnot':
+            return {
+                type,
+                radius: safeNumber(meshData.radius, 1, 0.0001),
+                tube: safeNumber(meshData.tube, 0.3, 0.0001),
+                p: safeNumber(meshData.p, 2, 1),
+                q: safeNumber(meshData.q, 3, 1),
+                radialSegments: safeNumber(meshData.radialSegments, 12, 3),
+                tubularSegments: safeNumber(meshData.tubularSegments, 128, 16),
+            };
         case 'box':
             return {
                 type,
@@ -413,7 +427,15 @@ export const createMeshByType = (meshData: BaseMeshOptions): CreatedMeshByTypeRe
         return null;
     const mesh = createMesh(config);
     let createdMesh = null;
+    if (isParametricShape(geometryConfig.type)) {
+        mesh.geometry = buildParametricGeometry(geometryConfig as ParametricShapeConfig);
+        return { mesh, config: geometryConfig };
+    }
     switch (geometryConfig.type) {
+        case 'torusKnot':
+            mesh.geometry = new TorusKnotGeometry(geometryConfig.radius, geometryConfig.tube, geometryConfig.tubularSegments, geometryConfig.radialSegments, geometryConfig.p, geometryConfig.q);
+            createdMesh = mesh;
+            break;
         case 'box':
             createdMesh = createBox(geometryConfig.size, mesh);
             break;

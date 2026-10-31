@@ -3,7 +3,11 @@ export interface OptionalProperty {
     name: string;
     description: string;
     /** `object`: one scene object id, `objects`: a list of them — picked from the scene tree (stored as id strings). */
-    type: 'number' | 'string' | 'boolean' | 'color' | 'vector3' | 'vector2' | 'select' | 'object' | 'objects';
+    /** `texture`: a library texture set ({ set, maps, tileSize }, picked in the texture gallery); `points`: a polyline of [x, z] metres. Both structural. */
+    /** `layoutRef`: a layout used by reference (a `layout` asset id, or 'preset:<kind>:<id>' for a built-in layout — 'preset:<id>' is a built-in grid) — picked with LayoutButton; `layoutKind` says which kind. `textureMap`: texture sets by a key (e.g. per ground id). */
+    type: 'number' | 'string' | 'boolean' | 'color' | 'vector3' | 'vector2' | 'select' | 'object' | 'objects' | 'texture' | 'points' | 'layoutRef' | 'textureMap';
+    /** `layoutRef` rows: the layout kind it takes. */
+    layoutKind?: 'path' | 'area' | 'grid';
     min?: number;
     max?: number;
     step?: number;
@@ -21,6 +25,11 @@ export interface OptionalProperty {
     default?: unknown;
     /** Controller tab the row lives on, overriding the panel's own grouping (e.g. a particles 'shells' tab). */
     tab?: string;
+    /** `points` rows: 2 = [x, z] (default) or 3 = [x, y, z]; `list` = a list of point lists (hole outlines). */
+    dims?: 2 | 3;
+    list?: boolean;
+    /** `string` rows: a multi-line text (an SVG path, a script). */
+    multiline?: boolean;
     /** The panel shows the row only while every condition holds: `{ key, is }` (equal) or `{ key, not }` (different),
      *  read from the current values over the defaults. Display only — the knob keeps its value either way. */
     showWhen?: PropertyCondition[];
@@ -177,9 +186,9 @@ function toOceanOptional(schema: OceanPropertySchema[], type?: WaterType, host?:
         .filter((p) => !p.advanced)
         .filter((p) => !p.types || !type || p.types.includes(type))
         .filter((p) => !p.hosts || !host || p.hosts.includes(host))
-        // Only ranged numbers and colours have a row. `size` is a vector2 the
-        // Transform tab already owns for a placed body.
-        .filter((p) => !p.kind || p.kind === 'number' || p.kind === 'color' || p.kind === 'boolean')
+        // Ranged numbers, colours, switches and choices have a row. `size` is a
+        // vector2 the Transform tab already owns for a placed body.
+        .filter((p) => !p.kind || p.kind === 'number' || p.kind === 'color' || p.kind === 'boolean' || p.kind === 'select')
         .map((p) => ({
             name: p.key,
             description: p.unit ? `${p.description} (${p.unit})` : p.description,
@@ -754,7 +763,7 @@ export const cloudQualityOptionalProperties: OptionalProperty[] = [
 // so the whitelist is built per-layout from that same config.
 
 import { getLayoutSettingsFields } from '../../utils/GalleryLayouts';
-import type { GalleryLayout } from '../../types/gallery';
+import type { GalleryLayout, ObjectLayoutKind } from '../../types/gallery';
 
 export const GALLERY_FIELD_DEFS: Record<string, OptionalProperty> = {
     columns: { name: 'columns', description: 'Number of columns in the grid', type: 'number', min: 1, max: 12, step: 1 },
@@ -821,10 +830,40 @@ export const galleryLayoutOptionalProperties = (layout: GalleryLayout): Optional
     ...layoutFieldOptionalProperties(layout),
 ];
 
-/** meshSettings.layout — the rows above the per-layout fields in the Transform tab. */
+/** meshSettings.layout — the rows above the per-layout fields in the Transform tab.
+ *  The panel replaces count's max with getObjectLayoutSupport(obj).maxCount. */
 export const objectLayoutCommonProperties: OptionalProperty[] = [
     { name: 'enabled', description: 'Repeat this object across the selected layout', type: 'boolean' },
-    { name: 'count', description: 'Number of copies', type: 'number', min: 1, max: 100, step: 1 },
+    { name: 'count', description: 'Number of copies (an area stops earlier when it is full)', type: 'number', min: 1, max: 5000, step: 1 },
+];
+
+/** Fields of the object-only layouts (area, path). Points are set from scripts (no editor yet). */
+const OBJECT_LAYOUT_FIELD_DEFS: Record<string, OptionalProperty> = {
+    areaShape: { name: 'areaShape', label: 'Area shape', description: 'Rectangle (width × depth) or a polygon of points (set from a script)', type: 'select', options: ['rectangle', 'polygon'], optionLabels: ['Rectangle', 'Polygon'] },
+    width: { name: 'width', description: 'Size of the area along X', type: 'number', min: 1, max: 2000, step: 1, unit: 'm', showWhen: [{ key: 'areaShape', is: 'rectangle' }] },
+    depth: { name: 'depth', description: 'Size of the area along Z', type: 'number', min: 1, max: 2000, step: 1, unit: 'm', showWhen: [{ key: 'areaShape', is: 'rectangle' }] },
+    areaSpacing: { name: 'spacing', description: 'No two copies closer than this', type: 'number', min: 0.1, max: 100, step: 0.1, unit: 'm' },
+    pathSpacing: { name: 'spacing', description: 'Distance between copies along the path', type: 'number', min: 0.1, max: 100, step: 0.1, unit: 'm' },
+    facePath: { name: 'facePath', label: 'Face the path', description: 'Copies turn to face along the path', type: 'boolean' },
+    seed: { name: 'seed', description: 'Change to reshuffle the placement and the variation', type: 'number', min: 1, max: 999, step: 1 },
+};
+
+/** The layout-math rows for an object layout: the gallery shapes' fields, or area / path's. */
+export const objectLayoutFieldOptionalProperties = (layout: ObjectLayoutKind): OptionalProperty[] => {
+    const d = OBJECT_LAYOUT_FIELD_DEFS;
+    if (layout === 'area') return [d.areaShape, d.width, d.depth, d.areaSpacing];
+    if (layout === 'path') return [d.pathSpacing, d.facePath];
+    return layoutFieldOptionalProperties(layout).filter(p => p.name !== 'seed');
+};
+
+/** Per-copy variation and ground placement (every object layout). */
+export const objectLayoutVariationProperties: OptionalProperty[] = [
+    { name: 'scaleJitter', label: 'Size variation', description: 'How much copy sizes differ (1 = from half to one and a half)', type: 'number', min: 0, max: 1, step: 0.01 },
+    { name: 'rotationJitter', label: 'Turn variation', description: 'How much copies are turned around their vertical axis (1 = any direction)', type: 'number', min: 0, max: 1, step: 0.01 },
+    { name: 'tintJitter', label: 'Tint variation', description: 'How much copy colours drift in hue and lightness around the material colour (mesh and model)', type: 'number', min: 0, max: 1, step: 0.01 },
+    OBJECT_LAYOUT_FIELD_DEFS.seed,
+    { name: 'onGround', label: 'On the ground', description: 'Drop each copy onto the terrain or land under it', type: 'boolean' },
+    { name: 'alignToSlope', label: 'Follow the slope', description: 'Tilt each copy to the slope of the ground under it', type: 'boolean', showWhen: [{ key: 'onGround', is: true }] },
 ];
 
 // Export all optional properties as a collection for easy access

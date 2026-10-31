@@ -10,11 +10,13 @@
 // the data stays where it is maintained and every consumer reads the same answer.
 //
 
-/** `objects`: a list of scene object ids (picked from the scene; set from a script as an array). */
-export type PropertyKind = 'number' | 'color' | 'boolean' | 'select' | 'vec3' | 'vec2' | 'string' | 'texture' | 'objects';
+/** `objects`: a list of scene object ids (picked from the scene; set from a script as an array).
+ *  `layout`: the meshSettings.layout block, set whole or in part and checked by validateObjectLayout. */
+export type PropertyKind = 'number' | 'color' | 'boolean' | 'select' | 'vec3' | 'vec2' | 'string' | 'texture' | 'objects' | 'layout' | 'textureSet' | 'points' | 'layoutRef' | 'textureMap' | 'shapeLayout';
 
 /** What a property belongs to. Objects are all 'object'; the kind of object is read from its settings. */
-export type PropertyElement = 'object' | 'camera' | 'sky' | 'clouds' | 'ocean' | 'terrain';
+/** 'render' and 'time' are keyed views over stored settings (core/render/renderView). */
+export type PropertyElement = 'object' | 'camera' | 'sky' | 'clouds' | 'ocean' | 'terrain' | 'render' | 'time';
 
 export const ENVIRONMENT_ELEMENTS = ['sky', 'clouds', 'ocean', 'terrain'] as const;
 export type EnvironmentElement = (typeof ENVIRONMENT_ELEMENTS)[number];
@@ -26,8 +28,9 @@ export type EnvironmentElement = (typeof ENVIRONMENT_ELEMENTS)[number];
  */
 export type PropertyDomain =
     | 'transform' | 'material' | 'edges'
-    | 'light' | 'shadow' | 'particles' | 'effect' | 'grid' | 'environment' | 'space' | 'land' | 'text' | 'image' | 'gallery' | 'rain' | 'clouds' | 'config'
-    | 'camera' | 'sky' | 'stars' | 'cirrus' | 'thunder' | 'ocean' | 'terrain';
+    | 'light' | 'shadow' | 'particles' | 'effect' | 'grid' | 'environment' | 'space' | 'land' | 'text' | 'image' | 'gallery' | 'urban' | 'vegetation' | 'sports' | 'water' | 'rain' | 'clouds' | 'config'
+    | 'camera' | 'sky' | 'stars' | 'cirrus' | 'thunder' | 'ocean' | 'terrain'
+    | 'render' | 'time';
 
 export interface PropertyOption {
     value: string;
@@ -56,6 +59,12 @@ export interface PropertySpec {
     group?: string;
     /** Can be driven per frame. false = structural: set only. */
     animatable: boolean;
+    /** points: 2 = [x, z] (default) or 3 = [x, y, z]; list = a list of point lists. string: multiline text. */
+    dims?: 2 | 3;
+    list?: boolean;
+    multiline?: boolean;
+    /** layoutRef: the layout kind the property takes (a built-in of another kind is refused). */
+    layoutKind?: 'path' | 'area' | 'grid';
 }
 
 export interface DescribedProperty extends PropertySpec {

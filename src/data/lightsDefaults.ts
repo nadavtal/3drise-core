@@ -22,6 +22,7 @@ export const LIGHT_LABELS: Record<LightType, string> = {
     ledArray: 'LED Array',
     fluorescentTube: 'Fluorescent Tube',
     candle: 'Candle',
+    projector: 'Projector',
 };
 
 /** Config defaults per light type — what the renderer falls back to, and what Reset restores. */
@@ -71,6 +72,7 @@ export const DEFAULT_LIGHTS: Record<LightType, Record<string, unknown>> = {
         body: 'pillar', waxColor: '#f3e7d2', height: 0.14, radius: 0.028,
         melt: 0.45, waxGlow: 0.3,
     },
+    projector: { type: 'projector', enabled: true, intensity: 600, color: '#ffffff', distance: 0, decay: 1, on: true, colorMode: 'temperature', temperature: 5700, lamp: 'led', columns: 3, rows: 2, spread: 0.42, aspect: 0.5, edgeSoftness: 0.35, tilt: 0.42, halo: 1, warmup: 0.15, stagger: 0.25, restrike: 4, flicker: 0, show: 'none', showRate: 1, housingColor: '#2a2e33', shadow: { enabled: true, mapSize: 2048, bias: -0.0004, normalBias: 0.02, radius: 1, intensity: 1, cameraNear: 0.5, cameraFar: 300, cameraFov: 50, focus: 1 } },
 };
 
 export interface AnimatableLightProperty {
@@ -161,6 +163,20 @@ export const LIGHTS_ANIMATABLE: Record<LightType, AnimatableLightProperty[]> = {
         { value: 'halo', label: 'Halo' },
         { value: 'waxGlow', label: 'Wax Glow' },
         { value: 'ignite', label: 'Ignition' },
+    ],
+    projector: [
+        { value: 'intensity', label: 'Intensity' },
+        { value: 'temperature', label: 'Temperature' },
+        { value: 'distance', label: 'Distance' },
+        { value: 'decay', label: 'Decay' },
+        { value: 'color', label: 'Color' },
+        { value: 'spread', label: 'Spread' },
+        { value: 'tilt', label: 'Tilt' },
+        { value: 'warmup', label: 'Warm-up' },
+        { value: 'showRate', label: 'Show Rate' },
+        { value: 'flicker', label: 'Flicker' },
+        { value: 'halo', label: 'Glow' },
+        { value: 'housingColor', label: 'Housing Colour' },
     ],
 };
 

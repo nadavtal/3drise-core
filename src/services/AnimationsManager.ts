@@ -1,4 +1,6 @@
 import { applyEasing, gsapEasingMap } from '../utils/easingUtils';
+import { buildPathLine, pathDrawnPoints } from '../utils/pathLine';
+import { layoutPresetOfRef } from '../utils/layoutPresets';
 import type { PathConfig } from "../types/animations";
 import type { Vector3Array } from "../types/scene3d";
 
@@ -62,13 +64,22 @@ class AnimationsManager {
      * Get a path by ID
      */
     getPath(pathId: string): PathConfig | undefined {
-        return (this.paths.get(pathId) as any);
+        return (this.paths.get(pathId) as any) ?? this.presetPath(pathId);
+    }
+    /** A built-in path ('preset:path:<id>', utils/pathPresets) as a PathConfig, built once on first use. */
+    private presetPath(ref: string): PathConfig | undefined {
+        const p = layoutPresetOfRef(ref);
+        if (p?.kind !== 'path') return undefined;
+        const line = buildPathLine(p.preset.path);
+        const config = { id: ref, name: p.preset.name, points: pathDrawnPoints(p.preset.path), curve: p.preset.path.curve, smoothCorners: p.preset.path.smoothCorners, closed: line.closed, line } as PathConfig;
+        this.paths.set(ref, config);
+        return config;
     }
     /**
      * Get path points by ID
      */
     getPathPoints(pathId: string): Vector3Array[] | undefined {
-        return (this.paths.get(pathId) as any)?.points;
+        return this.getPath(pathId)?.points;
     }
     /**
      * Get all paths

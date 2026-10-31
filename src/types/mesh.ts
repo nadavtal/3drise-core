@@ -22,6 +22,9 @@ export type MeshSettings = TransformSettings & {
     name: string;
     /** Repeat the object across a gallery layout (mesh, model, effect, light). */
     layout?: ObjectLayoutSettings;
+    /** Linked instance: the id of the object whose look this one is (it owns only its transform,
+     *  visibility and interactions). See utils/linkedInstances.ts. */
+    instanceOf?: string | null;
 };
 
 export type BaseMeshOptions = MeshSettings & {

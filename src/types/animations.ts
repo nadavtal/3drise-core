@@ -54,6 +54,10 @@ export interface PathConfig {
     applyRotation?: boolean;
     /** Position offset to add to the calculated path position [x, y, z] */
     offset?: Vector3Array;
+    /** The finished line (core buildPathLine) — what a path animation follows. Paths from layouts have it; without it the points are taken as the line. */
+    line?: import('../utils/pathLine').PathLine;
+    /** The line is a loop. */
+    closed?: boolean;
     pointSize?: number;
     lineWidth?: number;
 }

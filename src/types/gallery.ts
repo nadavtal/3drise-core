@@ -53,14 +53,50 @@ export type LayoutParams = Pick<GalleryLayoutSettings,
     'heightIncrement' | 'arcAngle' | 'amplitude' | 'frequency' | 'layers' | 'depth' |
     'scaleFactor' | 'bounds' | 'seed'>;
 
+/** Object layouts: the gallery shapes plus the scatter kinds only objects use. */
+export type ObjectLayoutKind = GalleryLayout | 'area' | 'path';
+
+/** `variantMix`: copies pick a variant of the object (config[field]) by weight. */
+export interface LayoutVariantMix {
+    /** Config field that holds the variant. Default 'type'. */
+    field?: string;
+    /** Variant keys the copies choose from. */
+    values: string[];
+    /** Relative weights, one per value. Missing = equal. */
+    weights?: number[];
+}
+
 /**
- * `meshSettings.layout` — repeat a mesh / model / effect / light across a gallery layout.
+ * `meshSettings.layout` — repeat a mesh / model / effect / light across a layout.
  * Lives in meshSettings (a JSON column) so it persists with no data-center change.
+ * Mesh and model copies are instanced (InstancedLayout); effects and lights are full copies.
  */
 export interface ObjectLayoutSettings extends LayoutParams {
     enabled: boolean;
-    layout: GalleryLayout;
+    layout: ObjectLayoutKind;
     count: number;
+    // ---- per-copy variation, deterministic from `seed` (each its own random stream)
+    /** 0–1: copy size spreads over ×[1 − j/2, 1 + j/2]. */
+    scaleJitter?: number;
+    /** 0–1: copy turn around Y spreads over ±j·π. */
+    rotationJitter?: number;
+    /** 0–1: hue / lightness spread around the material colour (instanced copies). */
+    tintJitter?: number;
+    variantMix?: LayoutVariantMix | null;
+    // ---- surface placement
+    /** Drop each copy onto the terrain / land height at its XZ. */
+    onGround?: boolean;
+    /** With onGround: tilt each copy to the ground's slope. */
+    alignToSlope?: boolean;
+    // ---- area / path
+    /** area: 'rectangle' (width × depth) or 'polygon' (points). */
+    areaShape?: 'rectangle' | 'polygon';
+    /** area rectangle: size along X (depth is the size along Z). */
+    width?: number;
+    /** area polygon / path polyline: [x, z] points in the object's local space. */
+    points?: Array<[number, number]>;
+    /** path: copies turn to face along the path. Default true. */
+    facePath?: boolean;
 }
 
 export interface GalleryLayoutConfig {

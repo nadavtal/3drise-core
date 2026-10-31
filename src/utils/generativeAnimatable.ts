@@ -8,6 +8,10 @@ import { LAND_OBJECTS_ANIMATABLE } from "../data/landDefaults";
 import { TEXT_OBJECTS_ANIMATABLE } from "../data/textDefaults";
 import { IMAGE_OBJECTS_ANIMATABLE } from "../data/imageDefaults";
 import { GALLERY_OBJECTS_ANIMATABLE } from "../data/galleryDefaults";
+import { URBAN_OBJECTS_ANIMATABLE } from "../data/urbanDefaults";
+import { VEGETATION_OBJECTS_ANIMATABLE } from "../data/vegetationDefaults";
+import { SPORTS_OBJECTS_ANIMATABLE } from "../data/sportsDefaults";
+import { WATER_OBJECTS_ANIMATABLE } from "../data/waterDefaults";
 
 // =============================================================================
 // GENERATIVE ANIMATABLE REGISTRY — which config knobs may be driven per frame
@@ -30,7 +34,7 @@ export interface AnimatableConfigProperty {
     label: string;
 }
 
-export type GenerativeFamily = 'particles' | 'lights' | 'effects' | 'grids' | 'environment' | 'space' | 'land' | 'text' | 'image' | 'gallery';
+export type GenerativeFamily = 'particles' | 'lights' | 'effects' | 'grids' | 'environment' | 'space' | 'land' | 'text' | 'image' | 'gallery' | 'urban' | 'vegetation' | 'sports' | 'water';
 
 // Partial: grids list only the types converted to the config pattern so far (effects list all).
 const FAMILIES: Record<GenerativeFamily, Partial<Record<string, AnimatableConfigProperty[]>>> = {
@@ -52,6 +56,14 @@ const FAMILIES: Record<GenerativeFamily, Partial<Record<string, AnimatableConfig
     image: IMAGE_OBJECTS_ANIMATABLE,
     // Gallery variants (type 'gallery', config.type set): layout (frames on a layout, nothing animatable of its own), carousel, …
     gallery: GALLERY_OBJECTS_ANIMATABLE,
+    // Urban variants (type 'urban', config.type set): building, block, road, streetFurniture — the context city kit.
+    urban: URBAN_OBJECTS_ANIMATABLE,
+    // Vegetation variants (type 'vegetation', config.type set): tree, bush, grass, flowers, crops, ivy, hedge, fruit, vegetable.
+    vegetation: VEGETATION_OBJECTS_ANIMATABLE,
+    // Sports variants (type 'sports', config.type set): court, ball, equipment, goal.
+    sports: SPORTS_OBJECTS_ANIMATABLE,
+    // Water variants (type 'water', config.type set): waterfall, fountain, stream.
+    water: WATER_OBJECTS_ANIMATABLE,
 };
 
 /** The animatable knobs of one generative object, by family and config.type. */

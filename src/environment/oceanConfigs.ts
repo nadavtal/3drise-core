@@ -38,7 +38,8 @@ export type WaterHost = 'world' | 'object';
 /** Gerstner today; the FFT cascades land behind the same interface. */
 export type WaveModel = 'gerstner' | 'fft';
 
-export type ReflectionMode = 'planar' | 'env' | 'off';
+export type ReflectionMode = 'planar' | 'baked' | 'env' | 'off';
+
 
 export type TerrainInteraction = 'auto' | 'on' | 'off';
 
@@ -80,6 +81,16 @@ export interface OceanSurfaceConfig {
     /** Angular spread of the wave train about the wind bearing, in degrees. Zero
      *  gives a corduroy of parallel crests; real seas run 25-40. */
     directionalSpread: number;
+    /** Current: how fast the water itself moves, in m/s. 0 is still water. The
+     *  waves, their foam and the fine ripple are carried downstream by it (the
+     *  shader samples the field at position − current × time, integrated on the
+     *  CPU so changing the speed never jumps), and the ripple stretches into
+     *  streaks along it — that is what makes water read as running rather than
+     *  merely wind-blown. */
+    flowSpeed: number;
+    /** Bearing the current runs toward, in degrees, in the water's own frame —
+     *  the same convention as `windBearing` (0 = +z, 90 = +x). */
+    flowDirection: number;
     /** Number of trochoidal components summed. Cost is linear in it, and every
      *  component is a sin and a cos per vertex. */
     waveComponents: number;
@@ -137,6 +148,10 @@ export interface OceanSurfaceConfig {
     detailSize: number;
 
     // ---- lighting and integration ----
+    /** What the surface reflects. `env`: the sky it is drawn under (free).
+     *  `planar`: asks for the scene's one mirrored render — granted to the world
+     *  ocean, else to the largest planar body near the camera; the rest fall
+     *  back to `env` that frame. `off`: a flat sky fill. */
     reflection: ReflectionMode;
     /** Strength of the refracted (see-through) term once the grab exists. */
     refraction: number;
@@ -228,6 +243,8 @@ const surfaceBase: Omit<OceanSurfaceConfig, 'enabled'> = {
     windBearing: 210,
     fetch: 300,
     directionalSpread: 32,
+    flowSpeed: 0,
+    flowDirection: 90,
     waveComponents: 20,
     amplitudeScale: 1,
     choppiness: 0.85,
@@ -250,7 +267,7 @@ const surfaceBase: Omit<OceanSurfaceConfig, 'enabled'> = {
     detailStrength: 0.55,
     detailSize: 2.2,
 
-    reflection: 'planar',
+    reflection: 'env',
     refraction: 1,
     ambient: 1,
     aerialPerspective: 0.00009,
@@ -428,6 +445,9 @@ export interface OceanPropertySchema {
      *  no size; showing either is worse than hiding it, because a row that does
      *  nothing reads as a bug in the renderer. */
     hosts?: WaterHost[];
+    /** On the short list a placed body's Water tab shows before "Advanced". Panel
+     *  only: unlike `advanced` it hides nothing from the registry or the AI. */
+    simple?: boolean;
 }
 
 export const OCEAN_SCHEMA: OceanPropertySchema[] = [
@@ -439,6 +459,8 @@ export const OCEAN_SCHEMA: OceanPropertySchema[] = [
     { key: 'windSpeed', label: 'Wind speed', group: 'waves', min: 0, max: 40, step: 0.1, unit: 'm/s', description: 'Wind at 10 m. The whole sea state comes off this: peak wavelength and wave height both go as the square of it.' },
     { key: 'windBearing', label: 'Wind bearing', group: 'waves', min: 0, max: 360, step: 1, unit: 'deg', description: 'Direction the wind blows toward. The waves travel with it.' },
     { key: 'fetch', label: 'Fetch', group: 'waves', min: 0.01, max: 2000, step: 0.5, unit: 'km', description: 'Open water upwind. Short fetch means small, short, steep waves however hard it blows — which is why a lake in a gale looks nothing like an ocean in one.' },
+    { key: 'flowSpeed', label: 'Current', group: 'waves', min: 0, max: 3, step: 0.01, unit: 'm/s', simple: true, description: 'How fast the water itself runs. 0 is still water; 0.3-1 is a stream or a river, 2-3 a rapid. Carries the waves and ripples downstream and stretches the ripples into streaks along the flow.' },
+    { key: 'flowDirection', label: 'Current direction', group: 'waves', min: 0, max: 360, step: 1, unit: 'deg', simple: true, description: 'Bearing the current runs toward, in the water\'s own frame: 0 = along its local +z, 90 = along +x (the length of a body scaled long in x).' },
     { key: 'directionalSpread', label: 'Spread', group: 'waves', min: 0, max: 90, step: 0.5, unit: 'deg', description: 'Angular spread of the wave train about the wind. At 0 the sea is corduroy; real seas run 25-40.' },
     { key: 'waveComponents', animatable: false, label: 'Wave count', group: 'waves', min: 4, max: 32, step: 1, description: 'Trochoids summed per vertex. Cost is linear in it. Past ~24 the extra components are shorter than the finest cell can carry and are faded out anyway.' },
     { key: 'amplitudeScale', label: 'Wave height', group: 'waves', min: 0, max: 3, step: 0.01, description: 'Multiplier over the physically derived height. 1 is the Pierson-Moskowitz fit for this wind and fetch.' },
@@ -449,17 +471,18 @@ export const OCEAN_SCHEMA: OceanPropertySchema[] = [
     { key: 'foamDecay', label: 'Foam persistence', group: 'waves', min: 0, max: 1, step: 0.01, description: 'How far foam trails behind the crest that made it. At 0 it flickers on and off with the crest and reads as sparkle rather than foam.' },
     { key: 'foamSize', label: 'Foam texture', group: 'waves', min: 0.2, max: 40, step: 0.1, unit: 'm', advanced: true, description: 'Size of the break-up noise in the foam.' },
 
-    { key: 'deepColor', label: 'Deep colour', group: 'surface', kind: 'color', description: 'The body colour of the water — what you see where there is nothing behind it.' },
-    { key: 'shallowColor', label: 'Shallow colour', group: 'surface', kind: 'color', description: 'Water over something close behind it. The grazing tint, and the shallow end of the shoreline ramp.' },
+    { key: 'deepColor', label: 'Deep colour', group: 'surface', kind: 'color', simple: true, description: 'The body colour of the water — what you see where there is nothing behind it.' },
+    { key: 'shallowColor', label: 'Shallow colour', group: 'surface', kind: 'color', simple: true, description: 'Water over something close behind it. The grazing tint, and the shallow end of the shoreline ramp.' },
     { key: 'foamColor', label: 'Foam colour', group: 'surface', kind: 'color', description: 'Whitecaps and shore foam.' },
     { key: 'absorption', label: 'Absorption', group: 'surface', min: 0, max: 1, step: 0.005, unit: '1/m', description: 'Beer-Lambert absorption per metre. Higher swallows the bottom sooner.' },
-    { key: 'clarity', label: 'Turbidity', group: 'surface', min: 0, max: 1, step: 0.005, description: 'Suspended matter. Lifts the shallow colour and softens what is seen through the surface.' },
+    { key: 'clarity', label: 'Turbidity', group: 'surface', min: 0, max: 1, step: 0.005, simple: true, description: 'Suspended matter. Lifts the shallow colour and softens what is seen through the surface.' },
     { key: 'roughness', label: 'Roughness', group: 'surface', min: 0.01, max: 0.6, step: 0.005, description: 'Widens the specular lobe. This is sub-mesh ripple, not surface finish — water itself is smooth.' },
-    { key: 'specular', label: 'Glitter', group: 'surface', min: 0, max: 3, step: 0.01, description: 'Specular strength. The sun path from horizon to camera is most of what says "water" at distance.' },
+    { key: 'specular', label: 'Glitter', group: 'surface', min: 0, max: 3, step: 0.01, simple: true, description: 'Specular strength. The sun path from horizon to camera is most of what says "water" at distance.' },
     { key: 'sssStrength', label: 'Subsurface', group: 'surface', min: 0, max: 2, step: 0.01, description: 'Sun scattering through the body of a wave — crests glowing when the sun is behind them.' },
     { key: 'sssColor', label: 'Subsurface colour', group: 'surface', kind: 'color', advanced: true, description: 'Colour of that glow. Green in coastal water, blue offshore.' },
     { key: 'detailStrength', label: 'Ripple detail', group: 'surface', min: 0, max: 2, step: 0.01, description: 'Per-fragment normal detail below mesh resolution. This is where the energy lost to the per-ring wave LOD goes.' },
     { key: 'detailSize', label: 'Ripple size', group: 'surface', min: 0.1, max: 20, step: 0.05, unit: 'm', description: 'Size of that detail.' },
+    { key: 'reflection', animatable: false, label: 'Reflection', group: 'surface', kind: 'select', options: ['env', 'baked', 'planar', 'off'], description: 'env: reflect the sky (free, right at night). baked: the scene captured once into a cubemap from just above the water and re-captured only when the sun turns, the water moves or every ~10 s (one cube face per frame) — buildings, trees and the skyline reflect at about the cost of env; every body can use it; slightly approximate close to the edges and moving things freeze between captures. The right choice for scene reflections in most scenes. planar: a mirror of the scene — a second render of what this water can show, so it costs as much as that part of the scene; one per scene (the world ocean when it asks, else the planar body filling most of the screen; the others reflect the sky that frame); a body renders it only while it is visible and larger than ~0.5 % of the view. Use it on one hero surface, not every body. off: flat fill.' },
     { key: 'ambient', label: 'Ambient', group: 'surface', min: 0, max: 3, step: 0.01, advanced: true, description: 'Sky-dome fill, from the same atmosphere the sky and clouds use.' },
     { key: 'aerialPerspective', label: 'Aerial perspective', group: 'surface', min: 0, max: 0.0006, step: 0.000002, unit: '1/m', description: 'Rate distant water fades into the sky behind it. Water needs more of this than ground, because most of what you see looking at the sea is the sky.' },
     { key: 'exposure', label: 'Exposure', group: 'surface', min: 0.2, max: 4, step: 0.01, advanced: true, description: 'Radiance scale, so water matches sky, clouds and terrain whether or not the cloud composite tonemaps the frame.' },
@@ -477,7 +500,7 @@ export const OCEAN_QUALITY_SCHEMA: OceanPropertySchema[] = [
     { key: 'detailFadeDistance', label: 'Detail fade distance', group: 'quality', min: 50, max: 8000, step: 25, unit: 'm', description: 'Distance over which the fragment-stage ripple fades out. Removes far-field shimmer and buys back most of its own cost.' },
     { key: 'terrainShadowSteps', label: 'Terrain shadow steps', group: 'quality', min: 0, max: 32, step: 1, description: 'Steps in the terrain shadow march, nearest the camera. 0 turns it off entirely — the biggest single saving when the scene has terrain.' },
     { key: 'terrainShadowDistance', label: 'Terrain shadow distance', group: 'quality', min: 0, max: 40000, step: 100, unit: 'm', description: 'Range over which that march fades out. It runs per vertex, so lowering this drops whole rings out of it.' },
-    { key: 'reflectionScale', label: 'Reflection resolution', group: 'quality', min: 0, max: 1, step: 0.05, description: 'Planar reflection target size, as a fraction of the frame. 0 disables the pass and falls back to the environment map.' },
+    { key: 'reflectionScale', label: 'Reflection resolution', group: 'quality', min: 0, max: 1, step: 0.05, description: 'Planar reflection target size, as a fraction of the frame (baked: the cube face size, 0.5 = 256 px). 0 disables the planar pass and falls back to the environment map.' },
     { key: 'refractionScale', label: 'Refraction resolution', group: 'quality', min: 0, max: 1, step: 0.05, description: 'Refraction and depth grab size, as a fraction of the frame. The shoreline reads its depth from this.' },
 ];
 
@@ -620,6 +643,33 @@ function fromLegacy(raw: Record<string, unknown>): OceanConfig {
         size: host === 'object' && Number.isFinite(planeSize) ? [planeSize, planeSize] : base.size,
         preset: variantName in LEGACY_VARIANTS ? variantName : '',
     };
+}
+
+/** Keys a placed body's Water tab shows before "Advanced" (rows with `simple`). */
+export const OCEAN_SIMPLE_KEYS: string[] = OCEAN_SCHEMA.filter((p) => p.simple).map((p) => p.key);
+
+/**
+ * "Calm <-> Rough" for a placed body: one 0..1 dial over the knobs that make a
+ * body's sea state together (wind, wave height, chop, whitecaps, ripple). 0 is a
+ * still pool, ~0.35 a pond in a breeze, 1 a wind-whipped lake. Used by the Water
+ * tab's simple view; scripts can apply the same patch. Not stored: the dial is
+ * read back from the wind (`waterRoughnessOf`), so there is one source of truth.
+ */
+export function waterRoughnessPatch(r: number): Partial<OceanSurfaceConfig> {
+    const t = Math.min(Math.max(r, 0), 1);
+    const round = (v: number) => Math.round(v * 1000) / 1000;
+    return {
+        windSpeed: round(0.5 + 9.5 * t * t),
+        amplitudeScale: round(0.25 + 0.95 * t),
+        choppiness: round(0.25 + 0.6 * t),
+        foamAmount: round(Math.max(0, t - 0.55) * 0.9),
+        detailStrength: round(0.5 + 0.9 * t),
+    };
+}
+
+/** Where the Calm <-> Rough dial sits for a config (inverse of the wind mapping). */
+export function waterRoughnessOf(config: Pick<OceanSurfaceConfig, 'windSpeed'>): number {
+    return Math.sqrt(Math.min(Math.max(((config.windSpeed ?? 2) - 0.5) / 9.5, 0), 1));
 }
 
 /**

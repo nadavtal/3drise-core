@@ -7,6 +7,7 @@ import type { RigidBodyTypeString } from "@react-three/rapier";
 import type { EffectTriggerMode } from "./effects";
 import type { PathConfig } from "./animations";
 import type { LightObjectConfig } from "./lights";
+import type { ShapeLayout } from "../utils/shapeLayout";
 import type { Interaction, MouseMoveInteraction, MouseMoveInteractions, ObjectAnimations, ObjectEffectClip } from "./objectSettings";
 import type { GenerativeEffectConfig, GenerativeEffectSettings, BubblesConfig, GlyphsConfig, SparklesBurstConfig } from "./generativeEffects";
 import { GalleryLayoutSettings } from "./gallery";
@@ -163,8 +164,10 @@ export type ObjectEdges = {
 };
 
 export type CreatedObjectType = 'mesh' | 'model' | 'text' | 'group' | 'custom_primitive' | 
- 'particles' | 'grid' | 'path' | 'gallery' | 'effect' | 'light' | 'space' | 'environment' | 'land' | 'image';
-export type ShapeName = 'heart' | 'box' | 'star' | 'polygon' | 'gear' | 'flower' | 'spade' | 'club' | 'diamond' | 'droplet' | 'lightning' | 'sparkle' | 'shield' | 'pawPrint' | 'superformula' | 'sphere' | 'cylinder' | 'cone' | 'torus' | 'plane' | 'ring' | 'arcPlane' | 'bentPlane' | 'bentPlaneInverse' | 'capsule' | 'icosahedron' | 'octahedron' | 'tetrahedron' | 'dodecahedron' | 'text' | 'point' | 'custom' | 'infinity';
+ 'particles' | 'grid' | 'path' | 'gallery' | 'effect' | 'light' | 'space' | 'environment' | 'land' | 'image' | 'urban' | 'vegetation' | 'water' | 'sports';
+export type ShapeName = 'heart' | 'box' | 'star' | 'polygon' | 'gear' | 'flower' | 'spade' | 'club' | 'diamond' | 'droplet' | 'lightning' | 'sparkle' | 'shield' | 'pawPrint' | 'superformula' | 'sphere' | 'cylinder' | 'cone' | 'torus' | 'plane' | 'ring' | 'arcPlane' | 'bentPlane' | 'bentPlaneInverse' | 'capsule' | 'icosahedron' | 'octahedron' | 'tetrahedron' | 'dodecahedron' | 'text' | 'point' | 'custom' | 'infinity'
+    // parametric recipes (core geometry/parametricGeometry.ts) and scripted geometry (geometry/scriptGeometry.ts)
+    | 'outline' | 'extrude' | 'lathe' | 'sweep' | 'svg' | 'superellipsoid' | 'torusKnot' | 'script';
 
 export interface GeometryShapeConfig {
     type: ShapeName;
@@ -172,7 +175,8 @@ export interface GeometryShapeConfig {
     subdivisions?: number;
     segments?: number;
     rings?: number;
-    points?: number;
+    /** star / sparkle: the point count; outline / extrude: the plan outline as [x, z] metres */
+    points?: number | number[][];
     sides?: number;
     petals?: number;
     teeth?: number;
@@ -227,6 +231,30 @@ export interface GeometryShapeConfig {
     samples?: number;
     waist?: number;
     thickness?: number;
+    // --- parametric variants (see ParametricShapeConfig for the meaning of each)
+    holes?: number[][][];
+    profile?: number[][];
+    path?: number[][];
+    curve?: number;
+    depth?: number;
+    twist?: number;
+    angle?: number;
+    cap?: boolean;
+    scaleEnd?: number;
+    closed?: boolean;
+    svg?: string;
+    svgUrl?: string;
+    orientation?: 'flat' | 'upright';
+    e1?: number;
+    e2?: number;
+    crease?: number;
+    /** torusKnot */
+    p?: number;
+    q?: number;
+    // --- script variant (see ScriptGeometryConfig): the source of build(p, g), its parameter values and their knobs
+    source?: string;
+    params?: Record<string, number | boolean | string | number[][]>;
+    schema?: Record<string, { kind: 'number' | 'boolean' | 'select' | 'points'; label?: string; description?: string; min?: number; max?: number; step?: number; options?: string[]; dims?: 2 | 3 }>;
 }
 
 export type ModeGroup = 'mesh' | 'points' | 'lines';
@@ -308,8 +336,19 @@ export interface ModelObjectConfig {
     [key: string]: any;
 }
 
+/**
+ * The object's own `layout` column (scene_objects.layout): the layouts it uses. `shape`: an area, path
+ * or grid applied to its geometry (meshes: surface / extrude / cut; land: the terrain kept to it) —
+ * core utils/shapeLayout. (Repeat — the copies — still lives in meshSettings.layout.)
+ */
+export interface CreatedObjectLayout {
+    shape?: ShapeLayout;
+}
+
 export type CreatedObjectSettings = GeneralObjectSettings & {
     id: string;
+    /** The layouts the object uses (its own column — CreatedObjectLayout). */
+    layout?: CreatedObjectLayout | null;
     name: string;
     type: CreatedObjectType;
     parentId?: string | null;
@@ -365,6 +404,8 @@ export interface AnimationOptions {
     ease?: string;
     loop?: boolean;
     yoyo?: boolean;
+    /** Following a path: run it from its end to its start. */
+    reverse?: boolean;
     active?: boolean;
     /** Whether to apply rotation to face movement direction when following a path (default: true) */
     applyRotation?: boolean;

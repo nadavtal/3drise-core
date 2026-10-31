@@ -11,8 +11,6 @@ import { SkyCloudsMaterial } from '../shaders/SkyCloudsMaterial';
 import { SandMaterial } from '../shaders/SandMaterial';
 import { SmokeMaterial } from '../shaders/SmokeMaterial';
 import { SmokeRibbonMaterial } from '../shaders/SmokeRibbonMaterial';
-import { WaterMaterial } from '../shaders/WaterMaterial';
-import { oceanPresets } from '../presets/oceanPresets';
 import { cloudsPresets } from '../presets/cloudsPresets';
 import { glassPresets } from '../presets/glassPresets';
 import { metalPresets } from '../presets/metalPresets';
@@ -263,20 +261,6 @@ const materials: Record<MaterialType, MaterialDefinition> = {
                 }
             },
         }
-    },
-    water: {
-        name: 'Water Materials',
-        description: 'Water and liquid surface materials',
-        defaultVariant: 'BasicWater',
-        variants: oceanPresets.reduce((acc, preset) => {
-            acc[preset.name] = {
-                name: preset.name,
-                description: preset.description,
-                materialClass: WaterMaterial,
-                defaultSettings: preset.settings
-            };
-            return acc;
-        }, {})
     },
     sand: {
         name: 'Sand Materials',

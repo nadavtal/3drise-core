@@ -9,7 +9,7 @@ declare module '@react-three/fiber' {
     }
 }
 
-export type MaterialType = 'basic' | 'lava' | 'smoke' | 'sand' | 'corona' | 'effects' | 'water' | 'glass' | 'metal' | 'crystal' | 'wood' | 'plastic' | 'clouds' | 'advanced' | 'particles' | 'custom' | 'shaders' | 'line';
+export type MaterialType = 'basic' | 'lava' | 'smoke' | 'sand' | 'corona' | 'effects' | 'glass' | 'metal' | 'crystal' | 'wood' | 'plastic' | 'clouds' | 'advanced' | 'particles' | 'custom' | 'shaders' | 'line';
 
 export type MaterialOptions = 'color' | 'opacity' | 'emissive' | 'roughness' | 'metalness' | 'normalMap' | 'bumpMap' | 'displacementMap' | 'alphaMap' | 'envMap' | 'lightMap' | 'aoMap' | 'wireframe' | 'side';
 

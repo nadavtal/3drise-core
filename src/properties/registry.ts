@@ -25,6 +25,10 @@
 //   text             TEXT_PROPERTIES[type];       animatable = TEXT_OBJECTS_ANIMATABLE (plain, handwriting, neonTube, …)
 //   image            IMAGE_PROPERTIES[type];      animatable = IMAGE_OBJECTS_ANIMATABLE (shards, …)
 //   gallery          GALLERY_PROPERTIES[type];    animatable = GALLERY_OBJECTS_ANIMATABLE (layout, …; the layout gallery's frames take the material)
+//   urban            URBAN_PROPERTIES[type];      animatable = URBAN_OBJECTS_ANIMATABLE (building, block, road, streetFurniture)
+//   vegetation       VEGETATION_PROPERTIES[type]; animatable = VEGETATION_OBJECTS_ANIMATABLE (tree, bush, grass, flowers, crops, ivy, hedge, fruit, vegetable)
+//   sports       SPORTS_PROPERTIES[type]; animatable = SPORTS_OBJECTS_ANIMATABLE (court, ball, equipment, goal)
+//   water       WATER_PROPERTIES[type]; animatable = WATER_OBJECTS_ANIMATABLE (waterfall, fountain, stream)
 //   rain / clouds    the scene-level rain element (RainSettings) / legacy clouds object;  animatable = RAIN_ANIMATABLE_KEYS / CLOUD_ANIMATABLE_PROPERTIES
 //   text/plain/path  their controller lists (config knobs, structural)
 //   mesh (shapes)    SHAPE_CONTROLS[config.type] + MODE_CONTROLS[modeConfig.mode] (structural)
@@ -46,6 +50,7 @@
 //     path / shape / display-mode knobs: never.
 //
 import type { CreatedObjectSettings } from '../types/scene3d';
+import { LAYOUT_CAPABLE_TYPES, getObjectLayoutSupport } from '../utils/LayoutCreator';
 import { LIGHTS_ANIMATABLE } from '../data/lightsDefaults';
 import { getDefaultLightShadow } from '../data/lightShadowDefaults';
 import { GENERATIVE_PARTICLES_ANIMATABLE } from '../data/particlesDefaults';
@@ -57,6 +62,10 @@ import { SPACE_OBJECTS_ANIMATABLE } from '../data/spaceDefaults';
 import { TEXT_OBJECTS_ANIMATABLE } from '../data/textDefaults';
 import { IMAGE_OBJECTS_ANIMATABLE } from '../data/imageDefaults';
 import { GALLERY_OBJECTS_ANIMATABLE, isGalleryObjectConfig, galleryTakesMaterial } from '../data/galleryDefaults';
+import { URBAN_OBJECTS_ANIMATABLE } from '../data/urbanDefaults';
+import { VEGETATION_OBJECTS_ANIMATABLE } from '../data/vegetationDefaults';
+import { SPORTS_OBJECTS_ANIMATABLE } from '../data/sportsDefaults';
+import { WATER_OBJECTS_ANIMATABLE } from '../data/waterDefaults';
 import { CLOUD_ANIMATABLE_PROPERTIES } from '../environment/cloudConfigs';
 import {
     type OptionalProperty,
@@ -66,7 +75,9 @@ import {
     plainOptionalProperties,
     pathOptionalProperties, edgesOptionalProperties,
 } from './tables/optionalProperties';
-import { SHAPE_CONTROLS, MODE_CONTROLS, type ControlOf } from './tables/geometryProperties';
+import { SHAPE_CONTROLS, MODE_CONTROLS, PARAMETRIC_SHAPE_PROPERTIES, type ControlOf } from './tables/geometryProperties';
+import { isParametricShape } from '../geometry/parametricGeometry';
+import { isScriptShape, scriptRows } from '../geometry/scriptGeometry';
 import { LIGHT_PROPERTIES, SHADOW_PROPERTIES, type LightProperty } from './tables/lightProperties';
 import { PARTICLES_PROPERTIES } from './tables/particlesProperties';
 import { EFFECT_PROPERTIES } from './tables/effectsProperties';
@@ -77,7 +88,12 @@ import { SPACE_PROPERTIES } from './tables/spaceProperties';
 import { TEXT_PROPERTIES } from './tables/textProperties';
 import { IMAGE_PROPERTIES } from './tables/imageProperties';
 import { GALLERY_PROPERTIES } from './tables/galleryProperties';
+import { URBAN_PROPERTIES } from './tables/urbanProperties';
+import { VEGETATION_PROPERTIES } from './tables/vegetationProperties';
+import { SPORTS_PROPERTIES } from './tables/sportsProperties';
+import { WATER_PROPERTIES } from './tables/waterProperties';
 import { MATERIAL_PROPERTY_BOUNDS } from './tables/materialBounds';
+import { RENDER_SPECS, TIME_SPECS } from '../render/renderSpecs';
 import type {
     DescribedProperty, PropertyDomain, PropertyElement, PropertyKind, PropertyOption, PropertySpec,
 } from './types';
@@ -102,7 +118,7 @@ const MATERIAL_STRUCTURAL = new Set([
  * Objects that own their shader: their materialSettings (if any) never reach the
  * renderer, so they have no material properties. They animate through config.
  */
-export const SELF_MANAGED_MATERIAL_TYPES = new Set(['effect', 'grid', 'light', 'particles', 'environment', 'space', 'land', 'text', 'image']);
+export const SELF_MANAGED_MATERIAL_TYPES = new Set(['effect', 'grid', 'light', 'particles', 'environment', 'space', 'land', 'text', 'image', 'urban', 'vegetation', 'water', 'sports']);
 
 /**
  * True when the object draws with its own shaders (the object types above), or a gallery variant that does: the
@@ -166,6 +182,10 @@ const OPTIONAL_KIND: Record<OptionalProperty['type'], PropertyKind> = {
     vector3: 'vec3', vector2: 'vec2', select: 'select',
     object: 'string',   // a scene object id (picked in the studio, stored as a string)
     objects: 'objects', // a list of scene object ids (structural; never a track)
+    texture: 'textureSet', // a library texture set { set, maps, tileSize } (structural; never a track)
+    points: 'points',   // a polyline of [x, z] metres (structural; never a track)
+    layoutRef: 'layoutRef', // a layout by reference: a `layout` asset id or 'preset:<kind>:<id>' (structural; never a track)
+    textureMap: 'textureMap', // texture sets by key, e.g. per ground id (structural; never a track)
 };
 
 const toOptions = (p: OptionalProperty): PropertyOption[] | undefined =>
@@ -190,6 +210,10 @@ function fromOptional(p: OptionalProperty & { tab?: string }, prefix: string, do
     const options = toOptions(p);
     if (options) spec.options = options;
     if (p.tab) spec.group = p.tab;
+    if (p.dims) spec.dims = p.dims;
+    if (p.layoutKind) spec.layoutKind = p.layoutKind;
+    if (p.list) spec.list = true;
+    if (p.multiline) spec.multiline = true;
     return spec;
 }
 
@@ -312,12 +336,19 @@ function familyOf(obj: any): Family | null {
     const text = () => ({ domain: 'text' as const, list: (TEXT_PROPERTIES as Record<string, OptionalProperty[]>)[t!] ?? [], animatable: tableOf((TEXT_OBJECTS_ANIMATABLE as Record<string, any>)[t!]) });
     const image = () => ({ domain: 'image' as const, list: (IMAGE_PROPERTIES as Record<string, OptionalProperty[]>)[t!] ?? [], animatable: tableOf((IMAGE_OBJECTS_ANIMATABLE as Record<string, any>)[t!]) });
     const gallery = () => ({ domain: 'gallery' as const, list: (GALLERY_PROPERTIES as Record<string, OptionalProperty[]>)[t!] ?? [], animatable: tableOf((GALLERY_OBJECTS_ANIMATABLE as Record<string, any>)[t!]) });
+    const urban = () => ({ domain: 'urban' as const, list: (URBAN_PROPERTIES as Record<string, OptionalProperty[]>)[t!] ?? [], animatable: tableOf((URBAN_OBJECTS_ANIMATABLE as Record<string, any>)[t!]) });
+    const vegetation = () => ({ domain: 'vegetation' as const, list: (VEGETATION_PROPERTIES as Record<string, OptionalProperty[]>)[t!] ?? [], animatable: tableOf((VEGETATION_OBJECTS_ANIMATABLE as Record<string, any>)[t!]) });
+    const sports = () => ({ domain: 'sports' as const, list: (SPORTS_PROPERTIES as Record<string, OptionalProperty[]>)[t!] ?? [], animatable: tableOf((SPORTS_OBJECTS_ANIMATABLE as Record<string, any>)[t!]) });
+    const water = () => ({ domain: 'water' as const, list: (WATER_PROPERTIES as Record<string, OptionalProperty[]>)[t!] ?? [], animatable: tableOf((WATER_OBJECTS_ANIMATABLE as Record<string, any>)[t!]) });
 
     // Environment elements seen through the object view, so the Animation and
     // MouseMove panels (getAnimatableProperties) work on them like on any object.
     // The sky is flat — no config block — so it is keyed before the config.type gate.
     if (type === 'sky') return envFamily('sky', skyOptionalProperties, '');
-    if (type === 'ocean' && obj?.config) return envFamily('ocean', oceanSurfaceOptionalProperties(obj.config.waterType, obj.config.host), 'config.');
+    // 'water' is the placed body (object type); 'ocean' the world element seen as an object. A moving-water
+    // variant (waterfall, fountain, stream: config.type in WATER_OBJECTS_ANIMATABLE) is the water family instead.
+    if (type === 'water' && t && (WATER_OBJECTS_ANIMATABLE as Record<string, unknown>)[t]) return water();
+    if ((type === 'ocean' || type === 'water') && obj?.config) return envFamily('ocean', oceanSurfaceOptionalProperties(obj.config.waterType, obj.config.host), 'config.');
     if (type === 'terrain' && obj?.config) return envFamily('terrain', terrainOptionalProperties(obj.config.terrainType), 'config.');
 
     if (t) {
@@ -336,6 +367,12 @@ function familyOf(obj: any): Family | null {
         if (type === 'image' && (IMAGE_OBJECTS_ANIMATABLE as Record<string, unknown>)[t]) return image();
         // Gallery variants only under the gallery object type (layout, carousel, …).
         if (type === 'gallery' && (GALLERY_OBJECTS_ANIMATABLE as Record<string, unknown>)[t]) return gallery();
+        // Urban variants only under their own object type (building, block, road, streetFurniture).
+        if (type === 'urban' && (URBAN_OBJECTS_ANIMATABLE as Record<string, unknown>)[t]) return urban();
+        // Vegetation variants only under their own object type (tree, bush, grass, …).
+        if (type === 'vegetation' && (VEGETATION_OBJECTS_ANIMATABLE as Record<string, unknown>)[t]) return vegetation();
+        // Sports variants only under their own object type (court, ball, …).
+        if (type === 'sports' && (SPORTS_OBJECTS_ANIMATABLE as Record<string, unknown>)[t]) return sports();
         if (t === 'rain') return { domain: 'rain', list: rainOptionalProperties, animatable: new Map(RAIN_ANIMATABLE_KEYS.map(k => [k, propertyLabel(k)])) };
         if (t === 'clouds') return { domain: 'clouds', list: cloudsOptionalProperties, animatable: new Map(CLOUD_ANIMATABLE_PROPERTIES.map(k => [k, propertyLabel(k)])) };
         // Older objects carry a generative config under another object type.
@@ -352,9 +389,17 @@ function familyOf(obj: any): Family | null {
 function configSpecs(obj: any): PropertySpec[] {
     // Created shapes: the shape's own knobs (by config.type) and its display mode's.
     if (obj?.type === 'mesh' && obj.config?.type && (SHAPE_CONTROLS as Record<string, unknown>)[obj.config.type]) {
+        const mode = controlSpecs((MODE_CONTROLS as Record<string, ControlOf<string>[]>)[obj.modeConfig?.mode ?? 'solid'], 'modeConfig.', 'mode');
+        // parametric recipes: property rows (structural); scripts: the script's own schema under config.params.*
+        if (isParametricShape(obj.config.type)) {
+            return [...PARAMETRIC_SHAPE_PROPERTIES[obj.config.type].map(p => fromOptional(p, 'config.', 'config', false)), ...mode];
+        }
+        if (isScriptShape(obj.config.type)) {
+            return [...scriptRows(obj.config.schema).map(p => fromOptional(p, 'config.params.', 'config', false)), ...mode];
+        }
         return [
             ...controlSpecs((SHAPE_CONTROLS as Record<string, ControlOf<string>[]>)[obj.config.type], 'config.', 'shape'),
-            ...controlSpecs((MODE_CONTROLS as Record<string, ControlOf<string>[]>)[obj.modeConfig?.mode ?? 'solid'], 'modeConfig.', 'mode'),
+            ...mode,
         ];
     }
     const family = familyOf(obj);
@@ -394,11 +439,34 @@ function configSpecs(obj: any): PropertySpec[] {
     return out;
 }
 
+/** meshSettings.layout — one structural spec for the whole block (repeatable objects only). */
+const layoutSpecs = (obj: CreatedObjectSettings | any): PropertySpec[] =>
+    LAYOUT_CAPABLE_TYPES.has(obj.type) && getObjectLayoutSupport(obj).allowed
+        ? [{
+            key: 'meshSettings.layout', name: 'layout', label: 'Layout', kind: 'layout', domain: 'transform', animatable: false,
+            description: 'Repeat the object: { enabled, layout (gallery shapes | area | path), count, spacing, seed, scaleJitter, rotationJitter, tintJitter, variantMix, onGround, alignToSlope, areaShape, width, depth, points, facePath }. A partial block merges over the current one.',
+        }]
+        : [];
+
+/** layout.shape — an area / path / grid applied to the object (its own `layout` column; core utils/shapeLayout): meshes and land. */
+const SHAPE_LAYOUT_TYPES = new Set(['mesh', 'land']);
+const shapeLayoutSpecs = (obj: CreatedObjectSettings | any): PropertySpec[] =>
+    SHAPE_LAYOUT_TYPES.has(obj?.type)
+        ? [{
+            key: 'layout.shape', name: 'shape', label: 'Layout', kind: 'shapeLayout', domain: 'transform', animatable: false,
+            description: obj.type === 'land'
+                ? "Keep the land to a layout: { ref (a saved layout's asset id, or 'preset:<id>' for a built-in grid) | area | path | grid (inline), heights?, width?, part?, groundTexture?, groundTextures? }. The terrain shows only on it (holes cut), easing down across edgeFade at its edge, lifted by its heights; fitted into the footprint. Ground holes take groundTexture (all) / groundTextures[holeId]. A partial block merges; null removes it."
+                : "Reshape the mesh by a layout: { ref (a saved layout's asset id, or 'preset:<id>') | area | path | grid (inline), mode?: 'surface' | 'extrude' | 'cut' (default by the mesh), heights?, uv?: 'fit' | 'tile', repeat?, width?, part?, groundTexture?, groundTextures? }. Fitted into the mesh's own size. Ground holes take groundTexture (all) / groundTextures[holeId]. A partial block merges; null removes it.",
+        }]
+        : [];
+
 function objectSpecs(obj: CreatedObjectSettings | any): PropertySpec[] {
     if (!obj) return [];
     const ownsMaterial = !selfManagesMaterial(obj);
     return [
         ...TRANSFORM_SPECS,
+        ...layoutSpecs(obj),
+        ...shapeLayoutSpecs(obj),
         ...(ownsMaterial ? materialSpecs(obj.materialSettings, 'materialSettings.', 'material') : []),
         ...edgesSpecs(obj),
         ...configSpecs(obj),
@@ -439,6 +507,8 @@ function environmentSpecs(element: Exclude<PropertyElement, 'object' | 'camera'>
 export function getPropertySpecs(element: PropertyElement, settings: any): PropertySpec[] {
     if (element === 'object') return objectSpecs(settings);
     if (element === 'camera') return CAMERA_SPECS.map(s => ({ ...s }));
+    if (element === 'render') return RENDER_SPECS.map(s => ({ ...s }));
+    if (element === 'time') return TIME_SPECS.map(s => ({ ...s }));
     return environmentSpecs(element, settings);
 }
 
@@ -465,11 +535,11 @@ export function getAnimatableSpecs(element: PropertyElement, settings: any): Pro
 
 /**
  * Object config families the animation timeline keys. The V2 applier drives
- * `config.*` through the object's live config handle, which these nine register;
+ * `config.*` through the object's live config handle, which these thirteen register;
  * rain and the legacy cloud object have per-frame knobs for the keyframe /
  * mouse-move systems only.
  */
-export const TRACK_CONFIG_DOMAINS: ReadonlySet<PropertyDomain> = new Set<PropertyDomain>(['light', 'particles', 'effect', 'grid', 'environment', 'space', 'land', 'text', 'image', 'gallery']);
+export const TRACK_CONFIG_DOMAINS: ReadonlySet<PropertyDomain> = new Set<PropertyDomain>(['light', 'particles', 'effect', 'grid', 'environment', 'space', 'land', 'text', 'image', 'gallery', 'urban', 'vegetation', 'sports', 'water']);
 
 /** What an animation clip can key on this element (timeline track picker, AI clips). */
 export function getTrackSpecs(element: PropertyElement, settings: any): PropertySpec[] {
@@ -516,4 +586,4 @@ export function describeProperties(element: PropertyElement, settings: any): Des
 
 /** The registry element for an animation / timeline state: env keys and camera as-is, anything else is an object id. */
 export const elementOfState = (state: string): PropertyElement =>
-    state === 'camera' || state === 'sky' || state === 'clouds' || state === 'ocean' || state === 'terrain' ? state : 'object';
+    state === 'camera' || state === 'sky' || state === 'clouds' || state === 'ocean' || state === 'terrain' || state === 'render' || state === 'time' ? state : 'object';

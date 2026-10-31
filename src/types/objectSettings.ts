@@ -1,4 +1,4 @@
-import type { AnimationOptions, Vector3 } from "./scene3d";
+import type { AnimationOptions, PartTarget, TargetScope, TargetStagger, Vector3 } from "./scene3d";
 import type { SceneCommand } from "./commands";
 import type { MaterialSettings } from "./materials";
 import type { ShaderEffect } from "./shaderEffects";
@@ -134,6 +134,26 @@ export interface GalleryObjectEffects {
     animations?: AnimationOptions[];
 }
 
+/** Keyframe animations for an urban variant's config knobs (type 'urban', config.type set: building, road, …). */
+export interface UrbanObjectEffects {
+    animations?: AnimationOptions[];
+}
+
+/** Keyframe animations for a vegetation variant's config knobs (type 'vegetation', config.type set: tree, grass, …). */
+export interface VegetationObjectEffects {
+    animations?: AnimationOptions[];
+}
+
+/** Keyframe animations for a sports variant's config knobs (type 'sports', config.type set: court, ball, …). */
+export interface SportsObjectEffects {
+    animations?: AnimationOptions[];
+}
+
+/** Keyframe animations for a water variant's config knobs (type 'water', config.type set: waterfall, fountain, …). */
+export interface WaterObjectEffects {
+    animations?: AnimationOptions[];
+}
+
 export interface RainEffects {
     /** Keyframe animations for rain config properties */
     animations?: AnimationOptions[];
@@ -171,6 +191,14 @@ export interface ObjectAnimations {
     image?: ImageObjectEffects;
     /** Gallery domain: a gallery variant's own config knobs (type 'gallery', config.type set). */
     gallery?: GalleryObjectEffects;
+    /** Urban domain: an urban variant's own config knobs (type 'urban', config.type set). */
+    urban?: UrbanObjectEffects;
+    /** Vegetation domain: a vegetation variant's own config knobs (type 'vegetation', config.type set). */
+    vegetation?: VegetationObjectEffects;
+    /** Sports domain: a sports variant's own config knobs (type 'sports', config.type set). */
+    sports?: SportsObjectEffects;
+    /** Water domain: a water variant's own config knobs (type 'water', config.type set). */
+    water?: WaterObjectEffects;
     /** Sky domain: the sky's turbidity / rayleigh / mie / elevation / azimuth. */
     sky?: SkyEffects;
     /** Ocean domain: the water's config knobs (OceanWaterSettings). */
@@ -422,6 +450,16 @@ export interface MouseMoveProperty {
     property: string;
     enabled: boolean;
     propertySettings: PropertySettings;
+    /**
+     * Groups and models (transform / material): what the pointer drives — same data as
+     * AnimationOptions.scope / targets / stagger (see utils/mouseMoveTargets.ts).
+     * On each / targets a transform min / max is RELATIVE to each target's rest
+     * (position / rotation added, scale multiplied); material min / max stay absolute.
+     */
+    scope?: TargetScope;
+    targets?: PartTarget[];
+    /** each / targets: a follow lag — each target sees the pointer `delay` seconds late. */
+    stagger?: TargetStagger;
 }
 
 export interface MouseMoveInteraction {
@@ -461,6 +499,14 @@ export interface MouseMoveInteractions {
     image?: MouseMoveDomain;
     /** Gallery domain: a gallery variant's own config knobs. */
     gallery?: MouseMoveDomain;
+    /** Urban domain: an urban variant's own config knobs. */
+    urban?: MouseMoveDomain;
+    /** Vegetation domain: a vegetation variant's own config knobs. */
+    vegetation?: MouseMoveDomain;
+    /** Sports domain: a sports variant's own config knobs. */
+    sports?: MouseMoveDomain;
+    /** Water domain: a water variant's own config knobs. */
+    water?: MouseMoveDomain;
     /** Sky domain: the sky's Preetham / sun knobs. */
     sky?: MouseMoveDomain;
     /** Ocean domain: the water's config knobs. */

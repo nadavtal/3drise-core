@@ -21,6 +21,10 @@ import {
     DEFAULT_TEXT_OBJECTS, TEXT_PROPERTIES,
     DEFAULT_IMAGE_OBJECTS, IMAGE_PROPERTIES,
     DEFAULT_GALLERY_OBJECTS, GALLERY_PROPERTIES, galleryTakesMaterial,
+    DEFAULT_URBAN_OBJECTS, URBAN_PROPERTIES,
+    DEFAULT_VEGETATION_OBJECTS, VEGETATION_PROPERTIES,
+    DEFAULT_SPORTS_OBJECTS, SPORTS_PROPERTIES,
+    DEFAULT_WATER_OBJECTS, WATER_PROPERTIES,
     LIGHT_PROPERTIES, SHADOW_PROPERTIES, PARTICLES_PROPERTIES, EFFECT_PROPERTIES, GRID_PROPERTIES,
     skyOptionalProperties, cloudDeckOptionalProperties, cirrusOptionalProperties,
     oceanSurfaceOptionalProperties, terrainOptionalProperties, rainOptionalProperties, cloudsOptionalProperties,
@@ -50,7 +54,7 @@ function rowsMatch(label: string, element: PropertyElement, settings: any, rows:
             assert.equal(s!.max, p.max, `${p.name} max`);
             assert.equal(s!.step, p.step, `${p.name} step`);
             assert.deepEqual(s!.options?.map(o => o.value), p.options?.length ? p.options : undefined, `${p.name} options`);
-            const kind = { vector3: 'vec3', vector2: 'vec2' }[p.type as string] ?? p.type;
+            const kind = { vector3: 'vec3', vector2: 'vec2', texture: 'textureSet' }[p.type as string] ?? p.type;
             assert.equal(s!.kind, kind, `${p.name} kind`);
         }
     });
@@ -60,7 +64,7 @@ function rowsMatch(label: string, element: PropertyElement, settings: any, rows:
 // Generative families + lights: animatable == the generated tables (getGenerativeAnimatable)
 // -----------------------------------------------------------------------------
 
-const families: Array<[string, 'light' | 'particles' | 'effect' | 'grid' | 'environment' | 'space' | 'land' | 'text' | 'image' | 'gallery', Record<string, any>, Record<string, OptionalProperty[]>]> = [
+const families: Array<[string, 'light' | 'particles' | 'effect' | 'grid' | 'environment' | 'space' | 'land' | 'text' | 'image' | 'gallery' | 'urban' | 'vegetation' | 'sports' | 'water', Record<string, any>, Record<string, OptionalProperty[]>]> = [
     ['light', 'light', DEFAULT_LIGHTS, LIGHT_PROPERTIES as any],
     ['particles', 'particles', DEFAULT_GENERATIVE_PARTICLES, PARTICLES_PROPERTIES as any],
     ['effect', 'effect', DEFAULT_GENERATIVE_EFFECTS, EFFECT_PROPERTIES as any],
@@ -71,12 +75,16 @@ const families: Array<[string, 'light' | 'particles' | 'effect' | 'grid' | 'envi
     ['text', 'text', DEFAULT_TEXT_OBJECTS, TEXT_PROPERTIES as any],
     ['image', 'image', DEFAULT_IMAGE_OBJECTS, IMAGE_PROPERTIES as any],
     ['gallery', 'gallery', DEFAULT_GALLERY_OBJECTS, GALLERY_PROPERTIES as any],
+    ['urban', 'urban', DEFAULT_URBAN_OBJECTS, URBAN_PROPERTIES as any],
+    ['vegetation', 'vegetation', DEFAULT_VEGETATION_OBJECTS, VEGETATION_PROPERTIES as any],
+    ['sports', 'sports', DEFAULT_SPORTS_OBJECTS, SPORTS_PROPERTIES as any],
+    ['water', 'water', DEFAULT_WATER_OBJECTS, WATER_PROPERTIES as any],
 ];
 
 for (const [objType, domain, defaults, lists] of families) {
     for (const t of Object.keys(defaults)) {
         const obj = { id: 'x', type: objType, meshSettings: {}, config: { ...(defaults[t] ?? {}), type: t } };
-        const family = ({ light: 'lights', particles: 'particles', effect: 'effects', grid: 'grids', environment: 'environment', space: 'space', land: 'land', text: 'text', image: 'image', gallery: 'gallery' } as const)[domain];
+        const family = ({ light: 'lights', particles: 'particles', effect: 'effects', grid: 'grids', environment: 'environment', space: 'space', land: 'land', text: 'text', image: 'image', gallery: 'gallery', urban: 'urban', vegetation: 'vegetation', sports: 'sports', water: 'water' } as const)[domain];
         check(`${objType}/${t}: animatable config == generated table`, () => {
             const expected = sorted(getGenerativeAnimatable(family, obj.config).map(p => p.value));
             assert.deepEqual(names(getAnimatableSpecs('object', obj), 'config.'), expected);
@@ -174,8 +182,8 @@ for (const [label, m] of Object.entries(SAMPLE_MATERIALS)) {
     });
 }
 
-check('self-managed material: light / particles / effect / grid / environment / space / land have no material properties', () => {
-    for (const type of ['light', 'particles', 'effect', 'grid', 'environment', 'space', 'land']) {
+check('self-managed material: light / particles / effect / grid / environment / space / land / urban / vegetation / sports have no material properties', () => {
+    for (const type of ['light', 'particles', 'effect', 'grid', 'environment', 'space', 'land', 'urban', 'vegetation', 'sports']) {
         const obj = { id: 'x', type, meshSettings: {}, materialSettings: SAMPLE_MATERIALS.standard, config: { type: 'none' } };
         assert.equal(getPropertySpecs('object', obj).filter(s => s.domain === 'material').length, 0, type);
     }

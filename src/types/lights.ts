@@ -1,6 +1,6 @@
 import type { Vector3Array } from "./common";
 import { AnimationOptions, MouseMoveInteraction } from ".";
-export type LightType = 'ambient' | 'directional' | 'point' | 'spot' | 'lightBulb' | 'spotBeam' | 'ledArray' | 'fluorescentTube' | 'candle';
+export type LightType = 'ambient' | 'directional' | 'point' | 'spot' | 'lightBulb' | 'spotBeam' | 'ledArray' | 'fluorescentTube' | 'candle' | 'projector';
 
 export type BaseLightConfig = {
     enabled: boolean;
@@ -280,7 +280,63 @@ export type CandleConfig = Omit<PointLightConfig, 'type'> & {
     /** How much the wax glows from inside, 0-1. Default 0.3. */
     waxGlow?: number;
 };
-export type LightObjectConfig = BaseLightConfig | SpotLightConfig | PointLightConfig | LightBulbConfig | SpotBeamConfig | LedArrayConfig | FluorescentTubeConfig | CandleConfig;
+/**
+ * A stadium floodlight bank: a visible bank of flood heads (columns × rows on a
+ * crossbar) and one THREE.SpotLight at its centre, which does the lighting. The
+ * optic is rectangular — `spread` across, `spread × aspect` up — so the pool on
+ * the ground is a rectangle, shaped by a soft mask on the spot's map. The heads
+ * are self-lit and glow; there is no haze in the air.
+ *
+ * The object origin is the bank's centre. The heads tilt down in their yokes
+ * (`tilt`); pan, height and the mast are the parent transform and the user's own
+ * meshes.
+ */
+export type ProjectorConfig = Omit<BaseLightConfig, 'type'> & {
+    type: 'projector';
+    /** Power switch. Metal halide heads strike one by one and warm up. Default true. */
+    on?: boolean;
+    /** 'temperature' drives the light colour from `temperature`; 'color' uses `color`. Default 'temperature'. */
+    colorMode?: 'temperature' | 'color';
+    /** Colour temperature in Kelvin, 2000–8000. Default 5700. */
+    temperature?: number;
+    /** Range of the light. 0 = unlimited. Default 0. */
+    distance?: number;
+    /** Falloff with distance. Default 1. */
+    decay?: number;
+    /** Horizontal half-angle of the flood in radians, 0.05–1.2. Default 0.42. */
+    spread?: number;
+    /** Vertical spread as a share of the horizontal, 0.15–1.5. Default 0.5. */
+    aspect?: number;
+    /** Softness of the pool edges, 0–1. Default 0.35. */
+    edgeSoftness?: number;
+    /** Heads tilted down in their yokes, radians, -1.2–1.4. Default 0.42. */
+    tilt?: number;
+    /** 'led' is instant and can run shows; 'metalHalide' strikes and warms up. Default 'led'. */
+    lamp?: 'led' | 'metalHalide';
+    /** Heads across the bank, 1–6. Default 3. */
+    columns?: number;
+    /** Rows of heads, 1–4. Default 2. */
+    rows?: number;
+    /** LED fade-up / metal halide warm-up, seconds. Default 0.15. */
+    warmup?: number;
+    /** Seconds between heads coming on. Default 0.25. */
+    stagger?: number;
+    /** Metal halide: seconds a hot lamp must cool before it strikes again. Default 4. */
+    restrike?: number;
+    /** LED light show: 'none' | 'chase' | 'strobe' | 'breathe'. Default 'none'. */
+    show?: 'none' | 'chase' | 'strobe' | 'breathe';
+    /** Show speed in Hz, 0–8. Default 1. */
+    showRate?: number;
+    /** Flicker amount 0–1. Default 0. */
+    flicker?: number;
+    /** Glow around each head, 0–2. Default 1. */
+    halo?: number;
+    /** Head housing colour. Default '#2a2e33'. */
+    housingColor?: string;
+    shadow?: SpotShadowSettings;
+};
+
+export type LightObjectConfig = BaseLightConfig | SpotLightConfig | PointLightConfig | LightBulbConfig | SpotBeamConfig | LedArrayConfig | FluorescentTubeConfig | CandleConfig | ProjectorConfig;
 
 export type ShadowSettings = {
     enabled?: boolean;

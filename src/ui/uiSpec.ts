@@ -86,10 +86,10 @@ export interface UiAnchor {
 }
 
 /** What `data-set` writes to: an object (or a node of a model), or one of the environment elements. */
-export const UI_SET_ENVIRONMENT = ['camera', 'sky', 'clouds', 'ocean', 'terrain'] as const;
+export const UI_SET_ENVIRONMENT = ['camera', 'sky', 'clouds', 'ocean', 'terrain', 'time', 'render'] as const;
 
 export interface UiSetTarget {
-    /** `camera` / `sky` / `clouds` / `ocean` / `terrain`, or an object ref (key, id or name). */
+    /** `camera` / `sky` / `clouds` / `ocean` / `terrain` / `time` / `render`, or an object ref (key, id or name). */
     target: string;
     /** Name of a node inside a model. */
     node?: string;

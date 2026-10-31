@@ -14,6 +14,7 @@
 // extra pass each and stay on.
 //
 import type { DirectionalShadowSettings, LightType, PointShadowSettings, ShadowSettings, SpotShadowSettings } from '../types/lights';
+import { DEFAULT_LIGHTS } from './lightsDefaults';
 
 export const DEFAULT_DIRECTIONAL_SHADOW: DirectionalShadowSettings = {
     enabled: true,
@@ -104,9 +105,16 @@ const BY_TYPE: Partial<Record<LightType, ShadowSettings>> = {
     // ambient: no shadow
 };
 
-/** The type's shadow defaults; null for a light that casts none (ambient). */
+/**
+ * The type's shadow defaults; null for a light that casts none (ambient).
+ * A light type not in the table above carries its own in its config defaults
+ * (DEFAULT_LIGHTS[type].shadow) — every light added through the object spec does.
+ */
 export function getDefaultLightShadow(type: LightType | string | undefined): ShadowSettings | null {
-    return (type && BY_TYPE[type as LightType]) || null;
+    if (!type) return null;
+    return BY_TYPE[type as LightType]
+        ?? ((DEFAULT_LIGHTS as Record<string, Record<string, unknown>>)[type]?.shadow as ShadowSettings | undefined)
+        ?? null;
 }
 
 /** The shadow a light renders with: its saved keys over its type's defaults (unset keys skipped). */

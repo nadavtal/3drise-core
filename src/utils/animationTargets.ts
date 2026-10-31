@@ -203,7 +203,7 @@ export class AnimationTargetState {
     }
 
     /** Targets + delays of a row, cached. */
-    targetsOf(anim: AnimationOptions, scope: TargetScope): Resolved {
+    targetsOf(anim: Pick<AnimationOptions, 'property' | 'targets' | 'stagger'>, scope: TargetScope): Resolved {
         const key = `${anim.property}|${scope}|${JSON.stringify(anim.targets ?? null)}|${JSON.stringify(anim.stagger ?? null)}`;
         const hit = this.resolved.get(key);
         if (hit && this.frame - hit.frame < RESOLVE_EVERY && hit.objs.every(o => o.parent)) return hit;

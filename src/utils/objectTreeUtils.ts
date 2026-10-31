@@ -1,8 +1,16 @@
 import type { CreatedObjectSettings } from "../types/scene3d";
+import { linkSourceId, linkSourceProblem } from "./linkedInstances";
 export interface ObjectTreeNode {
     objectId: string;
     createdObject?: CreatedObjectSettings;
     children: ObjectTreeNode[];
+    /** Linked instance: its source's settings (absent when the source is missing or of another type). */
+    linkSource?: CreatedObjectSettings;
+    /** Linked instance: the source draws it (false: the source cannot share — e.g. it has a layout —
+     *  so the instance renders the source's look on its own). */
+    linkShared?: boolean;
+    /** Link source: the ids of the linked instances it draws, in scene order. */
+    linkedIds?: string[];
 }
 
 
@@ -15,6 +23,18 @@ export function buildObjectTree(objects: CreatedObjectSettings[]): ObjectTreeNod
     // First pass: create tree nodes for all objects
     objects.forEach(obj => {
         objectMap.set(obj.id, { objectId: obj.id, createdObject: obj, children: [] });
+    });
+    // Linked instances (meshSettings.instanceOf): the source draws them all — see linkedInstances.ts
+    objects.forEach(obj => {
+        const sourceId = linkSourceId(obj);
+        if (!sourceId) return;
+        const sourceNode = objectMap.get(sourceId);
+        const source = sourceNode?.createdObject;
+        if (!source || source.type !== obj.type || linkSourceId(source)) return;
+        const node = objectMap.get(obj.id);
+        node.linkSource = source;
+        node.linkShared = !linkSourceProblem(source);
+        if (node.linkShared) (sourceNode.linkedIds ??= []).push(obj.id);
     });
     // Second pass: build parent-child relationships
     objects.forEach(obj => {

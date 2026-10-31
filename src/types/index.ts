@@ -15,6 +15,10 @@ export type * from './landObjects';
 export type * from './textObjects';
 export type * from './imageObjects';
 export type * from './galleryObjects';
+export type * from './urbanObjects';
+export type * from './vegetationObjects';
+export type * from './sportsObjects';
+export type * from './waterObjects';
 
 export type * from './handlerSettings';
 

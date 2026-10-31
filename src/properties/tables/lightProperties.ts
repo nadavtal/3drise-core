@@ -16,7 +16,7 @@ import { DEFAULT_LIGHTS } from '../../data/lightsDefaults';
 import type { LightType } from '../../types/lights';
 import type { OptionalProperty } from './optionalProperties';
 
-export type LightTab = 'light' | 'bulb' | 'beam' | 'array' | 'tube' | 'flame' | 'candle';
+export type LightTab = 'light' | 'bulb' | 'beam' | 'array' | 'tube' | 'flame' | 'candle' | 'fixture';
 export type LightProperty = OptionalProperty & { tab?: LightTab };
 
 const enabled: LightProperty = { name: 'enabled', label: 'Enabled', type: 'boolean', description: 'Switch the light off without deleting it' };
@@ -165,6 +165,31 @@ export const LIGHT_PROPERTIES: Record<LightType, LightProperty[]> = {
     { name: 'waxGlow', label: 'Wax glow', type: 'number', min: 0, max: 1, step: 0.01, tab: 'candle', description: 'How much the wax is lit from inside' },
     { name: 'waxColor', label: 'Wax colour', type: 'color', tab: 'candle', description: 'Wax colour' },
   ],
+  projector: [
+      { name: 'enabled', label: 'Enabled', type: 'boolean', tab: 'light', description: 'Switch the light off without deleting it' },
+      { name: 'on', label: 'Power', type: 'boolean', tab: 'light', description: 'Switch the bank on or off. Metal halide heads strike one by one and warm up; switched off, they need Restrike seconds before they can come back' },
+      { name: 'colorMode', label: 'Colour', type: 'select', tab: 'light', options: ['temperature', 'color'], optionLabels: ['Temperature', 'Custom colour'], description: 'Drive the colour from a Kelvin temperature, or pick one' },
+      { name: 'intensity', type: 'number', min: 0, max: 2000, step: 1, tab: 'light', description: 'Brightness of the whole bank. A stadium bank lighting a pitch from 40 m wants several hundred' },
+      { name: 'temperature', label: 'Temperature (K)', type: 'number', min: 2000, max: 8000, step: 50, tab: 'light', description: '5700K is broadcast-grade sports LED, 4000K older metal halide, 3000K warm' },
+      { name: 'distance', type: 'number', min: 0, max: 400, step: 1, tab: 'light', description: 'Range of the light. 0 = unlimited' },
+      { name: 'decay', type: 'number', min: 0, max: 2, step: 0.01, tab: 'light', description: 'How fast the light dims with distance. 2 is physically correct' },
+      { name: 'color', type: 'color', tab: 'light', description: 'Light colour' },
+      { name: 'spread', label: 'Spread', type: 'number', min: 0.05, max: 1.2, step: 0.01, tab: 'beam', description: 'Horizontal half-angle of the flood, radians. The pool on the ground is a rectangle this wide' },
+      { name: 'aspect', type: 'number', min: 0.15, max: 1.5, step: 0.01, tab: 'beam', description: 'Vertical spread as a share of the horizontal. Below 1 throws a wide, flat pool, the way a pitch flood does' },
+      { name: 'edgeSoftness', label: 'Edge softness', type: 'number', min: 0, max: 1, step: 0.01, tab: 'beam', description: 'How soft the edges of the pool are' },
+      { name: 'tilt', type: 'number', min: -1.2, max: 1.4, step: 0.01, tab: 'beam', description: 'Heads tilted down in their yokes, radians. Turn the whole object to pan it' },
+      { name: 'lamp', type: 'select', tab: 'fixture', options: ['led', 'metalHalide'], optionLabels: ['LED', 'Metal halide'], description: 'LED comes on instantly and can run shows. Metal halide strikes with blue flashes, comes up dim and violet and warms to full over Warm-up' },
+      { name: 'columns', type: 'number', min: 1, max: 6, step: 1, tab: 'fixture', description: 'Heads across the bank' },
+      { name: 'rows', type: 'number', min: 1, max: 4, step: 1, tab: 'fixture', description: 'Rows of heads' },
+      { name: 'warmup', label: 'Warm-up (s)', type: 'number', min: 0, max: 12, step: 0.05, tab: 'fixture', description: 'LED: fade-up time. Metal halide: time from strike to full output and colour, about 6 s here, minutes in real life' },
+      { name: 'stagger', label: 'Stagger (s)', type: 'number', min: 0, max: 2, step: 0.01, tab: 'fixture', description: 'Delay between heads coming on, in a fixed order' },
+      { name: 'restrike', label: 'Restrike (s)', type: 'number', min: 0, max: 12, step: 0.1, tab: 'fixture', description: 'Metal halide: how long a hot lamp must cool before it can strike again' },
+      { name: 'show', type: 'select', tab: 'fixture', options: ['none', 'chase', 'strobe', 'breathe'], optionLabels: ['None', 'Chase', 'Strobe', 'Breathe'], description: 'LED light shows: a chase across the heads, a strobe, or a slow breathe' },
+      { name: 'showRate', label: 'Show rate (Hz)', type: 'number', min: 0, max: 8, step: 0.01, tab: 'fixture', description: 'Speed of the light show' },
+      { name: 'flicker', type: 'number', min: 0, max: 1, step: 0.01, tab: 'fixture', description: 'Random dips in brightness, per head' },
+      { name: 'halo', label: 'Glow', type: 'number', min: 0, max: 2, step: 0.01, tab: 'fixture', description: 'Strength of the glow hugging each head. It grows when you stand in the beam' },
+      { name: 'housingColor', label: 'Housing colour', type: 'color', tab: 'fixture', description: 'Colour of the head housings' },
+  ],
 };
 
 /** Re-export under the name the controller already uses; the table itself lives in core. */
@@ -173,6 +198,17 @@ export const LIGHT_DEFAULTS: Record<LightType, Record<string, unknown>> = DEFAUL
 /** Knobs hidden by another knob's value (colour vs temperature, tint only when tinted). */
 export function isLightPropertyHidden(name: string, values: Record<string, unknown>): boolean {
   const type = values.type;
+  if (type === 'projector') {
+    const mode = values.colorMode ?? 'temperature';
+    if (name === 'color') return mode !== 'color';
+    if (name === 'temperature') return mode !== 'temperature';
+    // A metal halide arc can't run a show, and only it has a restrike delay.
+    const halide = (values.lamp ?? 'led') === 'metalHalide';
+    if (name === 'show') return halide;
+    if (name === 'showRate') return halide || (values.show ?? 'none') === 'none';
+    if (name === 'restrike') return !halide;
+    return false;
+  }
   if (type === 'ledArray') {
     const mode = values.colorMode ?? 'temperature';
     if (name === 'color') return mode !== 'color';
@@ -256,5 +292,17 @@ export const SHADOW_PROPERTIES: Record<LightType, OptionalProperty[]> = {
     { name: 'cameraRight', label: 'Right', type: 'number', min: 0, max: 200, step: 1, description: 'Shadow area, right edge' },
     { name: 'cameraTop', label: 'Top', type: 'number', min: 0, max: 200, step: 1, description: 'Shadow area, top edge' },
     { name: 'cameraBottom', label: 'Bottom', type: 'number', min: -200, max: 0, step: 1, description: 'Shadow area, bottom edge' },
+  ],
+  projector: [
+      { name: 'enabled', label: 'Cast shadows', type: 'boolean', description: 'A spot shadow is one extra render' },
+      { name: 'mapSize', label: 'Resolution', type: 'select', options: ['256', '512', '1024', '2048', '4096'], description: 'Shadow map size. Higher is sharper and slower' },
+      { name: 'intensity', type: 'number', min: 0, max: 1, step: 0.01, description: 'How dark the shadow is' },
+      { name: 'radius', label: 'Softness', type: 'number', min: 0, max: 10, step: 0.1, description: 'Blur radius of the shadow edge (PCF shadows)' },
+      { name: 'bias', type: 'number', min: -0.01, max: 0.01, step: 0.0001, description: 'Fixes shadow acne. Too far and shadows detach from objects' },
+      { name: 'normalBias', label: 'Normal bias', type: 'number', min: 0, max: 0.1, step: 0.001, description: 'Acne fix along the surface normal; better on curved surfaces' },
+      { name: 'cameraNear', label: 'Near', type: 'number', min: 0.01, max: 10, step: 0.01, description: 'Closest distance that casts a shadow' },
+      { name: 'cameraFar', label: 'Far', type: 'number', min: 1, max: 1000, step: 1, description: 'Farthest distance that casts a shadow' },
+      { name: 'cameraFov', label: 'Shadow FOV', type: 'number', min: 1, max: 120, step: 1, description: 'Field of view of the shadow camera' },
+      { name: 'focus', type: 'number', min: 0, max: 1, step: 0.01, description: 'Tightens the shadow camera around the cone' },
   ],
 };

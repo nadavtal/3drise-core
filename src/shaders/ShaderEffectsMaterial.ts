@@ -3,7 +3,7 @@
 //
 //   import { buildShaderEffectsMaterial, EFFECT_REGISTRY,
 //            listDescriptors, createDefaultShaderEffect,
-//            type ShaderEffect } from '@ntalmagor/3drize-core';
+//            type ShaderEffect } from '@3driseai/3drise-core';
 export { buildShaderEffectsMaterial, } from './effects/buildShaderEffectsMaterial';
 export { EFFECT_REGISTRY, getDescriptor, listDescriptors, registerEffect, } from './effects/registry/index';
 export { createDefaultShaderEffect, generateInstanceId } from './effects/defaults';

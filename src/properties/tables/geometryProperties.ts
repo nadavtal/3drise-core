@@ -9,6 +9,9 @@
 //
 import type { ShapeName, GeometryShapeConfig, DisplayMode, ModeConfig, ModeGroup } from '../../types/scene3d';
 import { TEXT_FONTS } from '../../data/textDefaults';
+import type { OptionalProperty } from './optionalProperties';
+import { PARAMETRIC_SHAPE_DEFAULTS, isParametricShape, type ParametricShapeName } from '../../geometry/parametricGeometry';
+import { DEFAULT_SCRIPT_CONFIG, isScriptShape } from '../../geometry/scriptGeometry';
 
 export type ControlOf<K extends string> =
   | { type: 'range'; key: K; label: string; min: number; max: number; step: number; default: number; digits?: number; unit?: string; format?: (v: number) => string }
@@ -73,11 +76,80 @@ export const SHAPE_CONTROLS: Record<ShapeName, ControlOf<OptKey>[]> = {
   ],
   point: [num('size', 'Size', 0.02, 0.5, 0.01, 0.1)],
   custom: [],
+  torusKnot: [num('radius', 'Radius', 0.1, 5, 0.01, 1), num('tube', 'Tube', 0.02, 2, 0.01, 0.3), int('p', 'Winds (p)', 1, 12, 2), int('q', 'Turns (q)', 1, 12, 3), int('radialSegments', 'Radial segments', 3, 32, 12), int('tubularSegments', 'Tubular segments', 16, 400, 128)],
+  // the parametric recipes keep their knobs as property rows (PARAMETRIC_SHAPE_PROPERTIES); scripts carry their own schema
+  outline: [], extrude: [], lathe: [], sweep: [], svg: [], superellipsoid: [], script: [],
+};
+
+// ---------------------------------------------------------------------------- parametric recipes
+// The knobs of the six recipe variants (core geometry/parametricGeometry.ts), as property rows: the registry turns
+// them into config.* specs (structural) and the Shape tab renders them (tabs shape / form / detail). Ranges are
+// metres and degrees; the builder's validator (validateParametricShape) says what is wrong with a point list.
+const n = (name: string, label: string, description: string, min: number, max: number, step: number, tab: string, unit?: string): OptionalProperty =>
+  ({ name, label, description, type: 'number', min, max, step, tab, animatable: false, ...(unit ? { unit } : {}) });
+const CURVE_ROW = n('curve', 'Rounding', 'How much the point list is rounded: 0 keeps straight segments, 1 is a smooth spline through the points.', 0, 1, 0.01, 'shape');
+const BEVEL_ROWS = [n('bevelSize', 'Bevel', 'Bevel size on the edges (m). 0 = sharp.', 0, 0.5, 0.005, 'form', 'm'), n('bevelSegments', 'Bevel segments', 'Bevel roundness.', 1, 6, 1, 'detail')];
+const CREASE_ROW = n('crease', 'Crease angle', 'Faces meeting below this angle are smoothed, above it stay sharp.', 0, 90, 1, 'detail', '°');
+const SEGMENTS_ROW = (min: number, max: number, def: string) => n('segments', 'Segments', def, min, max, 1, 'detail');
+const ORIENTATION_ROW: OptionalProperty = { name: 'orientation', label: 'Orientation', description: 'flat: the outline lies on the ground and rises along Y. upright: the points are [x, y] in a standing plane, the thickness along Z.', type: 'select', options: ['flat', 'upright'], optionLabels: ['Flat (ground)', 'Upright'], tab: 'form', animatable: false };
+
+export const PARAMETRIC_SHAPE_PROPERTIES: Record<ParametricShapeName, OptionalProperty[]> = {
+  outline: [
+    { name: 'points', label: 'Outline', description: 'The outline as [x, z] metres, counter-clockwise, 3–200 points, no self-intersections.', type: 'points', tab: 'shape', animatable: false },
+    CURVE_ROW,
+    n('thickness', 'Thickness', 'Slab thickness (m). 0 = a single flat face.', 0, 5, 0.01, 'form', 'm'),
+    ...BEVEL_ROWS, SEGMENTS_ROW(2, 32, 'Spline samples per point when rounded.'), CREASE_ROW,
+  ],
+  extrude: [
+    { name: 'points', label: 'Outline', description: 'The outline as [x, z] metres ([x, y] when upright), counter-clockwise, 3–200 points, no self-intersections.', type: 'points', tab: 'shape', animatable: false },
+    { name: 'holes', label: 'Holes', description: 'Hole outlines inside the outline, each 3 or more points.', type: 'points', list: true, tab: 'shape', animatable: false },
+    CURVE_ROW,
+    n('height', 'Height', 'Extrusion height (m).', 0.01, 100, 0.01, 'form', 'm'),
+    n('twist', 'Twist', 'Total twist over the height (flat orientation).', -360, 360, 1, 'form', '°'),
+    n('taper', 'Taper', 'Scale at the top relative to the bottom (1 = straight sides).', 0.1, 3, 0.01, 'form'),
+    ORIENTATION_ROW,
+    ...BEVEL_ROWS, SEGMENTS_ROW(2, 32, 'Spline samples per point when rounded; height steps when twisted or tapered.'), CREASE_ROW,
+  ],
+  lathe: [
+    { name: 'profile', label: 'Profile', description: 'The profile as [radius, y] metres from the bottom up; radius ≥ 0 (never crosses the axis).', type: 'points', tab: 'shape', animatable: false },
+    CURVE_ROW,
+    n('angle', 'Angle', 'Swept angle; less than 360 cuts a slice closed by two flat walls.', 1, 360, 1, 'form', '°'),
+    { name: 'cap', label: 'Caps', description: 'Close the open ends (where the profile does not reach the axis).', type: 'boolean', tab: 'form', animatable: false },
+    SEGMENTS_ROW(3, 128, 'Radial segments.'), CREASE_ROW,
+  ],
+  sweep: [
+    { name: 'path', label: 'Path', description: 'The path as [x, y, z] metres, 2 or more points. The pipe is where the path is (no base shift).', type: 'points', dims: 3, tab: 'shape', animatable: false },
+    { name: 'profile', label: 'Profile', description: 'Cross-section as [u, v] metres around the path (v up on a level path). Empty = a circle of Radius.', type: 'points', tab: 'shape', animatable: false },
+    n('radius', 'Radius', 'Tube radius (m) when no profile is given.', 0.005, 10, 0.005, 'form', 'm'),
+    CURVE_ROW,
+    n('scaleEnd', 'End scale', 'Cross-section scale at the end of the path (1 = constant).', 0, 5, 0.01, 'form'),
+    { name: 'cap', label: 'Caps', description: 'Close both ends of an open sweep.', type: 'boolean', tab: 'form', animatable: false },
+    { name: 'closed', label: 'Closed loop', description: 'Join the end of the path back to its start.', type: 'boolean', tab: 'form', animatable: false },
+    SEGMENTS_ROW(3, 64, 'Radial segments of the circle profile and spline samples per path point.'), CREASE_ROW,
+  ],
+  svg: [
+    { name: 'svg', label: 'SVG path', description: 'An SVG path `d` string, or whole SVG markup. Holes follow the fill rule (even-odd for a bare path).', type: 'string', multiline: true, tab: 'shape', animatable: false },
+    { name: 'svgUrl', label: 'SVG file', description: 'An uploaded .svg; when set it replaces the pasted path.', type: 'string', tab: 'shape', animatable: false },
+    n('width', 'Width', 'The drawing is fitted to this width (m); the height follows.', 0.05, 100, 0.01, 'form', 'm'),
+    n('height', 'Depth', 'Extrusion depth (m).', 0.005, 20, 0.005, 'form', 'm'),
+    ORIENTATION_ROW,
+    ...BEVEL_ROWS, SEGMENTS_ROW(2, 24, 'Samples per curve span.'), CREASE_ROW,
+  ],
+  superellipsoid: [
+    n('width', 'Width', 'Full extent along X (m).', 0.05, 100, 0.01, 'form', 'm'),
+    n('height', 'Height', 'Full extent along Y (m).', 0.05, 100, 0.01, 'form', 'm'),
+    n('depth', 'Depth', 'Full extent along Z (m).', 0.05, 100, 0.01, 'form', 'm'),
+    n('e1', 'Roundness N–S', 'North–south exponent: 1 = ellipsoid, → 0 = box, > 1 = pinched.', 0.05, 4, 0.01, 'shape'),
+    n('e2', 'Roundness E–W', 'East–west exponent: 1 = ellipsoid, → 0 = box, > 1 = pinched.', 0.05, 4, 0.01, 'shape'),
+    SEGMENTS_ROW(8, 96, 'Segments around; half as many up.'), CREASE_ROW,
+  ],
 };
 
 export const ALL_SHAPES = Object.keys(SHAPE_CONTROLS) as ShapeName[];
 
 export function defaultShapeOptions(type: ShapeName = 'heart'): GeometryShapeConfig {
+  if (isParametricShape(type)) return { ...PARAMETRIC_SHAPE_DEFAULTS[type] } as unknown as GeometryShapeConfig;
+  if (isScriptShape(type)) return { ...DEFAULT_SCRIPT_CONFIG, params: { ...DEFAULT_SCRIPT_CONFIG.params }, schema: { ...DEFAULT_SCRIPT_CONFIG.schema } } as unknown as GeometryShapeConfig;
   const opts: GeometryShapeConfig = { type };
   for (const c of SHAPE_CONTROLS[type]) (opts as unknown as Record<string, unknown>)[c.key] = c.default;
   return opts;
