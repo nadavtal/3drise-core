@@ -8,6 +8,7 @@ import type { EffectTriggerMode } from "./effects";
 import type { PathConfig } from "./animations";
 import type { LightObjectConfig } from "./lights";
 import type { ShapeLayout } from "../utils/shapeLayout";
+import type { MeshEdit } from "../utils/meshEdit";
 import type { Interaction, MouseMoveInteraction, MouseMoveInteractions, ObjectAnimations, ObjectEffectClip } from "./objectSettings";
 import type { GenerativeEffectConfig, GenerativeEffectSettings, BubblesConfig, GlyphsConfig, SparklesBurstConfig } from "./generativeEffects";
 import { GalleryLayoutSettings } from "./gallery";
@@ -171,6 +172,8 @@ export type ShapeName = 'heart' | 'box' | 'star' | 'polygon' | 'gear' | 'flower'
 
 export interface GeometryShapeConfig {
     type: ShapeName;
+    /** The mesh's own shape, edited (the config tab's Edit mesh): its outline or a cage — core utils/meshEdit. */
+    edit?: MeshEdit | null;
     curveSegments?: number;
     subdivisions?: number;
     segments?: number;

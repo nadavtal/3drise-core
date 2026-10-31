@@ -354,15 +354,39 @@ function surfaceFill(rings: BuiltRing[], e: EdgeSet, b: AreaBounds, area: number
             if (loop.length >= 3) loops.push(loop);
         }
     }
-    // the band: the outer edge with the area's holes and the lattice's outlines as holes
+    // the band, in pieces (a hole may not sit inside another hole — earcut leaves such a strip out):
+    //  - the outer edge, with the lattice's outer outlines as its holes (wound positive: the triangles are);
+    //  - every outline the lattice has around a gap (wound negative) as a piece of its own, with the area's
+    //    holes that lie in that gap as its holes — the strip from the lattice down to each hole's edge;
+    //  - an area hole the lattice does not surround (too near the edge for a lattice point) is a hole of the outer piece.
     const V = (i: number) => new Vector2(X[i], Z[i]);
-    const holes = [...ringIdx.slice(1), ...loops];
-    const band = ShapeUtils.triangulateShape(ringIdx[0].map(V), holes.map((l) => l.map(V)));
-    const flat = [ringIdx[0], ...holes].flat();
+    const signedOf = (l: number[]) => { let s = 0; for (let i = 0; i < l.length; i++) { const a = l[i], c = l[(i + 1) % l.length]; s += X[a] * Z[c] - X[c] * Z[a]; } return s / 2; };
+    const insideLoop = (l: number[], x: number, z: number) => {
+        let inside = false;
+        for (let i = 0, j = l.length - 1; i < l.length; j = i++) {
+            const xi = X[l[i]], zi = Z[l[i]], xj = X[l[j]], zj = Z[l[j]];
+            if ((zi > z) !== (zj > z) && x < ((xj - xi) * (z - zi)) / (zj - zi) + xi) inside = !inside;
+        }
+        return inside;
+    };
+    const outlines = loops.filter((l) => signedOf(l) > 0), gaps = loops.filter((l) => signedOf(l) <= 0);
+    const pieces: Array<{ contour: number[]; holes: number[][] }> = gaps.map((g) => ({ contour: g, holes: [] }));
+    const outerPiece = { contour: ringIdx[0], holes: [...outlines] as number[][] };
+    for (const hole of ringIdx.slice(1)) {
+        // the smallest gap around the hole's first point (gaps don't nest; the test is cheap)
+        const x = X[hole[0]], z = Z[hole[0]];
+        const piece = pieces.find((p) => insideLoop(p.contour, x, z));
+        (piece ?? outerPiece).holes.push(hole);
+    }
+    const band: number[][] = [];
+    for (const p of [outerPiece, ...pieces]) {
+        const flatP = [p.contour, ...p.holes].flat();
+        for (const t of ShapeUtils.triangulateShape(p.contour.map(V), p.holes.map((l) => l.map(V)))) band.push([flatP[t[0]], flatP[t[1]], flatP[t[2]]]);
+    }
     // earcut drops points that sit in a straight line with their neighbours — on a sheet straight in plan that is
     // every edge point, heights and all: put each dropped one back by fanning the triangle along its edge
     const used = new Uint8Array(X.length);
-    for (const t of band) for (const k of t) used[flat[k]] = 1;
+    for (const t of band) for (const k of t) used[k] = 1;
     const skipped = new Map<number, { from: number; pts: number[] }>();
     const pairKey = (a: number, c: number) => (a < c ? key(a, c) : key(c, a));
     for (const idx of ringIdx) {
@@ -388,7 +412,7 @@ function surfaceFill(rings: BuiltRing[], e: EdgeSet, b: AreaBounds, area: number
         out.push(wind(t));
     };
     const filled: number[][] = [];
-    for (const t of band) { filled.length = 0; fan([flat[t[0]], flat[t[1]], flat[t[2]]], filled); tris.push(...filled); }
+    for (const t of band) { filled.length = 0; fan(t, filled); tris.push(...filled); }
     delaunayFlips(tris, X, Z);
     const xz = new Float64Array(X.length * 2), ys = new Float64Array(X.length);
     for (let i = 0; i < X.length; i++) { xz[i * 2] = X[i]; xz[i * 2 + 1] = Z[i]; ys[i] = Y[i]; }

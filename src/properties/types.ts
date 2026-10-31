@@ -12,7 +12,7 @@
 
 /** `objects`: a list of scene object ids (picked from the scene; set from a script as an array).
  *  `layout`: the meshSettings.layout block, set whole or in part and checked by validateObjectLayout. */
-export type PropertyKind = 'number' | 'color' | 'boolean' | 'select' | 'vec3' | 'vec2' | 'string' | 'texture' | 'objects' | 'layout' | 'textureSet' | 'points' | 'layoutRef' | 'textureMap' | 'shapeLayout';
+export type PropertyKind = 'number' | 'color' | 'boolean' | 'select' | 'vec3' | 'vec2' | 'string' | 'texture' | 'objects' | 'layout' | 'textureSet' | 'points' | 'layoutRef' | 'textureMap' | 'shapeLayout' | 'meshEdit';
 
 /** What a property belongs to. Objects are all 'object'; the kind of object is read from its settings. */
 /** 'render' and 'time' are keyed views over stored settings (core/render/renderView). */

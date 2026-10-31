@@ -69,3 +69,4 @@ export * from './layoutPresets';
 export * from './layoutRefs';
 export * from './layoutSurface';
 export * from './shapeLayout';
+export * from './meshEdit';

@@ -121,14 +121,15 @@ function surfaceOf(layout: ResolvedLayout, o: LayoutApplyOptions): LayoutSurface
 }
 
 /** The mesh's frame: layout space (x, height, z) → the mesh's own, its size across and its height. */
-function frameOf(base: BufferGeometry) {
+function frameOf(base: BufferGeometry, upAxis?: 0 | 1 | 2) {
     base.computeBoundingBox();
     const b = base.boundingBox!;
     const ext = [b.max.x - b.min.x, b.max.y - b.min.y, b.max.z - b.min.z];
     const c = [(b.min.x + b.max.x) / 2, (b.min.y + b.max.y) / 2, (b.min.z + b.max.z) / 2];
     const big = Math.max(...ext, 1e-6);
     const thin = ext.indexOf(Math.min(...ext));
-    const up = ext[thin] <= big * 1e-3 ? thin : 1;          // a flat mesh's up is its thin side; otherwise Y
+    // a flat mesh's up is its thin side; otherwise Y — or the axis the caller names (an upright symbol: its depth, Z)
+    const up = upAxis ?? (ext[thin] <= big * 1e-3 ? thin : 1);
     const R = new Matrix4();
     let size: [number, number];
     if (up === 2) { R.set(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1); size = [ext[0], ext[1]]; }       // (x, h, z) → (x, −z, h)
@@ -150,12 +151,12 @@ function frameOf(base: BufferGeometry) {
  * own triangles inside them. UVs in the layout's metres (a texture's tile size is its material's
  * repeat). Empty when the layout has no grounds.
  */
-export function applyShapeLayoutGrounds(base: BufferGeometry, shapeType: string | undefined, sl: ShapeLayout, layout: ResolvedLayout | null = shapeLayoutData(sl)): Array<{ id: string; geometry: BufferGeometry }> {
+export function applyShapeLayoutGrounds(base: BufferGeometry, shapeType: string | undefined, sl: ShapeLayout, layout: ResolvedLayout | null = shapeLayoutData(sl), upAxis?: 0 | 1 | 2): Array<{ id: string; geometry: BufferGeometry }> {
     if (!layout || layout.kind !== 'area' || !base.getAttribute('position')?.count) return [];
     const o = optionsOf(sl, layout.kind);
     const s = surfaceOf(layout, o);
     if (!s?.grounds.length) return [];
-    const f = frameOf(base);
+    const f = frameOf(base, upAxis);
     const mode = sl.mode ?? defaultShapeLayoutMode(shapeType);
     const tiled: LayoutApplyOptions = { ...o, uv: 'tile', repeat: 1 };
     if (mode === 'cut') {
@@ -219,12 +220,13 @@ function mergeParts(parts: BufferGeometry[]): BufferGeometry {
  * The mesh's geometry with the layout applied, or null when it can't be (no layout data yet, an
  * empty surface, nothing left after a cut). `base` is not changed — the caller keeps or disposes it.
  */
-export function applyShapeLayout(base: BufferGeometry, shapeType: string | undefined, sl: ShapeLayout, layout: ResolvedLayout | null = shapeLayoutData(sl)): BufferGeometry | null {
+/** `upAxis`: the mesh axis the layout's heights go along (default: a flat mesh's thin side, else Y). */
+export function applyShapeLayout(base: BufferGeometry, shapeType: string | undefined, sl: ShapeLayout, layout: ResolvedLayout | null = shapeLayoutData(sl), upAxis?: 0 | 1 | 2): BufferGeometry | null {
     if (!layout || !base.getAttribute('position')?.count) return null;
     const o = optionsOf(sl, layout.kind);
     const s = surfaceOf(layout, o);
     if (!s) return null;
-    const f = frameOf(base);
+    const f = frameOf(base, upAxis);
     const mode = sl.mode ?? defaultShapeLayoutMode(shapeType);
     let out: BufferGeometry;
     if (mode === 'surface') {

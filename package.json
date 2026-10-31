@@ -19,7 +19,8 @@
     "dev": "tsc --build --watch",
     "clean": "rimraf dist",
     "bump": "npm version patch",
-    "pub": "npm run build && npm publish --access public"
+    "check:dist": "node ../../tools/check-dist.mjs",
+    "pub": "node ../../tools/check-dist.mjs && npm publish --access public"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

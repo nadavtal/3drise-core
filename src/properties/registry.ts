@@ -77,6 +77,7 @@ import {
 } from './tables/optionalProperties';
 import { SHAPE_CONTROLS, MODE_CONTROLS, PARAMETRIC_SHAPE_PROPERTIES, type ControlOf } from './tables/geometryProperties';
 import { isParametricShape } from '../geometry/parametricGeometry';
+import { meshEditKind } from '../utils/meshEdit';
 import { isScriptShape, scriptRows } from '../geometry/scriptGeometry';
 import { LIGHT_PROPERTIES, SHADOW_PROPERTIES, type LightProperty } from './tables/lightProperties';
 import { PARTICLES_PROPERTIES } from './tables/particlesProperties';
@@ -460,6 +461,19 @@ const shapeLayoutSpecs = (obj: CreatedObjectSettings | any): PropertySpec[] =>
         }]
         : [];
 
+/** config.edit — a mesh's own shape, edited (core utils/meshEdit): its outline (area) or a cage. */
+const meshEditSpecs = (obj: CreatedObjectSettings | any): PropertySpec[] => {
+    if (obj?.type !== 'mesh') return [];
+    const kind = meshEditKind(obj.config?.type);
+    if (!kind || kind === 'profile') return [];
+    return [{
+        key: 'config.edit', name: 'edit', label: 'Edit mesh', kind: 'meshEdit', domain: 'config', animatable: false,
+        description: kind === 'area'
+            ? "The mesh's own outline: { area: { points: [[x, y, z], …] (metres, centred; y a point's height), curve?, holes?, sides?, … } } — the same area a layout takes. A flat mesh becomes its surface; a solid / symbol mesh is extruded from it to its own depth. Fitted into the mesh's size. null removes it (the mesh as it was)."
+            : "The mesh bent through a cage of control points round it: { cage: { size: 2 | 3 | 4 (points per side), points: { 'i,j,k': [dx, dy, dz] } } } — only the moved points; i, j, k the x, y, z index (0 the min side, size−1 the max); offsets as shares of the mesh's largest extent (0.5 = half its size). E.g. a sphere stretched up: { cage: { size: 3, points: { '1,2,1': [0, 0.5, 0] } } }. null removes it.",
+    }];
+};
+
 function objectSpecs(obj: CreatedObjectSettings | any): PropertySpec[] {
     if (!obj) return [];
     const ownsMaterial = !selfManagesMaterial(obj);
@@ -467,6 +481,7 @@ function objectSpecs(obj: CreatedObjectSettings | any): PropertySpec[] {
         ...TRANSFORM_SPECS,
         ...layoutSpecs(obj),
         ...shapeLayoutSpecs(obj),
+        ...meshEditSpecs(obj),
         ...(ownsMaterial ? materialSpecs(obj.materialSettings, 'materialSettings.', 'material') : []),
         ...edgesSpecs(obj),
         ...configSpecs(obj),
