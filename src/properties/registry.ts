@@ -469,7 +469,7 @@ const meshEditSpecs = (obj: CreatedObjectSettings | any): PropertySpec[] => {
     return [{
         key: 'config.edit', name: 'edit', label: 'Edit mesh', kind: 'meshEdit', domain: 'config', animatable: false,
         description: kind === 'area'
-            ? "The mesh's own outline: { area: { points: [[x, y, z], …] (metres, centred; y a point's height), curve?, holes?, sides?, … } } — the same area a layout takes. A flat mesh becomes its surface; a solid / symbol mesh is extruded from it to its own depth. Fitted into the mesh's size. null removes it (the mesh as it was)."
+            ? "The mesh's own outline: { area: { points: [[x, y, z], …] (metres, centred; y a point's height), curve?, smoothCorners?, segments? (each side), holes?, noise? } } — the same area a layout takes. A flat mesh becomes its surface; a solid / symbol mesh is extruded from it to its own depth. Fitted into the mesh's size. null removes it (the mesh as it was)."
             : "The mesh bent through a cage of control points round it: { cage: { size: 2 | 3 | 4 (points per side), points: { 'i,j,k': [dx, dy, dz] } } } — only the moved points; i, j, k the x, y, z index (0 the min side, size−1 the max); offsets as shares of the mesh's largest extent (0.5 = half its size). E.g. a sphere stretched up: { cage: { size: 3, points: { '1,2,1': [0, 0.5, 0] } } }. null removes it.",
     }];
 };

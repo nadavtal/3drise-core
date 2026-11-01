@@ -20,7 +20,7 @@
     "clean": "rimraf dist",
     "bump": "npm version patch",
     "check:dist": "node ../../tools/check-dist.mjs",
-    "pub": "node ../../tools/check-dist.mjs && npm publish --access public"
+    "pub": "node ../../tools/check-dist.mjs --only core --no-client && npm publish --access public"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

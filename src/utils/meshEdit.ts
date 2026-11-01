@@ -46,7 +46,10 @@ export const MESH_CAGE_SIZES = [2, 3, 4] as const;
 /** The furthest a cage point may move (shares of the mesh's largest extent). */
 export const MESH_CAGE_MAX_OFFSET = 2;
 
-type ShapeCfg = { type?: string; [k: string]: unknown };
+/** A mesh config as mesh editing reads it: its type and edit (any GeometryShapeConfig); other knobs are read by name. */
+export type MeshEditConfig = { type?: string; edit?: MeshEdit | null };
+type ShapeCfg = MeshEditConfig & Record<string, unknown>;
+const cfgOf = (c: MeshEditConfig) => c as ShapeCfg;
 const num = (v: unknown, d: number) => (typeof v === 'number' && Number.isFinite(v) ? v : d);
 
 /** The symbol meshes (extruded 2D shapes, standing up) and their outline in the shape API. */
@@ -83,7 +86,7 @@ const meshEditUpAxis = (c: ShapeCfg): 2 | undefined =>
     SYMBOL_OUTLINES[c.type ?? ''] || (c.type === 'extrude' && c.orientation === 'upright') ? 2 : undefined;
 
 /** The layout an edited outline is applied as: a flat mesh becomes it, every other one is extruded from it. */
-export function meshEditLayout(c: ShapeCfg & { edit?: MeshEdit | null }): ShapeLayout | null {
+export function meshEditLayout(c: MeshEditConfig): ShapeLayout | null {
     const area = c.edit?.area;
     if (!area || meshEditKind(c.type) !== 'area') return null;
     return { area, mode: FLAT_LAYOUT_SHAPES.has(c.type ?? '') ? 'surface' : 'extrude' };
@@ -94,7 +97,8 @@ export function meshEditLayout(c: ShapeCfg & { edit?: MeshEdit | null }): ShapeL
  * the cage. Returns the base itself when there is nothing to apply (or the outline gives nothing).
  * `grounds`: the outline's ground holes (as applyShapeLayoutGrounds).
  */
-export function applyMeshEdit(base: BufferGeometry, c: ShapeCfg & { edit?: MeshEdit | null }): { geometry: BufferGeometry; grounds: Array<{ id: string; geometry: BufferGeometry }>; layout: ShapeLayout | null } {
+export function applyMeshEdit(base: BufferGeometry, cfg: MeshEditConfig): { geometry: BufferGeometry; grounds: Array<{ id: string; geometry: BufferGeometry }>; layout: ShapeLayout | null } {
+    const c = cfgOf(cfg);
     let geometry = base, grounds: Array<{ id: string; geometry: BufferGeometry }> = [];
     const sl = meshEditLayout(c);
     if (sl) {
@@ -127,13 +131,14 @@ const round2 = (p: V3): V3 => [Math.round(p[0] * 100) / 100, Math.round(p[1] * 1
  * shape API, an extrusion's points, a plane's rectangle, a cylinder's circle, a box's square).
  * In the editor's metres (about 40 across; an outline is fitted into the mesh's size either way).
  */
-export function meshEditStartArea(c: ShapeCfg & { edit?: MeshEdit | null }, layoutShape?: ShapeLayout | null): AreaInput {
+export function meshEditStartArea(cfg: MeshEditConfig, layoutShape?: ShapeLayout | null): AreaInput {
+    const c = cfgOf(cfg);
     if (c.edit?.area) return c.edit.area;
     // centred on the origin as the editor keeps it (so opening it changes nothing)
     const start = startOutline(c, layoutShape), m = centerArea(start);
     return Math.hypot(m.center[0], m.center[1]) < 0.005 ? start : { ...m.input, points: m.input.points.map(round2) };
 }
-function startOutline(c: ShapeCfg & { edit?: MeshEdit | null }, layoutShape?: ShapeLayout | null): AreaInput {
+function startOutline(c: ShapeCfg, layoutShape?: ShapeLayout | null): AreaInput {
     const fromLayout = layoutShape ? shapeLayoutData(layoutShape) : null;
     if (fromLayout?.kind === 'area') return fromLayout.area;
     const type = c.type ?? 'box';
