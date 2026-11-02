@@ -30,7 +30,9 @@ export type PropertyDomain =
     | 'transform' | 'material' | 'edges'
     | 'light' | 'shadow' | 'particles' | 'effect' | 'grid' | 'environment' | 'space' | 'land' | 'text' | 'image' | 'gallery' | 'urban' | 'vegetation' | 'sports' | 'water' | 'rain' | 'clouds' | 'config'
     | 'camera' | 'sky' | 'stars' | 'cirrus' | 'thunder' | 'ocean' | 'terrain'
-    | 'render' | 'time';
+    | 'render' | 'time'
+    /** an element of a UI layer (timeline tracks, `ui:<layerKey>`) */
+    | 'ui';
 
 export interface PropertyOption {
     value: string;
