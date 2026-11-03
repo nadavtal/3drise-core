@@ -1,6 +1,5 @@
 import { Vector3, Vector2, Color } from "three";
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from './shaderMaterial';
 export interface MyParticlesMaterialUniforms {
     uColor: {
         value: Color;
@@ -167,5 +166,5 @@ const MyParticlesMaterial = shaderMaterial({
     a: 0.01,
 }, vertexShader, fragmentShader);
 // Extend the material for use in React Three Fiber
-extend({ MyParticlesMaterial });
+
 export { MyParticlesMaterial };

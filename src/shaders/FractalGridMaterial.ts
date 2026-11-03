@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 
 export interface FractalGridMaterialUniforms {
     u_time: number;
@@ -42,11 +41,6 @@ export interface FractalGridMaterialUniforms {
     u_splitJitter: number;
 }
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        fractalGridMaterial: ThreeElements['shaderMaterial'] & Partial<FractalGridMaterialUniforms>;
-    }
-}
 
 export const fractalGridMaterialDefaults: FractalGridMaterialUniforms = {
     u_time: 0,
@@ -301,4 +295,3 @@ export const FractalGridMaterial = shaderMaterial(
     fragment,
 );
 
-extend({ FractalGridMaterial });

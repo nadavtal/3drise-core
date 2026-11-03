@@ -8,7 +8,7 @@ import type { Action } from "./actions";
 import type { SceneLightConfig } from "./lights";
 import type { ActionSequence } from "./actions";
 import type { CursorModuleConfig } from "./cursor";
-import { type ThreeEvent } from "@react-three/fiber";
+import type { ScenePointerEvent } from './events';
 export type AnimationType = 'tween' | 'keyframe';
 
 export interface CameraConfig {
@@ -47,16 +47,6 @@ export interface UniformDefinition {
     type: UniformType;
     defaultValue: string | number | boolean | Vector2Array | Vector3Array | QuaternionArray;
     description?: string;
-}
-
-export interface SceneBuilderProps {
-    project: ProjectData;
-    width?: string | number;
-    height?: string | number;
-    style?: React.CSSProperties;
-    className?: string;
-    onObjectClick?: (object: CreatedObjectSettings, ref: Object3D, event: ThreeEvent<MouseEvent>) => void;
-    onSceneInitialized?: () => void;
 }
 
 export interface ProjectData {

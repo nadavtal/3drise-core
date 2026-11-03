@@ -1,3 +1,4 @@
+export * from './shaderMaterial';
 export * from './BasicSkyMaterial';
 export * from './EarthMaterial';
 export * from './EarthAtmosphereMaterial';

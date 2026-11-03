@@ -1,6 +1,5 @@
 import { Vector2, Vector3 } from "three";
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from '../shaderMaterial';
 export interface GhostSignalMaterialUniforms {
     u_time: {
         value: number;
@@ -111,5 +110,4 @@ const GhostSignalMaterial = shaderMaterial({
     u_trailLength: 0.25,
     u_glitchIntensity: 0.6,
 }, vertexShader, fragmentShader);
-extend({ GhostSignalMaterial });
 export { GhostSignalMaterial };

@@ -1,6 +1,5 @@
 import { Vector2, Vector3 } from "three";
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from '../shaderMaterial';
 export interface TeslaArcMaterialUniforms {
     u_time: {
         value: number;
@@ -145,5 +144,4 @@ const TeslaArcMaterial = shaderMaterial({
     u_intensity: 1.5,
     u_forkDensity: 6.0,
 }, vertexShader, fragmentShader);
-extend({ TeslaArcMaterial });
 export { TeslaArcMaterial };

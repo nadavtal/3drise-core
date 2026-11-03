@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 
 /**
  * An Islamic star pattern drawn by Hankin polygons-in-contact. One ray per dihedral sector, from the edge midpoint to the sector bisector, generates the whole interlaced star-and-rosette strapwork over an octagon-square, hexagonal or trihexagonal tiling.
@@ -42,11 +41,6 @@ export interface GirihGridMaterialUniforms {
     u_angleDrift: number;
 }
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        girihGridMaterial: ThreeElements['shaderMaterial'] & Partial<GirihGridMaterialUniforms>;
-    }
-}
 
 export const girihGridMaterialDefaults: GirihGridMaterialUniforms = {
     u_time: 0,
@@ -516,4 +510,3 @@ export const GirihGridMaterial = shaderMaterial(
     fragment,
 );
 
-extend({ GirihGridMaterial });

@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 
 /**
  * Potential flow past a cylinder with circulation, drawn as a flow net: streamlines and equipotentials that cross at right angles everywhere and bend around the obstacle.
@@ -40,11 +39,6 @@ export interface FlowNetGridMaterialUniforms {
     u_flowAngle: number;
 }
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        flowNetGridMaterial: ThreeElements['shaderMaterial'] & Partial<FlowNetGridMaterialUniforms>;
-    }
-}
 
 export const flowNetGridMaterialDefaults: FlowNetGridMaterialUniforms = {
     u_time: 0,
@@ -319,4 +313,3 @@ export const FlowNetGridMaterial = shaderMaterial(
     fragment,
 );
 
-extend({ FlowNetGridMaterial });

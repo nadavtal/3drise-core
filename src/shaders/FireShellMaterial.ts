@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 export interface FireShellUniforms {
     u_time: number;
     u_intensity: number;
@@ -16,11 +15,6 @@ export interface FireShellUniforms {
 
 export type FireShellMaterialImpl = THREE.ShaderMaterial & FireShellUniforms;
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        fireShellMaterial: ThreeElements['shaderMaterial'] & Partial<FireShellUniforms>;
-    }
-}
 
 const defaults = {
     u_time: 0,
@@ -155,4 +149,3 @@ export const FireShellMaterial = shaderMaterial({ ...defaults, u_tint: defaults.
     m.depthWrite = false;
     m.side = THREE.FrontSide;
 });
-extend({ FireShellMaterial });

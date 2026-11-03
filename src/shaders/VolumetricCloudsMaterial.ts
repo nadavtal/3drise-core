@@ -1,6 +1,5 @@
 import { Vector2, Vector3 } from "three";
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from './shaderMaterial';
 import { commonNoiseFunctions } from "./CommonNoiseFunctions";
 export interface VolumetricCloudsUniforms {
     u_time: {
@@ -129,4 +128,4 @@ export const VolumetricCloudsMaterial = shaderMaterial({
     u_absorption: 1.0,
     u_scattering: 0.5
 }, volumetricCloudsVertex, volumetricCloudsFragment);
-extend({ VolumetricCloudsMaterial });
+

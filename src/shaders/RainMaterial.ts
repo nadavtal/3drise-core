@@ -1,5 +1,4 @@
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from './shaderMaterial';
 import * as THREE from "three";
 export interface RainMaterialUniforms {
     uColor: {
@@ -101,5 +100,5 @@ const RainMaterial = shaderMaterial({
     windTilt: 0.0,
     streakLength: 3.0,
 }, vertexShader, fragmentShader);
-extend({ RainMaterial });
+
 export { RainMaterial };

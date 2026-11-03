@@ -15,17 +15,15 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc --build --force && node add-js-extensions.mjs",
+    "build": "node check-pure.mjs && node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && tsc --build --force && node add-js-extensions.mjs",
     "dev": "tsc --build --watch",
-    "clean": "rimraf dist",
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
     "bump": "npm version patch",
     "check:dist": "node ../../tools/check-dist.mjs",
-    "pub": "node ../../tools/check-dist.mjs --only core --no-client && npm publish --access public"
+    "pub": "node ../../tools/check-dist.mjs --only core --no-client && npm publish --access public",
+    "check:pure": "node check-pure.mjs"
   },
   "dependencies": {
-    "@react-three/drei": "^10.7.7",
-    "@react-three/fiber": "^9.6.1",
-    "@react-three/rapier": "^2.2.0",
     "gsap": "^3.12.0",
     "lodash": "^4.17.21",
     "maath": "^0.10.8",
@@ -37,8 +35,6 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.17.0",
-    "@types/react": "^19.0.0",
-    "react": "^19.0.0",
     "three": "^0.170.0",
     "typescript": "^5.9.3"
   }

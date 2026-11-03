@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 
 /**
  * Chladni plates: the nodal lines of a standing wave on a square plate, with sand settling on them, drifting slowly between two neighbouring resonances.
@@ -42,11 +41,6 @@ export interface ChladniGridMaterialUniforms {
     u_grain: number;
 }
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        chladniGridMaterial: ThreeElements['shaderMaterial'] & Partial<ChladniGridMaterialUniforms>;
-    }
-}
 
 export const chladniGridMaterialDefaults: ChladniGridMaterialUniforms = {
     u_time: 0,
@@ -353,4 +347,3 @@ export const ChladniGridMaterial = shaderMaterial(
     fragment,
 );
 
-extend({ ChladniGridMaterial });

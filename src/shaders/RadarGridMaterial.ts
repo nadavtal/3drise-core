@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 
 export interface RadarGridMaterialUniforms {
     u_time: number;
@@ -43,11 +42,6 @@ export interface RadarGridMaterialUniforms {
     u_blipDensity: number;
 }
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        radarGridMaterial: ThreeElements['shaderMaterial'] & Partial<RadarGridMaterialUniforms>;
-    }
-}
 
 export const radarGridMaterialDefaults: RadarGridMaterialUniforms = {
     u_time: 0,
@@ -345,4 +339,3 @@ export const RadarGridMaterial = shaderMaterial(
     fragment,
 );
 
-extend({ RadarGridMaterial });

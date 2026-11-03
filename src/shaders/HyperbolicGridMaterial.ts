@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 
 /**
  * An Escher-style {p,q} tiling of the Poincare disk. A slow Mobius translation glides the tiling through itself, and the tiles shrink without end toward the rim.
@@ -40,11 +39,6 @@ export interface HyperbolicGridMaterialUniforms {
     u_drift: number;
 }
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        hyperbolicGridMaterial: ThreeElements['shaderMaterial'] & Partial<HyperbolicGridMaterialUniforms>;
-    }
-}
 
 export const hyperbolicGridMaterialDefaults: HyperbolicGridMaterialUniforms = {
     u_time: 0,
@@ -348,4 +342,3 @@ export const HyperbolicGridMaterial = shaderMaterial(
     fragment,
 );
 
-extend({ HyperbolicGridMaterial });

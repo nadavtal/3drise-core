@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 
 export interface ContourGridMaterialUniforms {
     u_time: number;
@@ -46,11 +45,6 @@ export interface ContourGridMaterialUniforms {
     u_warp: number;
 }
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        contourGridMaterial: ThreeElements['shaderMaterial'] & Partial<ContourGridMaterialUniforms>;
-    }
-}
 
 export const contourGridMaterialDefaults: ContourGridMaterialUniforms = {
     u_time: 0,
@@ -316,4 +310,3 @@ export const ContourGridMaterial = shaderMaterial(
     fragment,
 );
 
-extend({ ContourGridMaterial });

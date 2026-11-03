@@ -1,5 +1,4 @@
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from './shaderMaterial';
 import * as THREE from "three";
 export interface StarsMaterialUniforms {
     time: {
@@ -102,5 +101,4 @@ const StarsMaterial = shaderMaterial({
     sizeScale: 1.0
 }, vertexShader, fragmentShader);
 // Extend the material for use in React Three Fiber
-extend({ StarsMaterial });
 export { StarsMaterial };

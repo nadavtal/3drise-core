@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 export interface SmokeUniforms {
     u_time: number;
     u_colorDark: THREE.Color;
@@ -23,11 +22,6 @@ export interface SmokeUniforms {
 
 export type SmokeMaterialImpl = THREE.ShaderMaterial & SmokeUniforms;
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        smokeMaterial: ThreeElements['shaderMaterial'] & Partial<SmokeUniforms>;
-    }
-}
 
 const defaults = {
     u_time: 0,
@@ -184,4 +178,3 @@ export const SmokeMaterial = shaderMaterial({
     m.side = THREE.DoubleSide;
     // No derivatives extension needed — edges are soft from smoothstep, not bump.
 });
-extend({ SmokeMaterial });

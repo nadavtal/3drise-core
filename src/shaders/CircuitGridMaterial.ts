@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 
 export interface CircuitGridMaterialUniforms {
     u_time: number;
@@ -42,11 +41,6 @@ export interface CircuitGridMaterialUniforms {
     u_padSize: number;
 }
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        circuitGridMaterial: ThreeElements['shaderMaterial'] & Partial<CircuitGridMaterialUniforms>;
-    }
-}
 
 export const circuitGridMaterialDefaults: CircuitGridMaterialUniforms = {
     u_time: 0,
@@ -351,4 +345,3 @@ export const CircuitGridMaterial = shaderMaterial(
     fragment,
 );
 
-extend({ CircuitGridMaterial });

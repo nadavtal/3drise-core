@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 
 // =============================================================================
 // HilbertGridMaterial — Hilbert Grid
@@ -55,11 +54,6 @@ export interface HilbertGridMaterialUniforms {
     u_signalPhase: number;
 }
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        hilbertGridMaterial: ThreeElements['shaderMaterial'] & Partial<HilbertGridMaterialUniforms>;
-    }
-}
 
 export const hilbertGridMaterialDefaults: HilbertGridMaterialUniforms = {
     u_time: 0,
@@ -394,4 +388,3 @@ export const HilbertGridMaterial = shaderMaterial(
     fragment,
 );
 
-extend({ HilbertGridMaterial });

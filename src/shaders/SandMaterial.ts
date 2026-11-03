@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 export interface SandUniforms {
     u_time: number;
     u_color: THREE.Color;
@@ -27,11 +26,6 @@ export interface SandUniforms {
 
 export type SandMaterialImpl = THREE.ShaderMaterial & SandUniforms;
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        sandMaterial: ThreeElements['shaderMaterial'] & Partial<SandUniforms>;
-    }
-}
 
 const defaults = {
     u_time: 0,
@@ -325,4 +319,3 @@ export const SandMaterial = shaderMaterial({
     // Required for dFdx/dFdy in the surface-gradient bump on WebGL1/GLSL ES 1.0.
     m.extensions = { ...(m.extensions ?? {}), derivatives: true } as any;
 });
-extend({ SandMaterial });

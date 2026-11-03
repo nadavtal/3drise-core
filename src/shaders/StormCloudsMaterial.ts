@@ -1,6 +1,5 @@
 import { Vector2, Vector3 } from "three";
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from './shaderMaterial';
 import { commonNoiseFunctions } from "./CommonNoiseFunctions";
 export interface StormCloudsUniforms {
     u_time: {
@@ -88,4 +87,4 @@ export const StormCloudsMaterial = shaderMaterial({
     u_lightColor: new Vector3(0.9, 0.9, 1.0),
     u_turbulence: 0.5
 }, stormCloudsVertex, stormCloudsFragment);
-extend({ StormCloudsMaterial });
+

@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 
 /**
  * A spacetime lattice around a binary black-hole inspiral. The Newtonian wells pinch the lines, and quadrupole waves, evaluated at the retarded time, spiral outward and chirp toward the merger before the remnant rings down.
@@ -42,11 +41,6 @@ export interface GravWaveGridMaterialUniforms {
     u_massRatio: number;
 }
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        gravWaveGridMaterial: ThreeElements['shaderMaterial'] & Partial<GravWaveGridMaterialUniforms>;
-    }
-}
 
 export const gravWaveGridMaterialDefaults: GravWaveGridMaterialUniforms = {
     u_time: 0,
@@ -539,4 +533,3 @@ export const GravWaveGridMaterial = shaderMaterial(
     fragment,
 );
 
-extend({ GravWaveGridMaterial });

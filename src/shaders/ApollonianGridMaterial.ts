@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 
 // =============================================================================
 // ApollonianGridMaterial — Apollonian Grid
@@ -49,11 +48,6 @@ export interface ApollonianGridMaterialUniforms {
     u_morph: number;
 }
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        apollonianGridMaterial: ThreeElements['shaderMaterial'] & Partial<ApollonianGridMaterialUniforms>;
-    }
-}
 
 export const apollonianGridMaterialDefaults: ApollonianGridMaterialUniforms = {
     u_time: 0,
@@ -348,4 +342,3 @@ export const ApollonianGridMaterial = shaderMaterial(
     fragment,
 );
 
-extend({ ApollonianGridMaterial });

@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 
 export interface MoireGridMaterialUniforms {
     u_time: number;
@@ -44,11 +43,6 @@ export interface MoireGridMaterialUniforms {
     u_spin: number;
 }
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        moireGridMaterial: ThreeElements['shaderMaterial'] & Partial<MoireGridMaterialUniforms>;
-    }
-}
 
 export const moireGridMaterialDefaults: MoireGridMaterialUniforms = {
     u_time: 0,
@@ -326,4 +320,3 @@ export const MoireGridMaterial = shaderMaterial(
     fragment,
 );
 
-extend({ MoireGridMaterial });

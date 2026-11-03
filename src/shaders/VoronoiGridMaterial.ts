@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 
 export interface VoronoiGridMaterialUniforms {
     u_time: number;
@@ -40,11 +39,6 @@ export interface VoronoiGridMaterialUniforms {
     u_drift: number;
 }
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        voronoiGridMaterial: ThreeElements['shaderMaterial'] & Partial<VoronoiGridMaterialUniforms>;
-    }
-}
 
 export const voronoiGridMaterialDefaults: VoronoiGridMaterialUniforms = {
     u_time: 0,
@@ -317,4 +311,3 @@ export const VoronoiGridMaterial = shaderMaterial(
     fragment,
 );
 
-extend({ VoronoiGridMaterial });

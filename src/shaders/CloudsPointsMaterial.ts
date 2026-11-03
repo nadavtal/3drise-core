@@ -1,7 +1,6 @@
 import { Vector3, Vector2, Color } from "three";
 import type { Texture } from 'three';
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from './shaderMaterial';
 import { effectsVertexGLSL } from "./effects/EffectsVertexFunctions.glsl";
 export interface CloudsPointsMaterialUniforms {
     u_time: {
@@ -230,5 +229,5 @@ const CloudsPointsMaterial = shaderMaterial({
     uGeneralRippleCenterX: 0.0,
     uGeneralRippleCenterY: 0.0,
 }, vertexShader, fragmentShader);
-extend({ CloudsPointsMaterial });
+
 export { CloudsPointsMaterial };

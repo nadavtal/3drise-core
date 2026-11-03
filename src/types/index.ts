@@ -34,6 +34,8 @@ export type * from './particles';
 
 export type * from './scene3d';
 
+export type * from './events';
+
 
 export type * from './actions';
 

@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 export interface SmokeRibbonUniforms {
     u_time: number;
     u_color: THREE.Color;
@@ -23,11 +22,6 @@ export interface SmokeRibbonUniforms {
 
 export type SmokeRibbonMaterialImpl = THREE.ShaderMaterial & SmokeRibbonUniforms;
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        smokeRibbonMaterial: ThreeElements['shaderMaterial'] & Partial<SmokeRibbonUniforms>;
-    }
-}
 
 const defaults = {
     u_time: 0,
@@ -145,4 +139,3 @@ export const SmokeRibbonMaterial = shaderMaterial({
     m.depthWrite = false;
     m.side = THREE.DoubleSide;
 });
-extend({ SmokeRibbonMaterial });

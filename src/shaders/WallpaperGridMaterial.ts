@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 
 /**
  * Wallpaper-group kaleidoscope: a drifting lattice-periodic Fourier motif summed over the coset representatives of one of the 17 plane crystallographic groups. The runtime builds the group tables and crossfades from group to group.
@@ -80,11 +79,6 @@ export interface WallpaperGridMaterialUniforms {
     u_mixGain: number;
 }
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        wallpaperGridMaterial: ThreeElements['shaderMaterial'] & Partial<WallpaperGridMaterialUniforms>;
-    }
-}
 
 export const wallpaperGridMaterialDefaults: WallpaperGridMaterialUniforms = {
     u_time: 0,
@@ -528,4 +522,3 @@ export const WallpaperGridMaterial = shaderMaterial(
     fragment,
 );
 
-extend({ WallpaperGridMaterial });

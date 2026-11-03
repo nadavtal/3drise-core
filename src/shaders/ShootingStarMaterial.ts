@@ -1,6 +1,5 @@
 import { Color } from "three";
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from './shaderMaterial';
 // Vertex shader for the shooting star trail
 const vertexShader = /*glsl*/ `
   varying vec2 vUv;
@@ -38,5 +37,5 @@ const ShootingStarMaterial = shaderMaterial({
     opacity: 1.0,
 }, vertexShader, fragmentShader);
 // Extend for React Three Fiber
-extend({ ShootingStarMaterial });
+
 export { ShootingStarMaterial };

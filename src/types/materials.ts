@@ -1,13 +1,5 @@
 import type { ShaderType } from "../services/ShadersLibrary";
 import { AnimationOptions } from ".";
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        morphSimulationMaterial: any;
-        myImageMaterial: any;
-        shaderEffectsMaterial: any;
-        lineMaterial: any;
-    }
-}
 
 export type MaterialType = 'basic' | 'lava' | 'smoke' | 'sand' | 'corona' | 'effects' | 'glass' | 'metal' | 'crystal' | 'wood' | 'plastic' | 'clouds' | 'advanced' | 'particles' | 'custom' | 'shaders' | 'line';
 

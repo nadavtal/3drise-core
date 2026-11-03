@@ -1,7 +1,6 @@
 import { Vector2, Vector3 } from "three";
 import type { Texture } from 'three';
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from './shaderMaterial';
 import { commonNoiseFunctions } from "./CommonNoiseFunctions";
 export interface PainterlyCloudsUniforms {
     u_time: {
@@ -99,4 +98,4 @@ export const PainterlyCloudsMaterial = shaderMaterial({
     u_brushStrokes: 8.0,
     u_hasText: 0.0
 }, painterlyCloudsVertex, painterlyCloudsFragment);
-extend({ PainterlyCloudsMaterial });
+

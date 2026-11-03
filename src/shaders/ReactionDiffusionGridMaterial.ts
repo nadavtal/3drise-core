@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 
 /**
  * A Gray-Scott reaction-diffusion field simulated on the GPU and sampled by the plane: coral, labyrinths and dividing spots grow, merge and keep evolving, wrapped seamlessly as a torus.
@@ -44,11 +43,6 @@ export interface ReactionDiffusionGridMaterialUniforms {
     u_field: THREE.Texture | null;
 }
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        reactionDiffusionGridMaterial: ThreeElements['shaderMaterial'] & Partial<ReactionDiffusionGridMaterialUniforms>;
-    }
-}
 
 export const reactionDiffusionGridMaterialDefaults: ReactionDiffusionGridMaterialUniforms = {
     u_time: 0,
@@ -301,4 +295,3 @@ export const ReactionDiffusionGridMaterial = shaderMaterial(
     fragment,
 );
 
-extend({ ReactionDiffusionGridMaterial });

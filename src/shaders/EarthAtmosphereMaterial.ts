@@ -1,5 +1,4 @@
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from './shaderMaterial';
 import * as THREE from "three";
 export interface EarthAtmosphereMaterialUniforms {
     uSunDirection: {
@@ -71,5 +70,4 @@ const EarthAtmosphereMaterial = shaderMaterial({
     uAtmosphereDayColor: new THREE.Color('#4db2ff'),
     uAtmosphereTwilightColor: new THREE.Color('#bc490b'),
 }, vertexShader, fragmentShader);
-extend({ EarthAtmosphereMaterial });
 export { EarthAtmosphereMaterial };

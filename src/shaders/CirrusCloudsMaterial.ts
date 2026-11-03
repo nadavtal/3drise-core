@@ -1,6 +1,5 @@
 import { Vector2, Vector3 } from "three";
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from './shaderMaterial';
 import { commonNoiseFunctions } from "./CommonNoiseFunctions";
 export interface CirrusCloudsUniforms {
     u_time: {
@@ -76,4 +75,4 @@ export const CirrusCloudsMaterial = shaderMaterial({
     u_transparency: 0.4,
     u_streakiness: 8.0,
 }, cirrusCloudsVertex, cirrusCloudsFragment);
-extend({ CirrusCloudsMaterial });
+

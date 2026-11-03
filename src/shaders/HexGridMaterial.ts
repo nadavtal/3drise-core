@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 
 export interface HexGridMaterialUniforms {
     u_time: number;
@@ -41,11 +40,6 @@ export interface HexGridMaterialUniforms {
     u_plateau: number;
 }
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        hexGridMaterial: ThreeElements['shaderMaterial'] & Partial<HexGridMaterialUniforms>;
-    }
-}
 
 export const hexGridMaterialDefaults: HexGridMaterialUniforms = {
     u_time: 0,
@@ -317,4 +311,3 @@ export const HexGridMaterial = shaderMaterial(
     fragment,
 );
 
-extend({ HexGridMaterial });

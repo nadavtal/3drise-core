@@ -1,7 +1,6 @@
 import { Vector3, Matrix4 } from "three";
 import type { Texture } from 'three';
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from './shaderMaterial';
 export interface ReflectorMaterialUniforms {
     u_envMap: {
         value: Texture | null;
@@ -206,5 +205,5 @@ const ReflectorMaterial = shaderMaterial({
     u_mixContrast: 1.0
 }, vertexShader, fragmentShader);
 // Extend the material for use in React Three Fiber
-extend({ ReflectorMaterial });
+
 export { ReflectorMaterial };

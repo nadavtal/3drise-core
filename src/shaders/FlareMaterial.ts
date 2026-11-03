@@ -1,7 +1,6 @@
 import { Vector2, Vector3 } from "three";
 import type { Texture } from 'three';
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from './shaderMaterial';
 import { NOISE_GLSL } from "./sunNoise";
 export interface FlareMaterialUniforms {
     u_time: {
@@ -236,5 +235,4 @@ const FlareMaterial = shaderMaterial({
     u_limbScreen: 0.25
 }, vertexShader, fragmentShader);
 // Extend the material for use in React Three Fiber
-extend({ FlareMaterial });
 export { FlareMaterial };

@@ -1,10 +1,10 @@
-import type { ThreeEvent } from "@react-three/fiber";
+import type { ScenePointerEvent } from '../types/events';
 import type { CreatedObjectSettings, Vector3Array, ExecuteInteractionParams } from "../types/scene3d";
 import { Object3D } from "three";
 export interface SceneClickEvent {
     object: CreatedObjectSettings;
     ref: Object3D;
-    event: ThreeEvent<MouseEvent>;
+    event: ScenePointerEvent<MouseEvent>;
 }
 
 export type OnSceneObjectClick = (event: SceneClickEvent) => void;
@@ -16,7 +16,7 @@ interface ExecuteSceneInteraction {
 interface HandleCreatedObjectClickParams {
     createdObject: CreatedObjectSettings;
     ref: Object3D;
-    event: ThreeEvent<MouseEvent>;
+    event: ScenePointerEvent<MouseEvent>;
     mode: 'default' | 'path';
     executeInteraction: ExecuteSceneInteraction;
     onObjectClick?: OnSceneObjectClick;
@@ -26,7 +26,7 @@ interface HandleCreatedObjectClickParams {
 interface HandleCreatedObjectHoverParams {
     createdObject: CreatedObjectSettings;
     ref: Object3D;
-    event: ThreeEvent<PointerEvent>;
+    event: ScenePointerEvent<PointerEvent>;
     executeInteraction: ExecuteSceneInteraction;
 }
 

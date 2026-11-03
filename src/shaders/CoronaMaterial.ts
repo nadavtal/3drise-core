@@ -1,6 +1,5 @@
 import { Vector3 } from "three";
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from './shaderMaterial';
 export interface CoronaMaterialUniforms {
     u_time: {
         value: number;
@@ -77,5 +76,4 @@ const CoronaMaterial = shaderMaterial({
     u_outerColor: new Vector3(1.0, 0.62, 0.22)
 }, vertexShader, fragmentShader);
 // Extend the material for use in React Three Fiber
-extend({ CoronaMaterial });
 export { CoronaMaterial };

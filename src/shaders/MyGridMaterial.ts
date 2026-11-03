@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 export type MyGridLineMode = 0 | 1 | 2 | 3 | 4;
 
 export type MyGridCellMode = 0 | 1 | 2 | 3 | 4;
@@ -38,11 +37,6 @@ export interface MyGridMaterialUniforms {
     u_reveal: number;
 }
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        myGridMaterial: ThreeElements['shaderMaterial'] & Partial<MyGridMaterialUniforms>;
-    }
-}
 
 export const myGridMaterialDefaults: MyGridMaterialUniforms = {
     u_time: 0,
@@ -235,4 +229,3 @@ export const MyGridMaterial = shaderMaterial({
     u_displace: myGridMaterialDefaults.u_displace,
     u_reveal: myGridMaterialDefaults.u_reveal,
 }, vertex, fragment);
-extend({ MyGridMaterial });

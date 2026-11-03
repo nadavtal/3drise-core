@@ -1,4 +1,4 @@
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from './shaderMaterial';
 import { ShaderMaterial } from "three";
 export interface CustomShaderMaterialProps {
     uniforms: {

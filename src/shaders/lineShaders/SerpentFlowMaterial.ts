@@ -1,6 +1,5 @@
 import { Vector3 } from "three";
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from '../shaderMaterial';
 export interface SerpentFlowMaterialUniforms {
     u_time: {
         value: number;
@@ -111,5 +110,4 @@ const SerpentFlowMaterial = shaderMaterial({
     u_width: 0.35,
     u_shimmer: 0.7,
 }, vertexShader, fragmentShader);
-extend({ SerpentFlowMaterial });
 export { SerpentFlowMaterial };

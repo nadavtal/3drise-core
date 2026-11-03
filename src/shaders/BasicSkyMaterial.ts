@@ -1,6 +1,5 @@
 import { Vector3, Vector2 } from "three";
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from './shaderMaterial';
 export interface BasicSkyMaterialUniforms {
     u_time: {
         value: number;
@@ -123,5 +122,5 @@ const BasicSkyMaterial = shaderMaterial({
     scatteringStrength: 0.5
 }, vertexShader, fragmentShader);
 // Extend the material for use in React Three Fiber
-extend({ BasicSkyMaterial });
+
 export { BasicSkyMaterial };

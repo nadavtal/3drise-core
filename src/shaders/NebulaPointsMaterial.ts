@@ -1,7 +1,6 @@
 import { Vector3, Vector2, Color } from "three";
 import type { Texture } from 'three';
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from './shaderMaterial';
 import { commonNoiseFunctions } from "./CommonNoiseFunctions";
 import { effectsVertexGLSL } from "./effects/EffectsVertexFunctions.glsl";
 export interface NebulaPointsMaterialUniforms {
@@ -433,5 +432,5 @@ const NebulaPointsMaterial = shaderMaterial({
     uGeneralRippleCenterX: 0.0,
     uGeneralRippleCenterY: 0.0,
 }, vertexShader, fragmentShader);
-extend({ NebulaPointsMaterial });
+
 export { NebulaPointsMaterial };

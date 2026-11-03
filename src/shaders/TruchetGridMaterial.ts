@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 
 // =============================================================================
 // TruchetGridMaterial — Truchet Grid
@@ -53,11 +52,6 @@ export interface TruchetGridMaterialUniforms {
     u_regionFill: number;
 }
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        truchetGridMaterial: ThreeElements['shaderMaterial'] & Partial<TruchetGridMaterialUniforms>;
-    }
-}
 
 export const truchetGridMaterialDefaults: TruchetGridMaterialUniforms = {
     u_time: 0,
@@ -353,4 +347,3 @@ export const TruchetGridMaterial = shaderMaterial(
     fragment,
 );
 
-extend({ TruchetGridMaterial });

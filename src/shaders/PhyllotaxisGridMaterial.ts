@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 
 // =============================================================================
 // PhyllotaxisGridMaterial — Phyllotaxis Grid
@@ -59,11 +58,6 @@ export interface PhyllotaxisGridMaterialUniforms {
     u_bloomPhase: number;
 }
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        phyllotaxisGridMaterial: ThreeElements['shaderMaterial'] & Partial<PhyllotaxisGridMaterialUniforms>;
-    }
-}
 
 export const phyllotaxisGridMaterialDefaults: PhyllotaxisGridMaterialUniforms = {
     u_time: 0,
@@ -601,4 +595,3 @@ export const PhyllotaxisGridMaterial = shaderMaterial(
     fragment,
 );
 
-extend({ PhyllotaxisGridMaterial });

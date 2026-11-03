@@ -1,6 +1,5 @@
 import { Vector2, Vector3 } from "three";
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from '../shaderMaterial';
 export interface TeslaArcMaterialUniforms {
     u_time: {
         value: number;
@@ -235,7 +234,6 @@ export const TeslaArcMaterial = shaderMaterial({
     u_intensity: 1.5,
     u_forkDensity: 6.0,
 }, teslaArcVertex, teslaArcFragment);
-extend({ TeslaArcMaterial });
 const serpentFlowVertex = /*glsl*/ `
   varying vec2 vUv;
   varying vec3 vPosition;
@@ -326,7 +324,6 @@ export const SerpentFlowMaterial = shaderMaterial({
     u_width: 0.35,
     u_shimmer: 0.7,
 }, serpentFlowVertex, serpentFlowFragment);
-extend({ SerpentFlowMaterial });
 const ghostSignalVertex = /*glsl*/ `
   varying vec2 vUv;
   varying vec3 vPosition;
@@ -415,7 +412,6 @@ export const GhostSignalMaterial = shaderMaterial({
     u_trailLength: 0.25,
     u_glitchIntensity: 0.6,
 }, ghostSignalVertex, ghostSignalFragment);
-extend({ GhostSignalMaterial });
 const solarFilamentVertex = /*glsl*/ `
   varying vec2 vUv;
   varying vec3 vPosition;
@@ -517,7 +513,6 @@ export const SolarFilamentMaterial = shaderMaterial({
     u_speed: 0.5,
     u_turbulence: 1.2,
 }, solarFilamentVertex, solarFilamentFragment);
-extend({ SolarFilamentMaterial });
 const voidRiftVertex = /*glsl*/ `
   varying vec2 vUv;
   varying vec3 vPosition;
@@ -639,7 +634,6 @@ export const VoidRiftMaterial = shaderMaterial({
     u_riftWidth: 0.12,
     u_radiationDensity: 8.0,
 }, voidRiftVertex, voidRiftFragment);
-extend({ VoidRiftMaterial });
 // ============================================================
 // USAGE GUIDE
 // ============================================================

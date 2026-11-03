@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 
 // =============================================================================
 // ParastichyGridMaterial — Parastichy Grid
@@ -53,11 +52,6 @@ export interface ParastichyGridMaterialUniforms {
     u_fill: number;
 }
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        parastichyGridMaterial: ThreeElements['shaderMaterial'] & Partial<ParastichyGridMaterialUniforms>;
-    }
-}
 
 export const parastichyGridMaterialDefaults: ParastichyGridMaterialUniforms = {
     u_time: 0,
@@ -345,4 +339,3 @@ export const ParastichyGridMaterial = shaderMaterial(
     fragment,
 );
 
-extend({ ParastichyGridMaterial });

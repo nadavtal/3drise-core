@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 
 // =============================================================================
 // LensingGridMaterial — Lensing Grid
@@ -51,11 +50,6 @@ export interface LensingGridMaterialUniforms {
     u_ringGlow: number;
 }
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        lensingGridMaterial: ThreeElements['shaderMaterial'] & Partial<LensingGridMaterialUniforms>;
-    }
-}
 
 export const lensingGridMaterialDefaults: LensingGridMaterialUniforms = {
     u_time: 0,
@@ -314,4 +308,3 @@ export const LensingGridMaterial = shaderMaterial(
     fragment,
 );
 
-extend({ LensingGridMaterial });

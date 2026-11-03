@@ -1,6 +1,5 @@
 import { Vector2, Vector3 } from "three";
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from './shaderMaterial';
 import { commonNoiseFunctions } from "./CommonNoiseFunctions";
 export interface CartoonCloudsUniforms {
     u_time: {
@@ -80,4 +79,4 @@ export const CartoonCloudsMaterial = shaderMaterial({
     u_puffiness: 0.2,
     u_softness: 0.3,
 }, cartoonCloudsVertex, cartoonCloudsFragment);
-extend({ CartoonCloudsMaterial });
+

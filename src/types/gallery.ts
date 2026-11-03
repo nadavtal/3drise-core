@@ -139,7 +139,7 @@ export type IconAction = {
     label: string;
     icon?: string;
     onClick: (title: string, label: string) => void;
-    style?: React.CSSProperties;
+    style?: Record<string, string | number>;
 };
 
 

@@ -1,5 +1,4 @@
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from './shaderMaterial';
 import * as THREE from "three";
 export interface BubblesPointsMaterialUniforms {
     uTime: {
@@ -129,5 +128,4 @@ const BubblesPointsMaterial = shaderMaterial({
     uPopWindow: 0.18,
     uSpeed: 1.0,
 }, vertexShader, fragmentShader);
-extend({ BubblesPointsMaterial });
 export { BubblesPointsMaterial };

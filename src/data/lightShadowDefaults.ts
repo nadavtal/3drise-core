@@ -11,7 +11,14 @@
 // point shadow renders every caster in range six more times per frame (one per cube
 // face), and lights like these come in groups. When switched on they start at a
 // 256 map — enough for a fixture's soft shadow. Directional and spot shadows are one
-// extra pass each and stay on.
+// extra pass each and stay on: a spot is usually the light that sculpts the subject, and
+// turning its shadow off by default read as the model going "out of focus" (Nov 2026).
+//
+// The budget to keep in mind: every shadow map is a fragment sampler on every lit
+// material, and Chrome on Windows (ANGLE / D3D11) and every phone expose exactly 16. A
+// showcase with 7 casters put a transmissive MeshPhysicalMaterial over the limit and its
+// program failed to link. That is a per-scene call (fewer casters, lighter glass), not a
+// default — see CLAUDE.md "The GPU budget".
 //
 import type { DirectionalShadowSettings, LightType, PointShadowSettings, ShadowSettings, SpotShadowSettings } from '../types/lights';
 import { DEFAULT_LIGHTS } from './lightsDefaults';

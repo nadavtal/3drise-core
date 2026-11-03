@@ -1,6 +1,5 @@
 import { Color } from "three";
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from './shaderMaterial';
 export interface SkyboxMaterialUniforms {
     uSunAzimuth: {
         value: number;
@@ -89,5 +88,5 @@ const SkyboxMaterial = shaderMaterial({
     uSunSize: 1
 }, vertexShader, fragmentShader);
 // Extend the material for use in React Three Fiber
-extend({ SkyboxMaterial });
+
 export { SkyboxMaterial };

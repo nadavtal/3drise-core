@@ -1,6 +1,5 @@
 import { Vector3 } from "three";
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from '../shaderMaterial';
 export interface SolarFilamentMaterialUniforms {
     u_time: {
         value: number;
@@ -124,5 +123,4 @@ const SolarFilamentMaterial = shaderMaterial({
     u_speed: 0.5,
     u_turbulence: 1.2,
 }, vertexShader, fragmentShader);
-extend({ SolarFilamentMaterial });
 export { SolarFilamentMaterial };

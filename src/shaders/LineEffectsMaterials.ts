@@ -1,5 +1,4 @@
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from './shaderMaterial';
 // ─────────────────────────────────────────────────────────────────────────────
 //  Shared GLSL — extracted from LineEffects.tsx
 //  These shaders expect:
@@ -226,17 +225,4 @@ export const FrostLineGlowMaterial = shaderMaterial({ u_time: 0, uMode: 5, uGlow
 // ─────────────────────────────────────────────────────────────────────────────
 //  Register with R3F so they are usable as JSX tags
 // ─────────────────────────────────────────────────────────────────────────────
-extend({
-    PlasmaLineMaterial,
-    ElectricLineMaterial,
-    ParticlesLineMaterial,
-    RainbowLineMaterial,
-    LavaLineMaterial,
-    FrostLineMaterial,
-    PlasmaLineGlowMaterial,
-    ElectricLineGlowMaterial,
-    ParticlesLineGlowMaterial,
-    RainbowLineGlowMaterial,
-    LavaLineGlowMaterial,
-    FrostLineGlowMaterial,
-});
+

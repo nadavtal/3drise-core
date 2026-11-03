@@ -1,6 +1,5 @@
 import { Vector2, Vector3 } from "three";
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from '../shaderMaterial';
 export interface VoidRiftMaterialUniforms {
     u_time: {
         value: number;
@@ -141,5 +140,4 @@ const VoidRiftMaterial = shaderMaterial({
     u_riftWidth: 0.12,
     u_radiationDensity: 8.0,
 }, vertexShader, fragmentShader);
-extend({ VoidRiftMaterial });
 export { VoidRiftMaterial };

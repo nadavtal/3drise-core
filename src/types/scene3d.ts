@@ -3,7 +3,6 @@ import type { MaterialSettings } from "./materials";
 import { Object3D } from "three";
 import type { ParticledConfig } from "./particles";
 import type { OperationTypes } from "./actions";
-import type { RigidBodyTypeString } from "@react-three/rapier";
 import type { EffectTriggerMode } from "./effects";
 import type { PathConfig } from "./animations";
 import type { LightObjectConfig } from "./lights";
@@ -501,6 +500,9 @@ export interface PhysicsSettings {
     debug?: boolean;
 }
 
+/** Same union as the Rapier React bindings' RigidBodyTypeString (core stays React-free). */
+export type RigidBodyTypeString = "fixed" | "dynamic" | "kinematicPosition" | "kinematicVelocity";
+
 export interface RigidBodySettings {
     enabled?: boolean;
     type?: RigidBodyTypeString;
@@ -595,6 +597,12 @@ export interface CanvasConfig {
     backgroundColor?: string;
     antialias?: boolean;
     dpr?: number | [number, number];
+    /**
+     * Render resolution follows the frame rate (viewer AdaptiveResolution). Off by default:
+     * it lowers the pixel ratio for the session when the frame rate sags, which is right for
+     * a per-pixel-heavy terrain or cloud scene and wrong for anything judged by sharpness.
+     */
+    adaptiveResolution?: boolean;
     gl?: {
         antialias?: boolean;
         alpha?: boolean;
@@ -711,11 +719,6 @@ export interface PathTubeSettings {
     radialSegments: number;
     closed: boolean;
 }
-
-export type ProductionSceneProps = {
-    children?: React.ReactNode;
-    physicsSettings: PhysicsSettings;
-};
 
 
 // React Three Fiber and 3D Scene Type Definitions

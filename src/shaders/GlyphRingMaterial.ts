@@ -1,5 +1,4 @@
-import { extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { shaderMaterial } from './shaderMaterial';
 import * as THREE from "three";
 export interface GlyphRingMaterialUniforms {
     uTime: {
@@ -202,5 +201,4 @@ const GlyphRingMaterial = shaderMaterial({
     uHoverIntensity: 0.0,
     u_mouse: new THREE.Vector2(0, 0),
 }, vertexShader, fragmentShader);
-extend({ GlyphRingMaterial });
 export { GlyphRingMaterial };

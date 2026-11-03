@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { shaderMaterial } from '@react-three/drei';
-import { extend } from '@react-three/fiber';
+import { shaderMaterial } from './shaderMaterial';
 
 export interface QuasiGridMaterialUniforms {
     u_time: number;
@@ -43,11 +42,6 @@ export interface QuasiGridMaterialUniforms {
     u_phase: number;
 }
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        quasiGridMaterial: ThreeElements['shaderMaterial'] & Partial<QuasiGridMaterialUniforms>;
-    }
-}
 
 export const quasiGridMaterialDefaults: QuasiGridMaterialUniforms = {
     u_time: 0,
@@ -292,4 +286,3 @@ export const QuasiGridMaterial = shaderMaterial(
     fragment,
 );
 
-extend({ QuasiGridMaterial });
